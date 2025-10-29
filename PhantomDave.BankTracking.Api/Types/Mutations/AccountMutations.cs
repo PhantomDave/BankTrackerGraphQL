@@ -21,7 +21,7 @@ public class AccountMutations
         {
             throw new GraphQLException(
                 ErrorBuilder.New()
-                    .SetMessage("Email obbligatoria.")
+                    .SetMessage("Email is required.")
                     .SetCode("BAD_USER_INPUT")
                     .SetExtension("field", "email")
                     .SetExtension("reason", "required")
@@ -32,7 +32,7 @@ public class AccountMutations
         {
             throw new GraphQLException(
                 ErrorBuilder.New()
-                    .SetMessage("Password obbligatoria.")
+                    .SetMessage("Password is required.")
                     .SetCode("BAD_USER_INPUT")
                     .SetExtension("field", "password")
                     .SetExtension("reason", "required")
@@ -44,7 +44,7 @@ public class AccountMutations
         {
             throw new GraphQLException(
                 ErrorBuilder.New()
-                    .SetMessage("Impossibile creare l'account.")
+                    .SetMessage("Unable to create account.")
                     .SetCode("ACCOUNT_CREATE_FAILED")
                     .SetExtension("field", "email")
                     .SetExtension("reason", "duplicate_or_invalid")

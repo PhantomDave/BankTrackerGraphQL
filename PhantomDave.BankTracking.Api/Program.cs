@@ -12,7 +12,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
-            ?? throw new InvalidOperationException("Stringa di connessione 'DefaultConnection' non configurata.");
+            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not configured.");
         builder.Services.AddDataAccess(connectionString);
 
         builder.Services.AddScoped<AccountService>();
