@@ -1,7 +1,33 @@
 ﻿services:
-  banktrackingapplication:
+  backend:
     image: banktrackingapplication
     build:
       context: .
-      dockerfile: BankTrackingApplication/Dockerfile
+      dockerfile: Dockerfile
+    ports: 
+      - "5095:5095"
+  
+  frontend:
+    image: banktrackingfrontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    depends_on:
+      - backend
+
+  database:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: bankuser
+      POSTGRES_PASSWORD: bankpassword
+      POSTGRES_DB: bankdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
 
