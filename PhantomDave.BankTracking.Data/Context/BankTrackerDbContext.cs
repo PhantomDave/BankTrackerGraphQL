@@ -5,7 +5,7 @@ namespace PhantomDave.BankTracking.Data.Context;
 
 public class BankTrackerDbContext : DbContext
 {
-    public BankTrackerDbContext(DbContextOptions<BankTrackerDbContext> options) 
+    public BankTrackerDbContext(DbContextOptions<BankTrackerDbContext> options)
         : base(options)
     {
     }

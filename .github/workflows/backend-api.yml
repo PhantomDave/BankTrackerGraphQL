@@ -1,0 +1,40 @@
+name: Backend API - Build and Lint
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'PhantomDave.BankTracking.Api/**'
+      - 'PhantomDave.BankTracking.Library/**'
+      - 'PhantomDave.BankTracking.sln'
+      - '.github/workflows/backend-api.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'PhantomDave.BankTracking.Api/**'
+      - 'PhantomDave.BankTracking.Library/**'
+      - 'PhantomDave.BankTracking.sln'
+      - '.github/workflows/backend-api.yml'
+
+jobs:
+  build-and-lint:
+    name: Build and Lint Backend API
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore PhantomDave.BankTracking.Api/PhantomDave.BankTracking.Api.csproj
+
+    - name: Check code formatting
+      run: dotnet format PhantomDave.BankTracking.Api/PhantomDave.BankTracking.Api.csproj --verify-no-changes --verbosity diagnostic
+
+    - name: Build
+      run: dotnet build PhantomDave.BankTracking.Api/PhantomDave.BankTracking.Api.csproj --configuration Release --no-restore
