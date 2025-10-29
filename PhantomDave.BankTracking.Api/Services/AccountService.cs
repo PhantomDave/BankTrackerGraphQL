@@ -89,7 +89,7 @@ public class AccountService
 
         var scheme = parts[0];
         if (!string.Equals(scheme, "PBKDF2-SHA256", StringComparison.Ordinal))
-            return false; // schema non supportato
+            return false; // unsupported scheme
 
         if (!int.TryParse(parts[1], out var iterations) || iterations <= 0)
             return false;

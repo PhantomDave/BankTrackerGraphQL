@@ -16,7 +16,7 @@ public class BankTrackerDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // Configurazioni delle entità qui
+        // Entity configurations here
         ConfigureAccount(modelBuilder);
     }
 
