@@ -19,25 +19,18 @@ type FlexWrap = 'nowrap' | 'wrap' | 'wrap-reverse';
   }
 })
 export class FlexComponent {
-  // Whether to layout vertically
   vertical = input<boolean>(false);
 
-  // Gap between items (can be number in px or string like '16px', '1rem')
-  gap = input<number | string | [number | string, number | string]>(0);
+  gap = input<number | string | [number | string, number | string]>([8, 8]);
 
-  // Horizontal arrangement
   justify = input<FlexJustify>('flex-start');
 
-  // Vertical alignment
   align = input<FlexAlign>('flex-start');
 
-  // Whether to wrap
   wrap = input<FlexWrap>('nowrap');
 
-  // Computed flex direction
   flexDirection = computed(() => this.vertical() ? 'column' : 'row');
 
-  // Computed gap style
   gapStyle = computed(() => {
     const gapValue = this.gap();
 

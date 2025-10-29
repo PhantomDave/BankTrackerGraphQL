@@ -1,0 +1,8 @@
+schema: schema.graphql
+extensions:
+  endpoints:
+    production:
+      url: http://localhost:5095/graphql
+      headers:
+        Authorization: Bearer ${TOKEN}
+documents: '**/*.graphql'
