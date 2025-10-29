@@ -1,0 +1,7 @@
+﻿services:
+  banktrackingapplication:
+    image: banktrackingapplication
+    build:
+      context: .
+      dockerfile: BankTrackingApplication/Dockerfile
+
