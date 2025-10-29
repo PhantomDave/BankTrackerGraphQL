@@ -61,7 +61,7 @@ public class Repository<T> : IRepository<T> where T : class
     {
         await _context.SaveChangesAsync();
     }
-    
+
     public async Task<T?> GetSingleOrDefaultAsync(Func<T, bool> predicate)
     {
         return await _context.FindAsync<T>(predicate);

@@ -37,7 +37,7 @@ public class AccountService
 
         if (await IsEmailAlreadyPresent(email))
             return null;
-        
+
         var account = new Account
         {
             Email = email,
@@ -65,7 +65,7 @@ public class AccountService
         await _unitOfWork.SaveChangesAsync();
         return account;
     }
-    
+
     private static string HashPassword(string password)
     {
         const int iterations = 100_000;
@@ -74,7 +74,7 @@ public class AccountService
 
         var salt = RandomNumberGenerator.GetBytes(saltSize);
         var hash = Rfc2898DeriveBytes.Pbkdf2(password, salt, iterations, HashAlgorithmName.SHA256, keySize);
-        
+
         return $"PBKDF2-SHA256${iterations}${Convert.ToBase64String(salt)}${Convert.ToBase64String(hash)}";
     }
 

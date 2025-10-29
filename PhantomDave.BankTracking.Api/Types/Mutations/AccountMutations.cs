@@ -27,7 +27,7 @@ public class AccountMutations
                     .SetExtension("reason", "required")
                     .Build());
         }
-        
+
         if (string.IsNullOrWhiteSpace(password))
         {
             throw new GraphQLException(
