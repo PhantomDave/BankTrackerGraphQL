@@ -29,14 +29,5 @@ public class AccountQueries
         var account = await accountService.GetAccountByEmail(email);
         return account != null ? AccountType.FromAccount(account) : null;
     }
-    
-    public async Task<AccountType?> LoginAccount(
-        string email,
-        string password,
-        [Service] AccountService accountService)
-    {
-        var account = await accountService.LoginAccountAsync(email, password);
-        return account != null ? AccountType.FromAccount(account) : null;
-    }
 }
 

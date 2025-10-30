@@ -53,5 +53,50 @@ public class AccountMutations
 
         return AccountType.FromAccount(account);
     }
+
+    /// <summary>
+    /// Login to an account
+    /// </summary>
+    public async Task<AccountType?> LoginAccount(
+        string email,
+        string password,
+        [Service] AccountService accountService)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            throw new GraphQLException(
+                ErrorBuilder.New()
+                    .SetMessage("Email is required.")
+                    .SetCode("BAD_USER_INPUT")
+                    .SetExtension("field", "email")
+                    .SetExtension("reason", "required")
+                    .Build());
+        }
+
+        if (string.IsNullOrWhiteSpace(password))
+        {
+            throw new GraphQLException(
+                ErrorBuilder.New()
+                    .SetMessage("Password is required.")
+                    .SetCode("BAD_USER_INPUT")
+                    .SetExtension("field", "password")
+                    .SetExtension("reason", "required")
+                    .Build());
+        }
+
+        var account = await accountService.LoginAccountAsync(email, password);
+        if (account is null)
+        {
+            throw new GraphQLException(
+                ErrorBuilder.New()
+                    .SetMessage("Invalid email or password.")
+                    .SetCode("AUTHENTICATION_FAILED")
+                    .SetExtension("field", "email")
+                    .SetExtension("reason", "invalid_credentials")
+                    .Build());
+        }
+
+        return AccountType.FromAccount(account);
+    }
 }
 

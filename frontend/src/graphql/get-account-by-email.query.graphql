@@ -1,0 +1,8 @@
+query GetAccountByEmail($email: String!) {
+  accountByEmail(email: $email) {
+    id
+    email
+    createdAt
+    updatedAt
+  }
+}

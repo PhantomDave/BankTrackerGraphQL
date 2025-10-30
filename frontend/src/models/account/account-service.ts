@@ -1,16 +1,22 @@
 import {inject, Injectable, signal, Signal} from '@angular/core';
 import {Account} from './account';
-import {Apollo} from 'apollo-angular';
-import {GET_ACCOUNT_BY_EMAIL} from './account.queries';
 import {firstValueFrom} from 'rxjs';
-import {CREATE_ACCOUNT} from './account.mutations';
 import { SnackbarService } from '../../shared/services/snackbar.service';
+import {
+  CreateAccountGQL,
+  GetAccountByEmailGQL,
+  GetAccountsGQL,
+  LoginAccountGQL
+} from '../../generated/graphql';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
-  private readonly apollo = inject(Apollo);
+  private readonly createAccountGQL = inject(CreateAccountGQL);
+  private readonly getAccountByEmailGQL = inject(GetAccountByEmailGQL);
+  private readonly getAccountsGQL = inject(GetAccountsGQL);
+  private readonly loginAccountGQL = inject(LoginAccountGQL);
   private readonly snackbar = inject(SnackbarService);
 
   private readonly _selectedAccount = signal<Account | null>(null);
@@ -31,14 +37,11 @@ export class AccountService {
 
     try {
       const result = await firstValueFrom(
-        this.apollo.query<{ accountByEmail: Account | null }>({
-          query: GET_ACCOUNT_BY_EMAIL,
-          variables: {email}
-        })
+        this.getAccountByEmailGQL.fetch({ variables: { email } })
       );
 
       if (result?.data?.accountByEmail !== null && result?.data?.accountByEmail !== undefined) {
-        this._selectedAccount.set(result.data.accountByEmail);
+        this._selectedAccount.set(result.data.accountByEmail as Account);
       }
 
       if (result && (result as any).error) {
@@ -60,10 +63,9 @@ export class AccountService {
     this._error.set(null);
 
     try {
-      const result = await firstValueFrom(this.apollo.mutate<{createAccount: Account | null}>({
-        mutation: CREATE_ACCOUNT,
-        variables: {email, password}
-      }));
+      const result = await firstValueFrom(
+        this.createAccountGQL.mutate({ variables: { email, password } })
+      );
 
       if (result?.data?.createAccount) {
         this.snackbar.success('Account creato con successo');
@@ -86,6 +88,66 @@ export class AccountService {
       this._error.set(message);
       this.snackbar.error(message);
       return message;
+    } finally {
+      this._loading.set(false);
+    }
+  }
+
+  async loginAccount(email: string, password: string): Promise<Account | null> {
+    this._loading.set(true);
+    this._error.set(null);
+
+    try {
+      const result = await firstValueFrom(
+        this.loginAccountGQL.mutate({ variables: { email, password } })
+      );
+
+      if (result?.data?.loginAccount) {
+        const account = result.data.loginAccount as Account;
+        this._selectedAccount.set(account);
+        this.snackbar.success('Login effettuato con successo');
+        return account;
+      }
+
+      if (result && (result as any).error) {
+        const message = (result as any).error?.message ?? 'Login fallito';
+        this._error.set(message);
+        this.snackbar.error(message);
+      }
+
+      return null;
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Errore imprevisto';
+      this._error.set(message);
+      this.snackbar.error(message);
+      return null;
+    } finally {
+      this._loading.set(false);
+    }
+  }
+
+  async getAllAccounts(): Promise<void> {
+    this._loading.set(true);
+    this._error.set(null);
+
+    try {
+      const result = await firstValueFrom(
+        this.getAccountsGQL.fetch({})
+      );
+
+      if (result?.data?.accounts) {
+        this._accounts.set(result.data.accounts as readonly Account[]);
+      }
+
+      if (result && (result as any).error) {
+        const message = (result as any).error?.message ?? 'Errore durante il caricamento degli account';
+        this._error.set(message);
+        this.snackbar.error(message);
+      }
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Errore imprevisto';
+      this._error.set(message);
+      this.snackbar.error(message);
     } finally {
       this._loading.set(false);
     }

@@ -25,10 +25,10 @@ scalar DateTime
 
 type Mutation {
   createAccount(email: String!, password: String!): AccountType!
+  loginAccount(email: String!, password: String!): AccountType
 }
 
 type Query {
   accountByEmail(email: String!): AccountType
   accounts: [AccountType!]!
-  loginAccount(email: String!, password: String!): AccountType
 }
