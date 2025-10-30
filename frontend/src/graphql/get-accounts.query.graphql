@@ -1,0 +1,8 @@
+query GetAccounts {
+  accounts {
+    id
+    email
+    createdAt
+    updatedAt
+  }
+}
