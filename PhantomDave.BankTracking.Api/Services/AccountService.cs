@@ -22,7 +22,7 @@ public class AccountService
     {
         return await _unitOfWork.Accounts.GetSingleOrDefaultAsync(a => a.Email == email);
     }
-    
+
     public async Task<IEnumerable<Account>> GetAllAccountsAsync()
     {
         return await _unitOfWork.Accounts.GetAllAsync();
@@ -74,11 +74,11 @@ public class AccountService
     public async Task<Account?> LoginAccountAsync(string email, string password)
     {
         var account = await GetAccountByEmail(email);
-        if(account == null)
+        if (account == null)
             return null;
         return VerifyPassword(password, account.PasswordHash) ? account : null;
     }
-    
+
     private static string HashPassword(string password)
     {
         const int iterations = 100_000;
@@ -90,7 +90,7 @@ public class AccountService
 
         return $"PBKDF2-SHA256${iterations}${Convert.ToBase64String(salt)}${Convert.ToBase64String(hash)}";
     }
-    
+
     private static bool VerifyPassword(string password, string stored)
     {
         if (string.IsNullOrWhiteSpace(stored))
