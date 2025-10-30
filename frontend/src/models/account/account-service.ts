@@ -99,7 +99,7 @@ export class AccountService {
 
     try {
       const result = await firstValueFrom(
-        this.loginAccountGQL.fetch({ variables: { email, password } })
+        this.loginAccountGQL.mutate({ variables: { email, password } })
       );
 
       if (result?.data?.loginAccount) {

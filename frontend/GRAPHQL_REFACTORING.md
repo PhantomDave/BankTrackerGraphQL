@@ -25,8 +25,9 @@ this.apollo.mutate({
 ### After
 ```typescript
 // Generated typed GQL services
-this.getAccountByEmailGQL.watch({ variables: { email } }).valueChanges
+this.getAccountByEmailGQL.fetch({ variables: { email } })
 this.createAccountGQL.mutate({ variables: { email, password } })
+this.loginAccountGQL.mutate({ variables: { email, password } })
 ```
 
 ## Generated GQL Classes
@@ -36,10 +37,10 @@ The following injectable GQL classes are now available in `src/generated/graphql
 ### Queries
 - **GetAccountByEmailGQL** - Fetch account by email
 - **GetAccountsGQL** - Fetch all accounts
-- **LoginAccountGQL** - Login with email and password
 
 ### Mutations
 - **CreateAccountGQL** - Create a new account
+- **LoginAccountGQL** - Login with email and password (changed from Query to Mutation for proper authentication semantics)
 
 ## Usage
 
