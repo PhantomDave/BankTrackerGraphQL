@@ -37,7 +37,7 @@ export class AccountService {
 
     try {
       const result = await firstValueFrom(
-        this.getAccountByEmailGQL.watch({ variables: { email } }).valueChanges
+        this.getAccountByEmailGQL.fetch({ variables: { email } })
       );
 
       if (result?.data?.accountByEmail !== null && result?.data?.accountByEmail !== undefined) {
@@ -99,7 +99,7 @@ export class AccountService {
 
     try {
       const result = await firstValueFrom(
-        this.loginAccountGQL.watch({ variables: { email, password } }).valueChanges
+        this.loginAccountGQL.fetch({ variables: { email, password } })
       );
 
       if (result?.data?.loginAccount) {
@@ -132,7 +132,7 @@ export class AccountService {
 
     try {
       const result = await firstValueFrom(
-        this.getAccountsGQL.watch().valueChanges
+        this.getAccountsGQL.fetch({})
       );
 
       if (result?.data?.accounts) {
