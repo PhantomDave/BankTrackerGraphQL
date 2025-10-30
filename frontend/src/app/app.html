@@ -1,1 +1,8 @@
-<router-outlet />
+@if (isAuthenticated()) {
+  <app-side-nav-component>
+    <router-outlet/>
+  </app-side-nav-component>
+} @else {
+  <router-outlet/>
+}
+

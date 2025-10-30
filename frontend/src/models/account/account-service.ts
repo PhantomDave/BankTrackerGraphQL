@@ -6,7 +6,8 @@ import {
   CreateAccountGQL,
   GetAccountByEmailGQL,
   GetAccountsGQL,
-  LoginAccountGQL
+  LoginAccountGQL,
+  LoginGQL
 } from '../../generated/graphql';
 
 @Injectable({
@@ -18,6 +19,7 @@ export class AccountService {
   private readonly getAccountsGQL = inject(GetAccountsGQL);
   private readonly loginAccountGQL = inject(LoginAccountGQL);
   private readonly snackbar = inject(SnackbarService);
+  private readonly loginGQL = inject(LoginGQL);
 
   private readonly _selectedAccount = signal<Account | null>(null);
   readonly selectedAccount: Signal<Account | null> = this._selectedAccount.asReadonly();
@@ -93,63 +95,44 @@ export class AccountService {
     }
   }
 
-  async loginAccount(email: string, password: string): Promise<Account | null> {
+  async login(email: string, password: string): Promise<boolean | string> {
     this._loading.set(true);
     this._error.set(null);
-
     try {
       const result = await firstValueFrom(
-        this.loginAccountGQL.mutate({ variables: { email, password } })
+        this.loginGQL.mutate({ variables: { email, password } })
       );
 
-      if (result?.data?.loginAccount) {
-        const account = result.data.loginAccount as Account;
-        this._selectedAccount.set(account);
-        this.snackbar.success('Login effettuato con successo');
-        return account;
+      const token = result?.data?.login?.token;
+      const account = result?.data?.login?.account;
+      if (token && account) {
+        localStorage.setItem('auth_token', token);
+        this._selectedAccount.set({
+          id: account.id,
+          email: account.email,
+          createdAt: account.createdAt,
+          updatedAt: account.updatedAt ?? null
+        });
+        this.snackbar.success('Login effettuato');
+        return true;
       }
 
-      if (result && (result as any).error) {
-        const message = (result as any).error?.message ?? 'Login fallito';
-        this._error.set(message);
-        this.snackbar.error(message);
-      }
-
-      return null;
+      const message = 'Credenziali non valide';
+      this._error.set(message);
+      this.snackbar.error(message);
+      return message;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Errore imprevisto';
       this._error.set(message);
       this.snackbar.error(message);
-      return null;
+      return message;
     } finally {
       this._loading.set(false);
     }
   }
 
-  async getAllAccounts(): Promise<void> {
-    this._loading.set(true);
-    this._error.set(null);
-
-    try {
-      const result = await firstValueFrom(
-        this.getAccountsGQL.fetch({})
-      );
-
-      if (result?.data?.accounts) {
-        this._accounts.set(result.data.accounts as readonly Account[]);
-      }
-
-      if (result && (result as any).error) {
-        const message = (result as any).error?.message ?? 'Errore durante il caricamento degli account';
-        this._error.set(message);
-        this.snackbar.error(message);
-      }
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Errore imprevisto';
-      this._error.set(message);
-      this.snackbar.error(message);
-    } finally {
-      this._loading.set(false);
-    }
+  logout(): void {
+    localStorage.removeItem('auth_token');
+    this._selectedAccount.set(null);
   }
 }

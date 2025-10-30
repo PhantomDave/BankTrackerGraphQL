@@ -1,0 +1,20 @@
+<app-flex [vertical]="true" justify="center" align="center" class="welcome-container">
+  <mat-card class="welcome-card" appearance="outlined">
+    <mat-card-header class="welcome-header">
+      <div mat-card-avatar class="welcome-avatar"></div>
+      <mat-card-title class="welcome-title">{{ title() }}</mat-card-title>
+      <mat-card-subtitle class="welcome-subtitle">{{ subtitle() }}</mat-card-subtitle>
+    </mat-card-header>
+    @if (image(); as img) {
+      <img mat-card-image [ngSrc]="img.src" [width]="img.width" [height]="img.height" [alt]="img.alt" class="welcome-image">
+    }
+    <mat-card-content class="welcome-content">
+      <ng-content></ng-content>
+    </mat-card-content>
+    <mat-card-actions class="welcome-actions">
+      @for (action of actions(); track $index) {
+        <button matButton (click)="action.action()" class="welcome-action-button">{{ action.text }}</button>
+      }
+    </mat-card-actions>
+  </mat-card>
+</app-flex>

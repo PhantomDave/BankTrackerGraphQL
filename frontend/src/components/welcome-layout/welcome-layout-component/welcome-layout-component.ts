@@ -1,8 +1,8 @@
-import {Component, input} from '@angular/core';
+import {Component, input, ChangeDetectionStrategy} from '@angular/core';
 import {FlexComponent} from '../../flex-component/flex-component';
 import {
   MatCard,
-  MatCardActions,
+  MatCardActions, MatCardContent,
   MatCardHeader,
   MatCardImage,
   MatCardSubtitle,
@@ -22,10 +22,12 @@ import {NgOptimizedImage} from '@angular/common';
     MatCardSubtitle,
     MatCardImage,
     MatCardActions,
-    NgOptimizedImage
+    NgOptimizedImage,
+    MatCardContent
   ],
   templateUrl: './welcome-layout-component.html',
   styleUrl: './welcome-layout-component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
 export class WelcomeLayoutComponent {

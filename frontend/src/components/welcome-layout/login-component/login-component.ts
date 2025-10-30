@@ -5,7 +5,7 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {FlexComponent} from '../../flex-component/flex-component';
-import {AccountService} from '../../../../models/account/account-service';
+import {AccountService} from '../../../models/account/account-service';
 
 @Component({
   selector: 'app-login-component',
@@ -33,7 +33,7 @@ export class LoginComponent {
   protected async onSubmit() {
     if (this.loginForm.valid) {
       const {email, password} = this.loginForm.value;
-      await this.accountService.loginAccount(email, password);
+      await this.accountService.login(email, password);
     } else {
       this.loginForm.markAllAsTouched();
     }

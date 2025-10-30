@@ -20,11 +20,27 @@ type AccountType {
   updatedAt: DateTime
 }
 
+"""Defines when a policy shall be executed."""
+enum ApplyPolicy {
+  """After the resolver was executed."""
+  AFTER_RESOLVER
+  """Before the resolver was executed."""
+  BEFORE_RESOLVER
+  """The policy is applied in the validation step before the execution."""
+  VALIDATION
+}
+
+type AuthPayload {
+  account: AccountType!
+  token: String!
+}
+
 """The `DateTime` scalar represents an ISO-8601 compliant date time type."""
 scalar DateTime
 
 type Mutation {
   createAccount(email: String!, password: String!): AccountType!
+  login(email: String!, password: String!): AuthPayload!
   loginAccount(email: String!, password: String!): AccountType
 }
 

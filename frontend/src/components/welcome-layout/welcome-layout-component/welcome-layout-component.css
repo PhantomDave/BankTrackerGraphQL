@@ -1,0 +1,116 @@
+/* Welcome container styling using Material CSS variables */
+.welcome-container {
+  block-size: 100vh;
+  inline-size: 100vw;
+  background-color: var(--mat-sys-surface);
+}
+
+/* Welcome card styling */
+.welcome-card {
+  max-inline-size: min(90vw, 28rem);
+  min-inline-size: min(80vw, 20rem);
+  background-color: var(--mat-sys-surface-container);
+  color: var(--mat-sys-on-surface);
+  border-color: var(--mat-sys-outline-variant);
+}
+
+/* Header styling */
+.welcome-header {
+  background-color: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface);
+}
+
+.welcome-avatar {
+  background-color: var(--mat-sys-primary);
+  background-image: linear-gradient(135deg, var(--mat-sys-primary-container), var(--mat-sys-primary));
+}
+
+.welcome-title {
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-headline-medium);
+}
+
+.welcome-subtitle {
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-body-medium);
+}
+
+/* Image styling */
+.welcome-image {
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
+/* Content styling */
+.welcome-content {
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-large);
+}
+
+/* Actions styling */
+.welcome-actions {
+  background-color: var(--mat-sys-surface-container-low);
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.welcome-action-button {
+  --mdc-text-button-label-text-color: var(--mat-sys-primary);
+  --mdc-text-button-focus-label-text-color: var(--mat-sys-on-primary-container);
+  --mdc-text-button-hover-label-text-color: var(--mat-sys-on-primary-container);
+  --mdc-text-button-pressed-label-text-color: var(--mat-sys-on-primary-container);
+
+  font: var(--mat-sys-label-large);
+  border-radius: 1.5rem;
+}
+
+.welcome-action-button:hover {
+  background-color: var(--mat-sys-primary-container);
+}
+
+.welcome-action-button:focus {
+  background-color: var(--mat-sys-primary-container);
+  outline: 0.125rem solid var(--mat-sys-primary);
+  outline-offset: 0.125rem;
+}
+
+/* Responsive behavior using container queries where supported */
+@container (max-inline-size: 600px) {
+  .welcome-card {
+    max-inline-size: 95vw;
+  }
+
+  .welcome-actions {
+    justify-content: center;
+  }
+}
+
+/* High contrast theme support */
+@media (prefers-contrast: more) {
+  .welcome-card {
+    border-width: 0.125rem;
+    border-style: solid;
+  }
+
+  .welcome-action-button {
+    border: 0.0625rem solid var(--mat-sys-outline);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .welcome-card {
+    transition: none;
+  }
+
+  .welcome-action-button {
+    transition: none;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .welcome-container {
+    background-color: var(--mat-sys-surface);
+  }
+}

@@ -1,5 +1,6 @@
 using PhantomDave.BankTracking.Api.Services;
 using PhantomDave.BankTracking.Api.Types.ObjectTypes;
+using HotChocolate.Authorization;
 
 namespace PhantomDave.BankTracking.Api.Types.Queries;
 
@@ -12,6 +13,7 @@ public class AccountQueries
     /// <summary>
     /// Get all accounts
     /// </summary>
+    [Authorize]
     public async Task<IEnumerable<AccountType>> GetAccounts(
         [Service] AccountService accountService)
     {
@@ -20,8 +22,9 @@ public class AccountQueries
     }
 
     /// <summary>
-    /// Get an account by ID
+    /// Get an account by email
     /// </summary>
+    [Authorize]
     public async Task<AccountType?> GetAccountByEmail(
         string email,
         [Service] AccountService accountService)
@@ -30,4 +33,3 @@ public class AccountQueries
         return account != null ? AccountType.FromAccount(account) : null;
     }
 }
-

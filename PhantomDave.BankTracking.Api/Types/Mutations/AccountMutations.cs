@@ -1,5 +1,6 @@
 using PhantomDave.BankTracking.Api.Services;
 using PhantomDave.BankTracking.Api.Types.ObjectTypes;
+using HotChocolate.Authorization;
 
 namespace PhantomDave.BankTracking.Api.Types.Mutations;
 
@@ -12,6 +13,7 @@ public class AccountMutations
     /// <summary>
     /// Create a new account
     /// </summary>
+    [AllowAnonymous]
     public async Task<AccountType> CreateAccount(
         string email,
         string password,
@@ -98,5 +100,38 @@ public class AccountMutations
 
         return AccountType.FromAccount(account);
     }
+
+    /// <summary>
+    /// Login and get JWT
+    /// </summary>
+    [AllowAnonymous]
+    public async Task<AuthPayload> Login(
+        string email,
+        string password,
+        [Service] AccountService accountService,
+        [Service] IJwtTokenService tokenService)
+    {
+        var account = await accountService.LoginAccountAsync(email, password);
+        if (account is null)
+        {
+            throw new GraphQLException(
+                ErrorBuilder.New()
+                    .SetMessage("Invalid credentials.")
+                    .SetCode("UNAUTHENTICATED")
+                    .Build());
+        }
+
+        var token = tokenService.CreateToken(account.Id, account.Email);
+        return new AuthPayload
+        {
+            Token = token,
+            Account = AccountType.FromAccount(account)
+        };
+    }
 }
 
+public sealed class AuthPayload
+{
+    public string Token { get; set; } = string.Empty;
+    public AccountType Account { get; set; } = default!;
+}

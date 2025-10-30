@@ -1,7 +1,9 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
+const schemaUrl = process.env.GRAPHQL_SCHEMA_URL || 'http://localhost:5095/graphql';
+
 const config: CodegenConfig = {
-  schema: './schema.graphql',
+  schema: schemaUrl,
   documents: ['src/**/*.graphql'],
   generates: {
     './src/generated/graphql.ts': {
@@ -36,4 +38,3 @@ const config: CodegenConfig = {
 };
 
 export default config;
-
