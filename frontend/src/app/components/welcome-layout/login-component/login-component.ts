@@ -1,22 +1,40 @@
-import { Component } from '@angular/core';
+import {Component, ChangeDetectionStrategy, inject} from '@angular/core';
 import {WelcomeLayoutComponent} from '../welcome-layout-component/welcome-layout-component';
-import {FormsModule} from '@angular/forms';
+import {ReactiveFormsModule, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {MatSelectModule} from '@angular/material/select';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {FlexComponent} from '../../flex-component/flex-component';
 
 @Component({
   selector: 'app-login-component',
   imports: [
     WelcomeLayoutComponent,
-    FormsModule
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
+    FlexComponent
   ],
   templateUrl: './login-component.html',
   styleUrl: './login-component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
-  protected email: string | null = null;
-  protected password: string | null = null;
+  private readonly fb = inject(FormBuilder);
+
+  protected readonly loginForm: FormGroup = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(6)]]
+  });
 
   protected onSubmit() {
-    console.log('Username:', this.email);
-    console.log('Password:', this.password);
+    if (this.loginForm.valid) {
+      const {email, password} = this.loginForm.value;
+      console.log('Email:', email);
+      console.log('Password:', password);
+    } else {
+      this.loginForm.markAllAsTouched();
+    }
   }
 }

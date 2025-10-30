@@ -4,6 +4,7 @@ WORKDIR /src
 
 COPY ["PhantomDave.BankTracking.Api/PhantomDave.BankTracking.Api.csproj", "PhantomDave.BankTracking.Api/"]
 COPY ["PhantomDave.BankTracking.Library/PhantomDave.BankTracking.Library.csproj", "PhantomDave.BankTracking.Library/"]
+COPY ["PhantomDave.BankTracking.Data/PhantomDave.BankTracking.Data.csproj", "PhantomDave.BankTracking.Data/"]
 
 RUN dotnet restore "PhantomDave.BankTracking.Api/PhantomDave.BankTracking.Api.csproj"
 

@@ -22,11 +22,20 @@ public class AccountQueries
     /// <summary>
     /// Get an account by ID
     /// </summary>
-    public async Task<AccountType?> GetAccountById(
-        int id,
+    public async Task<AccountType?> GetAccountByEmail(
+        string email,
         [Service] AccountService accountService)
     {
-        var account = await accountService.GetAccountAsync(id);
+        var account = await accountService.GetAccountByEmail(email);
+        return account != null ? AccountType.FromAccount(account) : null;
+    }
+    
+    public async Task<AccountType?> LoginAccount(
+        string email,
+        string password,
+        [Service] AccountService accountService)
+    {
+        var account = await accountService.LoginAccountAsync(email, password);
         return account != null ? AccountType.FromAccount(account) : null;
     }
 }

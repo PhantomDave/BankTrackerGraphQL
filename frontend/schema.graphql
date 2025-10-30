@@ -1,0 +1,34 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+"""
+The purpose of the `cost` directive is to define a `weight` for GraphQL types, fields, and arguments. Static analysis can use these weights when calculating the overall cost of a query or response.
+"""
+directive @cost(
+  """
+  The `weight` argument defines what value to add to the overall cost for every appearance, or possible appearance, of a type, field, argument, etc.
+  """
+  weight: String!
+) on ARGUMENT_DEFINITION | ENUM | FIELD_DEFINITION | INPUT_FIELD_DEFINITION | OBJECT | SCALAR
+
+type AccountType {
+  createdAt: DateTime!
+  email: String!
+  id: Int!
+  updatedAt: DateTime
+}
+
+"""The `DateTime` scalar represents an ISO-8601 compliant date time type."""
+scalar DateTime
+
+type Mutation {
+  createAccount(email: String!, password: String!): AccountType!
+}
+
+type Query {
+  accountByEmail(email: String!): AccountType
+  accounts: [AccountType!]!
+  loginAccount(email: String!, password: String!): AccountType
+}

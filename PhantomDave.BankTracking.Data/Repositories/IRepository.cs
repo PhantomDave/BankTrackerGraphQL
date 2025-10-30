@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace PhantomDave.BankTracking.Data.Repositories;
 
@@ -9,7 +10,7 @@ public interface IRepository<T> where T : class
     Task<T> AddAsync(T entity);
     Task<T> UpdateAsync(T entity);
     Task<bool> DeleteAsync(object id);
-    Task<T?> GetSingleOrDefaultAsync(Func<T, bool> predicate);
+    Task<T?> GetSingleOrDefaultAsync(Expression<Func<T, bool>> predicate);
     Task SaveAsync();
     IQueryable<T> Query();
 }
@@ -62,9 +63,9 @@ public class Repository<T> : IRepository<T> where T : class
         await _context.SaveChangesAsync();
     }
 
-    public async Task<T?> GetSingleOrDefaultAsync(Func<T, bool> predicate)
+    public async Task<T?> GetSingleOrDefaultAsync(Expression<Func<T, bool>> predicate)
     {
-        return await _context.FindAsync<T>(predicate);
+        return await _dbSet.FirstOrDefaultAsync(predicate);
     }
 
     public IQueryable<T> Query()

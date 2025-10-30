@@ -17,6 +17,16 @@ public class Program
 
         builder.Services.AddScoped<AccountService>();
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(policy =>
+                policy
+                    .WithOrigins("http://localhost:4200")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials());
+        });
+
         var graphqlBuilder = builder.Services
             .AddGraphQLServer()
             .AddQueryType()
@@ -26,6 +36,9 @@ public class Program
         RegisterTypeExtensions(graphqlBuilder, typeof(Program).Assembly);
 
         var app = builder.Build();
+
+        // Abilita CORS prima del mapping GraphQL
+        app.UseCors();
 
         app.MapGraphQL();
 

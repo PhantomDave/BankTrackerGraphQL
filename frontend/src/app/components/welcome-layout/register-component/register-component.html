@@ -1,9 +1,9 @@
 <app-welcome-layout-component
-  title="Login Into the bank tracker"
-  subtitle="Please enter your credentials to access your account"
+  title="Register Into the bank tracker"
+  subtitle="Please enter your credentials to create your account"
   [actions]="[{ text: 'Submit', action: onSubmit.bind(this) }]"
 >
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="login-form">
     <app-flex [vertical]="true" gap="8px" justify="center" align="center" class="login-form-flex">
       <mat-form-field appearance="outline">
         <mat-label>Email</mat-label>
@@ -12,10 +12,10 @@
                id="email"
                formControlName="email"
         />
-        @if (loginForm.get('email')?.hasError('required')) {
+        @if (registerForm.get('email')?.hasError('required')) {
           <mat-error>Email is required</mat-error>
         }
-        @if (loginForm.get('email')?.hasError('email')) {
+        @if (registerForm.get('email')?.hasError('email')) {
           <mat-error>Please enter a valid email address</mat-error>
         }
       </mat-form-field>
@@ -27,10 +27,10 @@
                id="password"
                formControlName="password"
         />
-        @if (loginForm.get('password')?.hasError('required')) {
+        @if (registerForm.get('password')?.hasError('required')) {
           <mat-error>Password is required</mat-error>
         }
-        @if (loginForm.get('password')?.hasError('minlength')) {
+        @if (registerForm.get('password')?.hasError('minlength')) {
           <mat-error>Password must be at least 6 characters</mat-error>
         }
       </mat-form-field>
