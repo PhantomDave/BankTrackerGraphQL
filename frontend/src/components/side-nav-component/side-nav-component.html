@@ -7,7 +7,7 @@
     opened
     position="start"
   >
-    <app-flex [vertical]="true" justify="space-between" [gap]="0" style="height: 100%">
+    <app-flex [vertical]="true" justify="space-between" gap="0" style="height: 100%">
       <div>
         <div class="sidenav-header">
           <button mat-icon-button type="button" aria-label="Toggle menu" (click)="drawer.toggle()"
@@ -19,7 +19,7 @@
 
         <nav aria-label="Main navigation">
           <mat-nav-list>
-            <app-flex [vertical]="true" [gap]="0" justify="center">
+            <app-flex [vertical]="true" gap="0" justify="center">
               <a mat-list-item routerLink="/home" class="nav-item" routerLinkActive="active" #rlaHome="routerLinkActive"
                  [routerLinkActiveOptions]="{ exact: true }" [attr.aria-current]="rlaHome.isActive ? 'page' : null">
                 <mat-icon matListItemIcon>home</mat-icon>

@@ -21,7 +21,8 @@ type FlexWrap = 'nowrap' | 'wrap' | 'wrap-reverse';
 export class FlexComponent {
   vertical = input<boolean>(false);
 
-  gap = input<number | string | [number | string, number | string]>([8, 8]);
+  // Accept only CSS-ready strings for gap (e.g., '8px', '1rem', '8px 16px', '0')
+  gap = input<string>('8px');
 
   justify = input<FlexJustify>('flex-start');
 
@@ -31,17 +32,6 @@ export class FlexComponent {
 
   flexDirection = computed(() => this.vertical() ? 'column' : 'row');
 
-  gapStyle = computed(() => {
-    const gapValue = this.gap();
-
-    if (Array.isArray(gapValue)) {
-      const [rowGap, columnGap] = gapValue;
-      const rowGapStr = typeof rowGap === 'number' ? `${rowGap}px` : rowGap;
-      const columnGapStr = typeof columnGap === 'number' ? `${columnGap}px` : columnGap;
-      return `${rowGapStr} ${columnGapStr}`;
-    }
-
-    return typeof gapValue === 'number' ? `${gapValue}px` : gapValue;
-  });
+  // Pass-through: consumers must provide valid CSS units
+  gapStyle = computed(() => this.gap());
 }
-

@@ -1,8 +1,9 @@
-import {ChangeDetectionStrategy, Component, output, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
 import {MatTableModule} from '@angular/material/table';
 import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-configurator',
@@ -11,7 +12,8 @@ import {MatIconModule} from '@angular/material/icon';
   styleUrl: './configurator-component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ConfiguratorComponent {
+class ConfiguratorComponent {
+  private readonly router = inject(Router);
   readonly data = signal([
     {
       name: 'Sample Configuration',
@@ -37,9 +39,9 @@ export class ConfiguratorComponent {
 
   displayedColumns: string[] = ['name', 'description'];
 
-  createConfiguration = output<void>();
-
-  onCreateClicked(): void {
-    this.createConfiguration.emit();
+  async onCreateClicked(): Promise<void> {
+    await this.router.navigate(['/config/create']);
   }
 }
+
+export default ConfiguratorComponent
