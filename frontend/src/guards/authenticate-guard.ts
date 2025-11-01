@@ -1,6 +1,43 @@
-import { CanActivateFn } from '@angular/router';
+import {CanActivateFn, Router} from '@angular/router';
+import {SessionData} from '../models/session-data';
+import {inject} from '@angular/core';
+import {AccountService} from '../models/account/account-service';
 
-export const authenticateGuard: CanActivateFn = (route, state) => {
-  const token = localStorage.getItem('auth_token');
-  return token !== null;
+export const authenticateGuard: CanActivateFn = async (route, state) => {
+  const router = inject(Router);
+  const accountService = inject(AccountService);
+
+  const sessionString = localStorage.getItem('sessionData');
+  const sessionData: SessionData | null = sessionString ? (JSON.parse(sessionString) as SessionData) : null;
+
+  if (!sessionData) {
+    return router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
+  }
+
+  const rawLastCheck: unknown = (sessionData as { lastCheck: unknown }).lastCheck;
+  const lastCheckMs = typeof rawLastCheck === 'number' ? rawLastCheck : Date.parse(String(rawLastCheck));
+  const isFresh = Number.isFinite(lastCheckMs) && (Date.now() - lastCheckMs) <= 30 * 60 * 1000;
+
+  if (sessionData.isValid && isFresh) {
+    return true;
+  }
+
+  try {
+    const isValid = await accountService.verifyToken();
+
+    if (isValid) {
+      const updated: SessionData = {
+        ...sessionData,
+        isValid: true,
+        lastCheck: Date.now()
+      };
+      localStorage.setItem('sessionData', JSON.stringify(updated));
+      return true;
+    }
+
+    localStorage.removeItem('sessionData');
+    return router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
+  } catch {
+    return router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
+  }
 };

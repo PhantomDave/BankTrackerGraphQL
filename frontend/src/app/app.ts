@@ -1,6 +1,5 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import {MatSlideToggle} from '@angular/material/slide-toggle';
+import {Component, signal} from '@angular/core';
+import {RouterOutlet} from '@angular/router';
 import {SideNavComponent} from '../components/side-nav-component/side-nav-component';
 
 @Component({
@@ -15,7 +14,7 @@ export class App {
   isAuthenticated = signal(false);
 
   constructor() {
-    const token = localStorage.getItem('auth_token');
+    const token = localStorage.getItem('sessionData');
     this.isAuthenticated.set(token !== null);
   }
 }

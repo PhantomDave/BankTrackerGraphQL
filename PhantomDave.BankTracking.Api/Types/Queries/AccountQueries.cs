@@ -1,6 +1,7 @@
 using PhantomDave.BankTracking.Api.Services;
 using PhantomDave.BankTracking.Api.Types.ObjectTypes;
 using HotChocolate.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace PhantomDave.BankTracking.Api.Types.Queries;
 
@@ -31,5 +32,13 @@ public class AccountQueries
     {
         var account = await accountService.GetAccountByEmail(email);
         return account != null ? AccountType.FromAccount(account) : null;
+    }
+    
+    [Authorize]
+    public Task<bool> IsAValidJwt([Service] IHttpContextAccessor httpContextAccessor)
+    {
+        var user = httpContextAccessor.HttpContext?.User;
+        var isAuthenticated = user?.Identity?.IsAuthenticated ?? false;
+        return Task.FromResult(isAuthenticated);
     }
 }

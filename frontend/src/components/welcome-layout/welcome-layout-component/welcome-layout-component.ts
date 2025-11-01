@@ -1,5 +1,5 @@
 import {Component, input, ChangeDetectionStrategy} from '@angular/core';
-import {FlexComponent} from '../../flex-component/flex-component';
+import {FlexComponent} from '../../ui-library/flex-component/flex-component';
 import {
   MatCard,
   MatCardActions, MatCardContent,

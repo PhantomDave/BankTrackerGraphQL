@@ -26,6 +26,8 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Prefer Reactive forms instead of Template-driven ones
 - Do NOT use `ngClass`, use `class` bindings instead
 - Do NOT use `ngStyle`, use `style` bindings instead
+- Use Angular Material components, avoid custom UI components when possible
+- Avoid CSS when a custom component is provided by Angular Material or us (e.g., app-flex)
 
 ## State Management
 
@@ -45,3 +47,8 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Design services around a single responsibility
 - Use the `providedIn: 'root'` option for singleton services
 - Use the `inject()` function instead of constructor injection
+
+## Styling
+- Use Angular's built-in styling capabilities (e.g., component styles)
+- Prefer Angular Material CSS variables for theming
+- Avoid global styles; scope styles to components

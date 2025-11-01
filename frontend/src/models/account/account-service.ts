@@ -1,14 +1,9 @@
 import {inject, Injectable, signal, Signal} from '@angular/core';
 import {Account} from './account';
 import {firstValueFrom} from 'rxjs';
-import { SnackbarService } from '../../shared/services/snackbar.service';
-import {
-  CreateAccountGQL,
-  GetAccountByEmailGQL,
-  GetAccountsGQL,
-  LoginAccountGQL,
-  LoginGQL
-} from '../../generated/graphql';
+import {SnackbarService} from '../../shared/services/snackbar.service';
+import {CreateAccountGQL, GetAccountByEmailGQL, LoginGQL, VerifyTokenGQL} from '../../generated/graphql';
+import {SessionData} from '../session-data';
 
 @Injectable({
   providedIn: 'root'
@@ -16,10 +11,9 @@ import {
 export class AccountService {
   private readonly createAccountGQL = inject(CreateAccountGQL);
   private readonly getAccountByEmailGQL = inject(GetAccountByEmailGQL);
-  private readonly getAccountsGQL = inject(GetAccountsGQL);
-  private readonly loginAccountGQL = inject(LoginAccountGQL);
   private readonly snackbar = inject(SnackbarService);
   private readonly loginGQL = inject(LoginGQL);
+  private readonly verifyTokenGQL = inject(VerifyTokenGQL);
 
   private readonly _selectedAccount = signal<Account | null>(null);
   readonly selectedAccount: Signal<Account | null> = this._selectedAccount.asReadonly();
@@ -58,6 +52,11 @@ export class AccountService {
     } finally {
       this._loading.set(false);
     }
+  }
+
+  async verifyToken(): Promise<boolean> {
+      const resp =  await firstValueFrom(this.verifyTokenGQL.fetch())
+      return !!resp.data?.isAValidJwt;
   }
 
   async createAccount(email: string, password: string): Promise<boolean | string> {
@@ -106,7 +105,12 @@ export class AccountService {
       const token = result?.data?.login?.token;
       const account = result?.data?.login?.account;
       if (token && account) {
-        localStorage.setItem('auth_token', token);
+        const sessionData: SessionData = {
+          token,
+          lastCheck: Date.now(),
+          isValid: true
+        };
+        localStorage.setItem('sessionData', JSON.stringify(sessionData));
         this._selectedAccount.set({
           id: account.id,
           email: account.email,
@@ -132,7 +136,7 @@ export class AccountService {
   }
 
   logout(): void {
-    localStorage.removeItem('auth_token');
+    localStorage.removeItem('sessionData');
     this._selectedAccount.set(null);
   }
 }

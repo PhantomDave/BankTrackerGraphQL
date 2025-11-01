@@ -1,5 +1,7 @@
 ﻿services:
   backend:
+    profiles:
+      - "containerized"
     image: banktrackingapplication
     build:
       context: .
@@ -8,6 +10,8 @@
       - "5095:5095"
   
   frontend:
+    profiles:
+      - "containerized"
     image: banktrackingfrontend
     build:
       context: ./frontend
