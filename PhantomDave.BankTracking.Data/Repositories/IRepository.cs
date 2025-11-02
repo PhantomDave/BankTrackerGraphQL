@@ -18,7 +18,7 @@ public interface IRepository<T> where T : class
     Task SaveAsync();
     IQueryable<T> Query();
 
-    // EF Core 7: operazioni bulk lato DB
+    // EF Core 7: bulk operations on DB side
     Task<int> ExecuteUpdateAsync(
         Expression<Func<T, bool>> predicate,
         Expression<Func<SetPropertyCalls<T>, SetPropertyCalls<T>>> setProperties);
