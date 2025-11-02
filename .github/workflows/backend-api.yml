@@ -21,11 +21,13 @@ jobs:
     name: Build and Lint Backend API
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -35,8 +37,15 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore PhantomDave.BankTracking.Api/PhantomDave.BankTracking.Api.csproj
 
-    - name: Check code formatting
-      run: dotnet format PhantomDave.BankTracking.Api/PhantomDave.BankTracking.Api.csproj --verify-no-changes --verbosity diagnostic
+    - name: Format code
+      run: dotnet format PhantomDave.BankTracking.Api/PhantomDave.BankTracking.Api.csproj --verbosity diagnostic
+
+    - name: Commit formatted code
+      uses: stefanzweifel/git-auto-commit-action@v5
+      if: github.event_name == 'push'
+      with:
+        commit_message: 'chore: auto-format Backend API code'
+        file_pattern: 'PhantomDave.BankTracking.Api/** PhantomDave.BankTracking.Library/**'
 
     - name: Build
       run: dotnet build PhantomDave.BankTracking.Api/PhantomDave.BankTracking.Api.csproj --configuration Release --no-restore
