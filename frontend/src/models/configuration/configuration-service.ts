@@ -44,9 +44,8 @@ export class ConfigurationService {
         this._configurations.set(result.data.configurations as Configuration[]);
       }
 
-      if (result && (result as any).error) {
-        const message =
-          (result as any).error?.message ?? 'Errore durante il caricamento configurazioni';
+      if (result?.error) {
+        const message = result.error.message ?? 'Errore durante il caricamento configurazioni';
         this._error.set(message);
         this.snackbar.error(message);
       }
@@ -75,9 +74,8 @@ export class ConfigurationService {
         this._selectedConfiguration.set(result.data.configurationById as Configuration);
       }
 
-      if (result && (result as any).error) {
-        const message =
-          (result as any).error?.message ?? 'Errore durante il caricamento configurazione';
+      if (result?.error) {
+        const message = result.error.message ?? 'Errore durante il caricamento configurazione';
         this._error.set(message);
         this.snackbar.error(message);
       }
@@ -105,8 +103,8 @@ export class ConfigurationService {
         return true;
       }
 
-      if (result && (result as any).error) {
-        const message = (result as any).error?.message ?? 'Creazione configurazione fallita';
+      if (result?.error) {
+        const message = result.error.message ?? 'Creazione configurazione fallita';
         this._error.set(message);
         this.snackbar.error(message);
         return message;
@@ -141,8 +139,8 @@ export class ConfigurationService {
         return true;
       }
 
-      if (result && (result as any).error) {
-        const message = (result as any).error?.message ?? 'Aggiornamento configurazione fallito';
+      if (result?.error) {
+        const message = result.error.message ?? 'Aggiornamento configurazione fallito';
         this._error.set(message);
         this.snackbar.error(message);
         return message;

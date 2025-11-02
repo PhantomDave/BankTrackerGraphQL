@@ -40,8 +40,8 @@ export class AccountService {
         this._selectedAccount.set(result.data.accountByEmail as Account);
       }
 
-      if (result && (result as any).error) {
-        const message = (result as any).error?.message ?? 'Errore durante il caricamento account';
+      if (result?.error) {
+        const message = result.error.message ?? 'Errore durante il caricamento account';
         this._error.set(message);
         this.snackbar.error(message);
       }
@@ -73,8 +73,8 @@ export class AccountService {
         return true;
       }
 
-      if (result && (result as any).error) {
-        const message = (result as any).error?.message ?? 'Creazione account fallita';
+      if (result?.error) {
+        const message = result.error.message ?? 'Creazione account fallita';
         this._error.set(message);
         this.snackbar.error(message);
         return message;
