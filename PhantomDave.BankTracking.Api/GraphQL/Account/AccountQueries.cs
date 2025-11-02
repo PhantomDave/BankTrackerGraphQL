@@ -1,9 +1,7 @@
-using PhantomDave.BankTracking.Api.Services;
-using PhantomDave.BankTracking.Api.Types.ObjectTypes;
 using HotChocolate.Authorization;
-using Microsoft.AspNetCore.Http;
+using PhantomDave.BankTracking.Api.Services;
 
-namespace PhantomDave.BankTracking.Api.Types.Queries;
+namespace PhantomDave.BankTracking.Api.GraphQL.Account;
 
 /// <summary>
 /// GraphQL queries for Account operations

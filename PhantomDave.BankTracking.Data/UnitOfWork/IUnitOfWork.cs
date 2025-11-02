@@ -7,6 +7,8 @@ namespace PhantomDave.BankTracking.Data.UnitOfWork;
 public interface IUnitOfWork : IAsyncDisposable
 {
     IRepository<Account> Accounts { get; }
+    IRepository<Configuration> Configurations { get; }
+    IRepository<RuleValue> RuleValues { get; }
     Task<int> SaveChangesAsync();
     Task BeginTransactionAsync();
     Task CommitTransactionAsync();
@@ -17,6 +19,8 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly BankTrackerDbContext _context;
     private IRepository<Account>? _accounts;
+    private IRepository<Configuration>? _configurations;
+    private IRepository<RuleValue>? _ruleValues;
 
     public UnitOfWork(BankTrackerDbContext context)
     {
@@ -25,6 +29,10 @@ public class UnitOfWork : IUnitOfWork
 
     public IRepository<Account> Accounts =>
         _accounts ??= new Repository<Account>(_context);
+    public IRepository<Configuration> Configurations =>
+        _configurations ??= new Repository<Configuration>(_context);
+    public IRepository<RuleValue> RuleValues =>
+        _ruleValues ??= new Repository<RuleValue>(_context);
 
     public async Task<int> SaveChangesAsync()
     {

@@ -35,17 +35,49 @@ type AuthPayload {
   token: String!
 }
 
+input ConfigurationInput {
+  accountId: Int!
+  id: Int!
+  ruleName: String!
+  ruleValues: [RuleValueInput!]
+}
+
+type ConfigurationType {
+  accountId: Int!
+  id: Int!
+  ruleName: String!
+  ruleValues: [RuleValue!]
+}
+
 """The `DateTime` scalar represents an ISO-8601 compliant date time type."""
 scalar DateTime
 
 type Mutation {
   createAccount(email: String!, password: String!): AccountType!
+  createConfiguration(input: ConfigurationInput!): ConfigurationType!
   login(email: String!, password: String!): AuthPayload!
   loginAccount(email: String!, password: String!): AccountType
+  updateConfiguration(input: ConfigurationInput!): ConfigurationType!
 }
 
 type Query {
   accountByEmail(email: String!): AccountType
   accounts: [AccountType!]!
+  configurationById(id: Int!): ConfigurationType
+  configurations: [ConfigurationType!]!
   isAValidJwt: Boolean!
+}
+
+type RuleValue {
+  configurationId: Int!
+  id: Int!
+  name: String!
+  value: Int!
+}
+
+input RuleValueInput {
+  configurationId: Int!
+  id: Int!
+  name: String!
+  value: Int!
 }

@@ -1,0 +1,13 @@
+query GetConfigurationById($id: Int!) {
+  configurationById(id: $id) {
+    id
+    accountId
+    ruleName
+    ruleValues {
+      configurationId
+      id
+      name
+      value
+    }
+  }
+}

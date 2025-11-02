@@ -1,0 +1,13 @@
+mutation CreateConfiguration($input: ConfigurationInput!) {
+  createConfiguration(input: $input) {
+    id
+    accountId
+    ruleName
+    ruleValues {
+      configurationId
+      id
+      name
+      value
+    }
+  }
+}

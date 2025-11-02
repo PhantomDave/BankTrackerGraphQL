@@ -1,0 +1,13 @@
+query GetConfigurations {
+  configurations {
+    id
+    accountId
+    ruleName
+    ruleValues {
+      configurationId
+      id
+      name
+      value
+    }
+  }
+}

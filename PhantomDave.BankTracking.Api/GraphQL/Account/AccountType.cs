@@ -1,6 +1,4 @@
-using PhantomDave.BankTracking.Library.Models;
-
-namespace PhantomDave.BankTracking.Api.Types.ObjectTypes;
+namespace PhantomDave.BankTracking.Api.GraphQL.Account;
 
 public class AccountType
 {
@@ -15,7 +13,7 @@ public class AccountType
     /// <summary>
     /// Factory method to convert a domain Account model to a GraphQL AccountType
     /// </summary>
-    public static AccountType FromAccount(Account account) => new()
+    public static AccountType FromAccount(Library.Models.Account account) => new()
     {
         Id = account.Id,
         Email = account.Email,

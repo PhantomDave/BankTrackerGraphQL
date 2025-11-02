@@ -1,0 +1,14 @@
+mutation UpdateConfiguration($input: ConfigurationInput!) {
+  updateConfiguration(input: $input) {
+    id
+    accountId
+    ruleName
+    ruleValues {
+      configurationId
+      id
+      name
+      value
+    }
+  }
+}
+

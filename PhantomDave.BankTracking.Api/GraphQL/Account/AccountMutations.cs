@@ -1,8 +1,7 @@
-using PhantomDave.BankTracking.Api.Services;
-using PhantomDave.BankTracking.Api.Types.ObjectTypes;
 using HotChocolate.Authorization;
+using PhantomDave.BankTracking.Api.Services;
 
-namespace PhantomDave.BankTracking.Api.Types.Mutations;
+namespace PhantomDave.BankTracking.Api.GraphQL.Account;
 
 /// <summary>
 /// GraphQL mutations for Account operations
