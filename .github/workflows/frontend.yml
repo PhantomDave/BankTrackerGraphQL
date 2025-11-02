@@ -17,11 +17,13 @@ jobs:
     name: Build and Lint Frontend
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -37,6 +39,17 @@ jobs:
     - name: Generate GraphQL types
       working-directory: ./frontend
       run: npm run codegen
+
+    - name: Format code with Prettier
+      working-directory: ./frontend
+      run: npx prettier --write "src/**/*.{ts,html,css,scss}"
+
+    - name: Commit formatted code
+      uses: stefanzweifel/git-auto-commit-action@v5
+      if: github.event_name == 'push'
+      with:
+        commit_message: 'chore: auto-format Frontend code'
+        file_pattern: 'frontend/src/**'
 
     - name: Check TypeScript compilation
       working-directory: ./frontend
