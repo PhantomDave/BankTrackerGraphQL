@@ -1,11 +1,19 @@
-import { Component, inject, ChangeDetectionStrategy, output, signal } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { FlexComponent } from '../../ui-library/flex-component/flex-component';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-create-configuration',
@@ -16,36 +24,61 @@ import {Router} from '@angular/router';
     MatButtonModule,
     ReactiveFormsModule,
     FlexComponent,
+    MatIconModule,
   ],
   templateUrl: './create-configuration-component.html',
   styleUrl: './create-configuration-component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
 export class CreateConfigurationComponent {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
 
-  configurationCreated = output<{name: string; description: string; field1: string}>();
+  configurationCreated = output<{ name: string; description: string; field1: string }>();
   cancelled = output<void>();
-  fields = signal<string[]>([]);
 
-  configurationForm: FormGroup = this.fb.group({
-    name: ['', Validators.required],
-    description: [''],
-    rule: [''],
-  });
+  validateTotalEquals100 = (group: AbstractControl): { [key: string]: unknown } | null => {
+    const arr = group.get('fields') as FormArray | null;
+    if (!arr || arr.length === 0) return null;
+    const sum = arr.controls.reduce(
+      (sum, control) => sum + Number(control.get('value')?.value || 0),
+      0,
+    );
+    return sum === 100 ? null : { totalMustBe100: true };
+  };
 
-  addField() {
-    const fieldName = 'field' + (this.fields().length + 1);
-    this.fields.update(current => [...current, fieldName]);
-    this.configurationForm.addControl(fieldName, this.fb.control(''));
+  configurationForm: FormGroup = this.fb.group(
+    {
+      name: ['', Validators.required],
+      description: [''],
+      rule: [''],
+      fields: this.fb.array<FormGroup>([]),
+    },
+    { validators: this.validateTotalEquals100 },
+  );
+
+  get fields(): FormArray {
+    return this.configurationForm.get('fields') as FormArray;
+  }
+
+  addField(): void {
+    const fg = this.fb.group({
+      name: ['', Validators.required],
+      value: [0, [Validators.required, Validators.min(0)]],
+    });
+    this.fields.push(fg);
+  }
+
+  removeField(index: number): void {
+    this.fields.removeAt(index);
   }
 
   onSubmit(): void {
-    // TODO: Databasestuff
     if (this.configurationForm.valid) {
       const formValue = this.configurationForm.value;
+      const values = this.configurationForm.getRawValue() as Record<string, unknown>;
+      const json = JSON.stringify(values, null, 2);
+      console.log(json);
       this.configurationCreated.emit(formValue);
       this.configurationForm.reset();
     }

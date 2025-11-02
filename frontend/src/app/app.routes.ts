@@ -3,7 +3,7 @@ import {LoginComponent} from '../components/welcome-layout/login-component/login
 import {RegisterComponent} from '../components/welcome-layout/register-component/register-component';
 import {HomeComponent} from '../components/home-component/home-component';
 import {authenticateGuard} from '../guards/authenticate-guard';
-import ConfiguratorComponent from '../components/configurator/configurator/configurator-component';
+import ConfiguratorComponent from '../components/configurator/configurator-component/configurator-component';
 import {
   CreateConfigurationComponent
 } from '../components/configurator/create-configuration-component/create-configuration-component';

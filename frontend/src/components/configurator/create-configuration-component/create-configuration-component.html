@@ -11,9 +11,7 @@
             <mat-label>Configuration Name</mat-label>
             <input matInput formControlName="name" required/>
             @if (configurationForm.get('name')?.hasError('required')) {
-              <mat-error>
-                Name is required
-              </mat-error>
+              <mat-error>Name is required</mat-error>
             }
           </mat-form-field>
 
@@ -25,22 +23,39 @@
           <button mat-button type="button" (click)="addField()">Add Field</button>
 
           <mat-form-field appearance="fill">
-            <mat-label>Rule</mat-label>
-            <textarea matInput formControlName="rule" rows="1"></textarea>
+            <mat-label>Rule Name</mat-label>
+            <input type="text" matInput formControlName="rule"/>
           </mat-form-field>
 
-          @for (field of fields(); track $index) {
-            <mat-form-field appearance="fill">
-              <mat-label>{{ field }}</mat-label>
-              <textarea matInput [formControlName]="field" rows="1"></textarea>
-            </mat-form-field>
+          <div formArrayName="fields">
+            @for (ctrl of fields.controls; track $index) {
+              <app-flex gap="8px" align="center">
+                <div [formGroupName]="$index">
+                  <mat-form-field appearance="fill">
+                    <mat-label>Field Name</mat-label>
+                    <input type="text" matInput formControlName="name"/>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="fill">
+                    <mat-label>Value (%)</mat-label>
+                    <input type="number" matInput formControlName="value"/>
+                  </mat-form-field>
+
+                  <button mat-icon-button type="button" (click)="removeField($index)" aria-label="Remove field">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </app-flex>
+            }
+          </div>
+
+          @if (configurationForm.hasError('totalMustBe100')) {
+            <mat-error>The total of all fields must equal 100%</mat-error>
           }
 
           <app-flex justify="flex-end" gap="8px">
             <button mat-stroked-button type="button" (click)="onCancel()">Cancel</button>
-            <button mat-flat-button color="primary" type="submit" [disabled]="configurationForm.invalid">
-              Create
-            </button>
+            <button mat-flat-button color="primary" type="submit" [disabled]="configurationForm.invalid">Create</button>
           </app-flex>
         </app-flex>
       </form>
