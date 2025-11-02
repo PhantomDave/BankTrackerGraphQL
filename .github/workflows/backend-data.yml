@@ -45,7 +45,7 @@ jobs:
       if: github.event_name == 'push'
       with:
         commit_message: 'chore: auto-format Backend Data code'
-        file_pattern: 'PhantomDave.BankTracking.Data/** PhantomDave.BankTracking.Library/**'
+        file_pattern: 'PhantomDave.BankTracking.Data/**'
 
     - name: Build
       run: dotnet build PhantomDave.BankTracking.Data/PhantomDave.BankTracking.Data.csproj --configuration Release --no-restore
