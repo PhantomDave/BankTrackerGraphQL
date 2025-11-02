@@ -26,7 +26,12 @@ public class ConfigurationService
 
     public async Task<IEnumerable<Configuration?>> GetAllConfigurationsAsync(int accountId)
     {
-        return await _unitOfWork.Configurations.GetByPredicateAsync(cfg => cfg.AccountId == accountId);
+        return await _unitOfWork.Configurations
+            .Query()
+            .Include(c => c.RuleValues)
+            .AsNoTracking()
+            .Where(cfg => cfg.AccountId == accountId)
+            .ToListAsync();
     }
     
     public async Task<Configuration> UpdateConfigurationAsync(int accountId, Configuration updatedConfig)
