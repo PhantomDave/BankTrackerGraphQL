@@ -33,7 +33,7 @@ public class AccountQueries
         var account = await accountService.GetAccountByEmail(email);
         return account != null ? AccountType.FromAccount(account) : null;
     }
-    
+
     [Authorize]
     public Task<bool> IsAValidJwt([Service] IHttpContextAccessor httpContextAccessor)
     {
