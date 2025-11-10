@@ -182,7 +182,7 @@ public class FinanceRecordService
         }
 
         var trimmed = description.Trim();
-        return trimmed.Length <= 500 ? trimmed : trimmed.Substring(0, 500);
+        return trimmed.Length <= 500 ? trimmed : trimmed[..500];
     }
 
     private static DateTime EnsureUtc(DateTime value)
