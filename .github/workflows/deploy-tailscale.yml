@@ -1,0 +1,59 @@
+name: Deploy via Tailscale
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-main
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy over Tailscale
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      TAILSCALE_TARGET: ${{ secrets.TAILSCALE_SSH_TARGET }}
+      TAILSCALE_DEPLOY_COMMAND: docker compose -f /home/deploy/banktracker/compose.yml up -d --build
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
+          hostname: banktracker-ci-${{ github.run_id }}
+          args: --accept-dns=true --accept-routes=true
+
+      - name: Validate deployment secrets
+        run: |
+          if [ -z "$TAILSCALE_TARGET" ]; then
+            echo "Missing required secret: TAILSCALE_SSH_TARGET" >&2
+            exit 1
+          fi
+          if [ -z "$TAILSCALE_DEPLOY_COMMAND" ]; then
+            echo "Missing required secret: TAILSCALE_DEPLOY_COMMAND" >&2
+            exit 1
+          fi
+
+      - name: Test Tailscale connectivity
+        run: |
+          echo "Testing connection to $TAILSCALE_TARGET..."
+          tailscale ssh "$TAILSCALE_TARGET" "echo 'Connected successfully' && whoami"
+
+      - name: Deploy through Tailscale SSH
+        run: |
+          echo "🚀 Starting deployment..."
+          tailscale ssh "$TAILSCALE_TARGET" "${TAILSCALE_DEPLOY_COMMAND}"
+          echo "✅ Deployment completed"
+
+      - name: Post-deployment verification (optional)
+        if: success()
+        run: |
+          echo "Verifying deployment..."
+          tailscale ssh "$TAILSCALE_TARGET" "systemctl status your-app || echo 'Status command not available'"
