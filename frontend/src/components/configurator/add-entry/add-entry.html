@@ -1,0 +1,89 @@
+<h2 mat-dialog-title>{{ dialogTitle }}</h2>
+
+<form class="form" [formGroup]="financeRecordForm" (ngSubmit)="onSubmit()">
+  <div mat-dialog-content class="form-fields">
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" required />
+      @if (
+        financeRecordForm.controls.name.touched &&
+        financeRecordForm.controls.name.hasError('required')
+      ) {
+        <mat-error>Name is required.</mat-error>
+      }
+      @if (
+        financeRecordForm.controls.name.touched &&
+        financeRecordForm.controls.name.hasError('maxlength')
+      ) {
+        <mat-error>Name must be 120 characters or fewer.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="3"></textarea>
+      @if (
+        financeRecordForm.controls.description.touched &&
+        financeRecordForm.controls.description.hasError('maxlength')
+      ) {
+        <mat-error>Description must be 500 characters or fewer.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Amount</mat-label>
+      <input matInput type="number" formControlName="amount" min="0" step="0.01" required />
+      @if (
+        financeRecordForm.controls.amount.touched &&
+        financeRecordForm.controls.amount.hasError('required')
+      ) {
+        <mat-error>Amount is required.</mat-error>
+      }
+      @if (
+        financeRecordForm.controls.amount.touched &&
+        financeRecordForm.controls.amount.hasError('min')
+      ) {
+        <mat-error>Amount must be greater than zero.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Currency</mat-label>
+      <input matInput formControlName="currency" maxlength="3" />
+      @if (
+        financeRecordForm.controls.currency.touched &&
+        financeRecordForm.controls.currency.hasError('required')
+      ) {
+        <mat-error>Currency is required.</mat-error>
+      }
+      @if (
+        financeRecordForm.controls.currency.touched &&
+        financeRecordForm.controls.currency.hasError('maxlength')
+      ) {
+        <mat-error>Use the 3-letter currency code.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Date</mat-label>
+      <input matInput [matDatepicker]="recordDatePicker" formControlName="date" required />
+      <mat-datepicker-toggle matIconSuffix [for]="recordDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #recordDatePicker></mat-datepicker>
+      @if (
+        financeRecordForm.controls.date.touched &&
+        financeRecordForm.controls.date.hasError('required')
+      ) {
+        <mat-error>Date is required.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-checkbox formControlName="recurring">Recurring</mat-checkbox>
+  </div>
+
+  <div mat-dialog-actions align="end" class="actions">
+    <button mat-stroked-button type="button" (click)="close()">Cancel</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitDisabled()">
+      Save
+    </button>
+  </div>
+</form>

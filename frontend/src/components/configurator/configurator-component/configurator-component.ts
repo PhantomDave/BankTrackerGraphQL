@@ -5,6 +5,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
+import { AddEntry } from '../add-entry/add-entry';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-configurator',
@@ -14,7 +16,8 @@ import { Router } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class ConfiguratorComponent {
-  private readonly router = inject(Router);
+  private readonly dialog = inject(MatDialog);
+
   readonly data = signal([
     {
       name: 'Sample Configuration',
@@ -61,7 +64,17 @@ class ConfiguratorComponent {
   displayedColumns: string[] = ['name', 'description', 'recurring', 'amount', 'date'];
 
   async onCreateClicked(): Promise<void> {
-    await this.router.navigate(['/config/create']);
+    const dialogRef = this.dialog.open(AddEntry, {
+      width: '600px',
+      maxWidth: '90vw',
+      panelClass: 'add-entry-dialog',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result !== undefined) {
+        this.data.update((prev) => [...prev, result]);
+      }
+    });
   }
 }
 
