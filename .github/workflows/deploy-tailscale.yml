@@ -42,15 +42,27 @@ jobs:
             echo "::error::TAILSCALE_SSH_TARGET contains unsupported characters" >&2
             exit 1
           fi
-          echo "target=$target" >> "$GITHUB_OUTPUT"
-
-      - name: Configure SSH known hosts
-        shell: bash
-        run: |
-          mkdir -p "$HOME/.ssh"
-          touch "$HOME/.ssh/tailscale_known_hosts"
-          chmod 600 "$HOME/.ssh/tailscale_known_hosts"
-          echo "TAILSCALE_KNOWN_HOSTS=$HOME/.ssh/tailscale_known_hosts" >> "$GITHUB_ENV"
+          user_prefix=""
+          host_port="$target"
+          if [[ "$host_port" == *@* ]]; then
+            user_prefix="${host_port%%@*}@"
+            host_port="${host_port#*@}"
+          fi
+          host_only="$host_port"
+          port_suffix=""
+          if [[ "$host_only" == *:* ]]; then
+            host_only="${host_only%%:*}"
+            port_suffix=":${host_port#*:}"
+          fi
+          while [[ "$host_only" == *"." ]] && [ -n "$host_only" ]; do
+            host_only="${host_only%?}"
+          done
+          if [ -z "$host_only" ]; then
+            echo "::error::TAILSCALE_SSH_TARGET host portion resolved to empty after sanitization" >&2
+            exit 1
+          fi
+          sanitized_target="${user_prefix}${host_only}${port_suffix}"
+          echo "target=$sanitized_target" >> "$GITHUB_OUTPUT"
 
       - name: Validate deployment secrets
         run: |
@@ -66,16 +78,16 @@ jobs:
       - name: Test Tailscale connectivity
         run: |
           echo "Testing connection to target host..."
-          tailscale ssh --ssh-flag "-oStrictHostKeyChecking=accept-new" --ssh-flag "-oUserKnownHostsFile=$TAILSCALE_KNOWN_HOSTS" "${{ steps.prepare.outputs.target }}" "echo 'Connected successfully' && whoami"
+          tailscale ssh "${{ steps.prepare.outputs.target }}" "echo 'Connected successfully' && whoami"
 
       - name: Deploy through Tailscale SSH
         run: |
           echo "🚀 Starting deployment..."
-          tailscale ssh --ssh-flag "-oStrictHostKeyChecking=accept-new" --ssh-flag "-oUserKnownHostsFile=$TAILSCALE_KNOWN_HOSTS" "${{ steps.prepare.outputs.target }}" "${TAILSCALE_DEPLOY_COMMAND}"
+          tailscale ssh "${{ steps.prepare.outputs.target }}" "${TAILSCALE_DEPLOY_COMMAND}"
           echo "✅ Deployment completed"
 
       - name: Post-deployment verification (optional)
         if: success()
         run: |
           echo "Verifying deployment..."
-          tailscale ssh --ssh-flag "-oStrictHostKeyChecking=accept-new" --ssh-flag "-oUserKnownHostsFile=$TAILSCALE_KNOWN_HOSTS" "${{ steps.prepare.outputs.target }}" "systemctl status your-app || echo 'Status command not available'"
+          tailscale ssh "${{ steps.prepare.outputs.target }}" "systemctl status your-app || echo 'Status command not available'"
