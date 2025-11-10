@@ -44,9 +44,9 @@ class ConfiguratorComponent implements OnInit {
       panelClass: 'add-entry-dialog',
     });
 
-    dialogRef.afterClosed().subscribe((result: FinanceRecord | undefined) => {
+    dialogRef.afterClosed().subscribe(async (result: FinanceRecord | undefined) => {
       if (result) {
-        this.financeRecordService.createFinanceRecord(result);
+        await this.financeRecordService.createFinanceRecord(result);
       }
     });
   }

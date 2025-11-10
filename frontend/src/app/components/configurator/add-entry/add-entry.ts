@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -67,12 +67,10 @@ export class AddEntry {
     recurrenceEndDate: [this.initialValue.recurrenceEndDate],
   });
 
-  private readonly formInvalidSignal = toSignal(
+  readonly isSubmitDisabled = toSignal(
     this.financeRecordForm.statusChanges.pipe(map(() => this.financeRecordForm.invalid)),
     { initialValue: this.financeRecordForm.invalid },
   );
-
-  readonly isSubmitDisabled = computed(() => this.formInvalidSignal());
 
   readonly isRecurringSignal = toSignal(this.financeRecordForm.controls.recurring.valueChanges, {
     initialValue: this.initialValue.recurring,

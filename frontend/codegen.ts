@@ -127,7 +127,7 @@ if (!token) {
 }
 
 const config: CodegenConfig = {
-  schema: buildSchemaConfig(token),
+  schema: process.env.USE_LOCAL_SCHEMA === 'true' ? './schema.graphql' : buildSchemaConfig(token),
   documents: ['src/**/*.graphql'],
   generates: {
     './src/generated/graphql.ts': {

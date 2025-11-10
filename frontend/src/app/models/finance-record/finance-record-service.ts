@@ -38,7 +38,7 @@ export class FinanceRecordService {
             amount: record.amount,
             currency: record.currency,
             date: record.date.toISOString(),
-            recurrenceFrequency: record.recurrenceFrequency ?? RecurrenceFrequency.NONE,
+            recurrenceFrequency: record.recurrenceFrequency,
             recurrenceEndDate: record.recurrenceEndDate
               ? record.recurrenceEndDate.toISOString()
               : undefined,
@@ -47,32 +47,34 @@ export class FinanceRecordService {
       }),
     );
 
-    if (result) {
-      this._selectedFinanceRecord.set({
-        id: result.data?.createFinanceRecord.id ?? 0,
-        name: result.data?.createFinanceRecord.name ?? '',
-        description: result.data?.createFinanceRecord.description ?? '',
-        amount: result.data?.createFinanceRecord.amount ?? 0,
-        currency: result.data?.createFinanceRecord.currency ?? '',
-        date: new Date(result.data?.createFinanceRecord.date ?? ''),
-        recurring: result.data?.createFinanceRecord.isRecurring ?? false,
-      });
-      this._financeRecords.update((prev) => [
-        ...prev,
-        {
-          id: result.data?.createFinanceRecord.id ?? 0,
-          name: result.data?.createFinanceRecord.name ?? '',
-          description: result.data?.createFinanceRecord.description ?? '',
-          amount: result.data?.createFinanceRecord.amount ?? 0,
-          currency: result.data?.createFinanceRecord.currency ?? '',
-          date: new Date(result.data?.createFinanceRecord.date ?? ''),
-          recurring: result.data?.createFinanceRecord.isRecurring ?? false,
-        },
-      ]);
+    if (result?.data?.createFinanceRecord) {
+      const newRecord = this.mapToFinanceRecord(result.data.createFinanceRecord);
+      this._selectedFinanceRecord.set(newRecord);
+      this._financeRecords.update((prev) => [...prev, newRecord]);
     } else {
       this._error.set('Failed to create finance record');
     }
     this._loading.set(false);
+  }
+
+  private mapToFinanceRecord(data: {
+    id: number;
+    name: string;
+    description: string;
+    amount: number;
+    currency: string;
+    date: any;
+    isRecurring: boolean;
+  }): FinanceRecord {
+    return {
+      id: data.id,
+      name: data.name,
+      description: data.description,
+      amount: data.amount,
+      currency: data.currency,
+      date: new Date(data.date),
+      recurring: data.isRecurring,
+    };
   }
 
   async getFinanceRecords(): Promise<void> {
