@@ -6,6 +6,6 @@ mutation CreateFinanceRecord($newRecord: FinanceRecordInput!)  {
       amount
       currency
       date
-      isRecurring
+      isRecurring,
     }
 }

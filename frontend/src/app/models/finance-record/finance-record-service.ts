@@ -1,6 +1,7 @@
 import { inject, Injectable, Signal, signal } from '@angular/core';
 import { FinanceRecord } from './finance-record';
 import { CreateFinanceRecordGQL, GetFinanceRecordsGQL } from '../../../generated/graphql';
+import { RecurrenceFrequency } from '../../../models/recurrence-frequency';
 import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
 
 @Injectable({
@@ -37,6 +38,10 @@ export class FinanceRecordService {
             amount: record.amount,
             currency: record.currency,
             date: record.date.toISOString(),
+            recurrenceFrequency: record.recurrenceFrequency ?? RecurrenceFrequency.NONE,
+            recurrenceEndDate: record.recurrenceEndDate
+              ? record.recurrenceEndDate.toISOString()
+              : undefined,
           },
         },
       }),

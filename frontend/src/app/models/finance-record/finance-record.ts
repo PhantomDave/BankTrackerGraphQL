@@ -1,4 +1,4 @@
-import { RecurrenceFrequency } from '../../../models/recurrence-frequency';
+import { RecurrenceFrequency } from '../../../generated/graphql';
 
 export interface FinanceRecord {
   id?: number;

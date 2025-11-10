@@ -10,6 +10,8 @@ using HotChocolate.AspNetCore;
 using HotChocolate.Authorization;
 using Microsoft.EntityFrameworkCore;
 using PhantomDave.BankTracking.Data.Context;
+using PhantomDave.BankTracking.Library.Models;
+using HotChocolate.Types;
 
 namespace PhantomDave.BankTracking.Api;
 
@@ -82,6 +84,7 @@ public class Program
             .AddAuthorization()
             .AddQueryType()
             .AddMutationType()
+            .BindRuntimeType<RecurrenceFrequency, EnumType<RecurrenceFrequency>>()
             .ModifyRequestOptions(options =>
             {
                 options.IncludeExceptionDetails = builder.Environment.IsDevelopment();

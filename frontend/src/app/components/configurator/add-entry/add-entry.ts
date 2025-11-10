@@ -48,7 +48,7 @@ export class AddEntry {
     amount: this.dialogData?.amount ?? 0,
     currency: this.dialogData?.currency ?? '',
     date: this.dialogData?.date ? new Date(this.dialogData.date) : new Date(),
-    recurrenceFrequency: this.dialogData?.recurrenceFrequency ?? RecurrenceFrequency.None,
+    recurrenceFrequency: this.dialogData?.recurrenceFrequency ?? RecurrenceFrequency.NONE,
     recurrenceEndDate: this.dialogData?.recurrenceEndDate
       ? new Date(this.dialogData.recurrenceEndDate)
       : null,
