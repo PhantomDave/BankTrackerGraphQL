@@ -1,6 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-type FlexJustify = 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'space-evenly';
+type FlexJustify =
+  | 'flex-start'
+  | 'flex-end'
+  | 'center'
+  | 'space-between'
+  | 'space-around'
+  | 'space-evenly';
 type FlexAlign = 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch';
 type FlexWrap = 'nowrap' | 'wrap' | 'wrap-reverse';
 
@@ -16,7 +22,7 @@ type FlexWrap = 'nowrap' | 'wrap' | 'wrap-reverse';
     '[style.justify-content]': 'justify()',
     '[style.align-items]': 'align()',
     '[style.flex-wrap]': 'wrap()',
-  }
+  },
 })
 export class FlexComponent {
   vertical = input<boolean>(false);
@@ -30,7 +36,7 @@ export class FlexComponent {
 
   wrap = input<FlexWrap>('nowrap');
 
-  flexDirection = computed(() => this.vertical() ? 'column' : 'row');
+  flexDirection = computed(() => (this.vertical() ? 'column' : 'row'));
 
   // Pass-through: consumers must provide valid CSS units
   gapStyle = computed(() => this.gap());

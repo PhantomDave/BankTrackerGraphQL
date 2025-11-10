@@ -2,8 +2,13 @@ import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
-    MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardImage, MatCardSubtitle,
-    MatCardTitle
+  MatCard,
+  MatCardActions,
+  MatCardContent,
+  MatCardHeader,
+  MatCardImage,
+  MatCardSubtitle,
+  MatCardTitle,
 } from '@angular/material/card';
 
 import { FlexComponent } from '../../ui-library/flex-component/flex-component';
@@ -20,16 +25,15 @@ import { FlexComponent } from '../../ui-library/flex-component/flex-component';
     MatCardImage,
     MatCardActions,
     NgOptimizedImage,
-    MatCardContent
+    MatCardContent,
   ],
   templateUrl: './welcome-layout-component.html',
   styleUrl: './welcome-layout-component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
 export class WelcomeLayoutComponent {
-  title = input<string>("Welcome Layout");
-  subtitle = input<string>("Welcome Layout Subtitle");
+  title = input<string>('Welcome Layout');
+  subtitle = input<string>('Welcome Layout Subtitle');
 
   image = input<WelcomeLayoutImage | undefined>(undefined);
   actions = input<WelcomeLayoutActions[]>([]);

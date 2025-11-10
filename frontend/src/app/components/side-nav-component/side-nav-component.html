@@ -1,17 +1,16 @@
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav
-    #drawer
-    id="app-sidenav"
-    class="sidenav"
-    mode="side"
-    opened
-    position="start"
-  >
+  <mat-sidenav #drawer id="app-sidenav" class="sidenav" mode="side" opened position="start">
     <app-flex [vertical]="true" justify="space-between" gap="0" style="height: 100%">
       <div>
         <div class="sidenav-header">
-          <button mat-icon-button type="button" aria-label="Toggle menu" (click)="drawer.toggle()"
-                  [attr.aria-controls]="'app-sidenav'" [attr.aria-expanded]="drawer.opened">
+          <button
+            mat-icon-button
+            type="button"
+            aria-label="Toggle menu"
+            (click)="drawer.toggle()"
+            [attr.aria-controls]="'app-sidenav'"
+            [attr.aria-expanded]="drawer.opened"
+          >
             <mat-icon>menu_open</mat-icon>
           </button>
           <span class="app-title">Bank Tracker</span>
@@ -20,15 +19,28 @@
         <nav aria-label="Main navigation">
           <mat-nav-list>
             <app-flex [vertical]="true" gap="0" justify="center">
-              <a mat-list-item routerLink="/home" class="nav-item" routerLinkActive="active" #rlaHome="routerLinkActive"
-                 [routerLinkActiveOptions]="{ exact: true }" [attr.aria-current]="rlaHome.isActive ? 'page' : null">
+              <a
+                mat-list-item
+                routerLink="/home"
+                class="nav-item"
+                routerLinkActive="active"
+                #rlaHome="routerLinkActive"
+                [routerLinkActiveOptions]="{ exact: true }"
+                [attr.aria-current]="rlaHome.isActive ? 'page' : null"
+              >
                 <mat-icon matListItemIcon>home</mat-icon>
                 <span matListItemTitle>Home</span>
                 <span matListItemLine>Dashboards</span>
               </a>
-              <a mat-list-item routerLink="/config" class="nav-item" routerLinkActive="active"
-                 #rlaConfig="routerLinkActive" [routerLinkActiveOptions]="{ exact: true }"
-                 [attr.aria-current]="rlaConfig.isActive ? 'page' : null">
+              <a
+                mat-list-item
+                routerLink="/config"
+                class="nav-item"
+                routerLinkActive="active"
+                #rlaConfig="routerLinkActive"
+                [routerLinkActiveOptions]="{ exact: true }"
+                [attr.aria-current]="rlaConfig.isActive ? 'page' : null"
+              >
                 <mat-icon matListItemIcon>gear</mat-icon>
                 <span matListItemTitle>Config</span>
                 <span matListItemLine>Setup your data</span>
@@ -50,8 +62,14 @@
   <mat-sidenav-content class="content">
     @if (!drawer.opened) {
       <div class="content-header">
-        <button mat-icon-button type="button" aria-label="Open menu" (click)="drawer.toggle()"
-                [attr.aria-controls]="'app-sidenav'" [attr.aria-expanded]="drawer.opened">
+        <button
+          mat-icon-button
+          type="button"
+          aria-label="Open menu"
+          (click)="drawer.toggle()"
+          [attr.aria-controls]="'app-sidenav'"
+          [attr.aria-expanded]="drawer.opened"
+        >
           <mat-icon>menu</mat-icon>
         </button>
       </div>

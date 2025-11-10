@@ -17,7 +17,7 @@ import { WelcomeLayoutComponent } from '../welcome-layout-component/welcome-layo
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
-    FlexComponent
+    FlexComponent,
   ],
   templateUrl: './register-component.html',
   styleUrl: './register-component.css',
@@ -29,15 +29,15 @@ export class RegisterComponent {
   private readonly _snackbarService = inject(SnackbarService);
   protected readonly registerForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]]
+    password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
   protected async onSubmit() {
     if (this.registerForm.valid) {
-      const {email, password} = this.registerForm.value;
+      const { email, password } = this.registerForm.value;
       const result = await this._accountService.createAccount(email, password);
-      if(typeof result === 'boolean') {
-        if(result) {
+      if (typeof result === 'boolean') {
+        if (result) {
           this._snackbarService.success('Account created successfully!');
         } else {
           this._snackbarService.error('Failed to create account. Please try again.');

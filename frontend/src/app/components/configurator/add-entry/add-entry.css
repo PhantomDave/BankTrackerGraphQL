@@ -1,19 +1,19 @@
 .form {
-	display: flex;
-	flex-direction: column;
-	gap: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .form-fields {
-	display: grid;
-	gap: 16px;
+  display: grid;
+  gap: 16px;
 }
 
 mat-form-field {
-	width: 100%;
+  width: 100%;
 }
 
 .actions {
-	display: flex;
-	gap: 12px;
+  display: flex;
+  gap: 12px;
 }

@@ -2,7 +2,11 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import {
-    MatListItem, MatListItemIcon, MatListItemLine, MatListItemTitle, MatNavList
+  MatListItem,
+  MatListItemIcon,
+  MatListItemLine,
+  MatListItemTitle,
+  MatNavList,
 } from '@angular/material/list';
 import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
 import { RouterLink, RouterLinkActive } from '@angular/router';

@@ -17,7 +17,7 @@ import { WelcomeLayoutComponent } from '../welcome-layout-component/welcome-layo
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
-    FlexComponent
+    FlexComponent,
   ],
   templateUrl: './login-component.html',
   styleUrl: './login-component.css',
@@ -30,14 +30,14 @@ export class LoginComponent {
 
   protected readonly loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]]
+    password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
   protected async onSubmit() {
     if (this.loginForm.valid) {
-      const {email, password} = this.loginForm.value;
+      const { email, password } = this.loginForm.value;
       const resp = await this.accountService.login(email, password);
-      if(resp) {
+      if (resp) {
         await this.router.navigate(['home']);
       }
     } else {

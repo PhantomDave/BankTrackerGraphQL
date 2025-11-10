@@ -22,7 +22,11 @@
 
 .welcome-avatar {
   background-color: var(--mat-sys-primary);
-  background-image: linear-gradient(135deg, var(--mat-sys-primary-container), var(--mat-sys-primary));
+  background-image: linear-gradient(
+    135deg,
+    var(--mat-sys-primary-container),
+    var(--mat-sys-primary)
+  );
 }
 
 .welcome-title {
