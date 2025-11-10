@@ -41,24 +41,20 @@ public class AccountMutations
                     .Build());
         }
 
-        var account = await accountService.CreateAccountAsync(email, password);
-        if (account is null)
-        {
-            throw new GraphQLException(
+        var account = await accountService.CreateAccountAsync(email, password) ?? throw new GraphQLException(
                 ErrorBuilder.New()
                     .SetMessage("Unable to create account.")
                     .SetCode("ACCOUNT_CREATE_FAILED")
                     .SetExtension("field", "email")
                     .SetExtension("reason", "duplicate_or_invalid")
                     .Build());
-        }
-
         return AccountType.FromAccount(account);
     }
 
     /// <summary>
     /// Login to an account
     /// </summary>
+    [AllowAnonymous]
     public async Task<AccountType?> LoginAccount(
         string email,
         string password,
@@ -86,18 +82,13 @@ public class AccountMutations
                     .Build());
         }
 
-        var account = await accountService.LoginAccountAsync(email, password);
-        if (account is null)
-        {
-            throw new GraphQLException(
+        var account = await accountService.LoginAccountAsync(email, password) ?? throw new GraphQLException(
                 ErrorBuilder.New()
                     .SetMessage("Invalid email or password.")
                     .SetCode("AUTHENTICATION_FAILED")
                     .SetExtension("field", "email")
                     .SetExtension("reason", "invalid_credentials")
                     .Build());
-        }
-
         return AccountType.FromAccount(account);
     }
 
@@ -111,16 +102,11 @@ public class AccountMutations
         [Service] AccountService accountService,
         [Service] IJwtTokenService tokenService)
     {
-        var account = await accountService.LoginAccountAsync(email, password);
-        if (account is null)
-        {
-            throw new GraphQLException(
+        var account = await accountService.LoginAccountAsync(email, password) ?? throw new GraphQLException(
                 ErrorBuilder.New()
                     .SetMessage("Invalid credentials.")
                     .SetCode("UNAUTHENTICATED")
                     .Build());
-        }
-
         var token = tokenService.CreateToken(account.Id, account.Email);
         return new AuthPayload
         {

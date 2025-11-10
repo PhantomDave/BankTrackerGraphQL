@@ -1,0 +1,77 @@
+using System.Linq;
+using HotChocolate.Authorization;
+using Microsoft.AspNetCore.Http;
+using PhantomDave.BankTracking.Api.ObjectTypes;
+using PhantomDave.BankTracking.Api.Services;
+using PhantomDave.BankTracking.Api.Types.ObjectTypes;
+using PhantomDave.BankTracking.Library.Models;
+using PhantomDave.BankTracking.Api;
+
+namespace PhantomDave.BankTracking.Api.Types.Mutations;
+
+/// <summary>
+/// GraphQL mutations for Account operations
+/// </summary>
+[ExtendObjectType(OperationTypeNames.Mutation)]
+public class FinanceRecordMutations
+{
+    /// <summary>
+    /// Create a new finance record
+    /// </summary>
+    [Authorize]
+    public async Task<FinanceRecordType> CreateFinanceRecord(
+        FinanceRecord newRecord,
+        [Service] FinanceRecordService financeRecordService,
+        [Service] IHttpContextAccessor httpContextAccessor)
+    {
+        if (newRecord is null)
+        {
+            throw new GraphQLException(
+                ErrorBuilder.New()
+                    .SetMessage("Finance record data is required.")
+                    .SetCode("BAD_USER_INPUT")
+                    .Build());
+        }
+
+        var accountId = httpContextAccessor.GetAccountIdFromContext();
+
+        var createdRecord = await financeRecordService.CreateFinanceRecordAsync(
+            accountId,
+            newRecord.Amount,
+            newRecord.Currency,
+            newRecord.Description,
+            newRecord.Date,
+            newRecord.IsRecurring) ?? throw new GraphQLException(
+                ErrorBuilder.New()
+                    .SetMessage("Failed to create finance record. Please check the provided data.")
+                    .SetCode("BAD_USER_INPUT")
+                    .Build());
+        return FinanceRecordType.FromFinanceRecord(createdRecord);
+    }
+
+    /// <summary>
+    /// Update an existing finance record
+    /// </summary>
+    public async Task<FinanceRecordType> UpdateFinanceRecord(
+        int id,
+        decimal? amount,
+        string? currency,
+        string? description,
+        DateTime? date,
+        bool? isRecurring,
+        [Service] FinanceRecordService financeRecordService)
+    {
+        var updatedRecord = await financeRecordService.UpdateFinanceRecordAsync(
+            id,
+            amount,
+            currency,
+            description,
+            date,
+            isRecurring) ?? throw new GraphQLException(
+                ErrorBuilder.New()
+                    .SetMessage("Failed to update finance record. Please check the provided data.")
+                    .SetCode("BAD_USER_INPUT")
+                    .Build());
+        return FinanceRecordType.FromFinanceRecord(updatedRecord);
+    }
+}

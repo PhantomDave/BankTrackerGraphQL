@@ -24,6 +24,7 @@ public class Program
         builder.Services.AddDataAccess(connectionString);
 
         builder.Services.AddScoped<AccountService>();
+        builder.Services.AddScoped<FinanceRecordService>();
         builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
         builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
 
@@ -93,7 +94,8 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.MapGraphQL();
+        app.MapGraphQL().RequireAuthorization();
+
 
         app.RunWithGraphQLCommands(args);
     }
