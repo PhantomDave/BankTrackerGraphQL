@@ -1,12 +1,13 @@
-import {Component, ChangeDetectionStrategy, inject} from '@angular/core';
-import {WelcomeLayoutComponent} from '../welcome-layout-component/welcome-layout-component';
-import {ReactiveFormsModule, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatSelectModule} from '@angular/material/select';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {FlexComponent} from '../../ui-library/flex-component/flex-component';
-import {AccountService} from '../../../models/account/account-service';
-import {SnackbarService} from '../../../shared/services/snackbar.service';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+
+import { AccountService } from '../../../models/account/account-service';
+import { SnackbarService } from '../../../shared/services/snackbar.service';
+import { FlexComponent } from '../../ui-library/flex-component/flex-component';
+import { WelcomeLayoutComponent } from '../welcome-layout-component/welcome-layout-component';
 
 @Component({
   selector: 'app-register-component',

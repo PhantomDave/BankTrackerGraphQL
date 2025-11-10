@@ -1,0 +1,29 @@
+{
+  "name": "BankTracking Dev",
+  "image": "mcr.microsoft.com/devcontainers/dotnet:9.0",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "20" },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "forwardPorts": [4200, 5000],
+  "portsAttributes": {
+    "4200": { "label": "Angular Frontend" },
+    "5000": { "label": "API / GraphQL" }
+  },
+  "postCreateCommand": "dotnet tool install --global dotnet-ef && dotnet restore && cd frontend && npm install",
+  "remoteUser": "vscode",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csharp",
+        "ms-azuretools.vscode-docker",
+        "graphql.vscode-graphql",
+        "Angular.ng-template",
+        "esbenp.prettier-vscode",
+        "streetsidesoftware.code-spell-checker"
+      ]
+    }
+  },
+  "updateContentCommand": "dotnet build ./PhantomDave.BankTracking.Api/PhantomDave.BankTracking.Api.csproj || true",
+  "postStartCommand": "echo 'Devcontainer ready. You can run: dotnet run --project PhantomDave.BankTracking.Api & and npm start --prefix frontend'"
+}

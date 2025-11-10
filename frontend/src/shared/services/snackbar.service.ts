@@ -1,6 +1,8 @@
 // filepath: /home/dave/RiderProjects/BankTrackerGraphQL/frontend/src/shared/services/snackbar.service.ts
-import { Injectable, inject } from '@angular/core';
-import { MatSnackBar, MatSnackBarConfig, MatSnackBarRef, SimpleSnackBar } from '@angular/material/snack-bar';
+import { inject, Injectable } from '@angular/core';
+import {
+    MatSnackBar, MatSnackBarConfig, MatSnackBarRef, SimpleSnackBar
+} from '@angular/material/snack-bar';
 
 export type SnackbarKind = 'success' | 'error' | 'info' | 'warning';
 

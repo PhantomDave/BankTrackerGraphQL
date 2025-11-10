@@ -1,13 +1,18 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection, inject, importProvidersFrom } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import { routes } from './app.routes';
-import { provideHttpClient, HttpHeaders } from '@angular/common/http';
 import { provideApollo } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
+
+import { HttpHeaders, provideHttpClient } from '@angular/common/http';
+import {
+    ApplicationConfig, importProvidersFrom, inject, provideBrowserGlobalErrorListeners,
+    provideZonelessChangeDetection
+} from '@angular/core';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { provideRouter } from '@angular/router';
 import { ApolloLink, InMemoryCache } from '@apollo/client';
 import { SetContextLink } from '@apollo/client/link/context';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+
 import { environment } from '../environments/environment';
+import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [

@@ -1,15 +1,12 @@
-import {Component, input, ChangeDetectionStrategy} from '@angular/core';
-import {FlexComponent} from '../../ui-library/flex-component/flex-component';
+import { NgOptimizedImage } from '@angular/common';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { MatButton } from '@angular/material/button';
 import {
-  MatCard,
-  MatCardActions, MatCardContent,
-  MatCardHeader,
-  MatCardImage,
-  MatCardSubtitle,
-  MatCardTitle
+    MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardImage, MatCardSubtitle,
+    MatCardTitle
 } from '@angular/material/card';
-import {MatButton} from '@angular/material/button';
-import {NgOptimizedImage} from '@angular/common';
+
+import { FlexComponent } from '../../ui-library/flex-component/flex-component';
 
 @Component({
   selector: 'app-welcome-layout-component',

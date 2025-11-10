@@ -1,6 +1,7 @@
-import {Component, signal} from '@angular/core';
-import {RouterOutlet} from '@angular/router';
-import {SideNavComponent} from '../components/side-nav-component/side-nav-component';
+import { Component, signal } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+
+import { SideNavComponent } from '../components/side-nav-component/side-nav-component';
 
 @Component({
   selector: 'app-root',

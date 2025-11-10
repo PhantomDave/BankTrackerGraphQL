@@ -1,7 +1,8 @@
-import {CanActivateFn, Router} from '@angular/router';
-import {SessionData} from '../models/session-data';
-import {inject} from '@angular/core';
-import {AccountService} from '../models/account/account-service';
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+
+import { AccountService } from '../models/account/account-service';
+import { SessionData } from '../models/session-data';
 
 export const authenticateGuard: CanActivateFn = async (route, state) => {
   const router = inject(Router);

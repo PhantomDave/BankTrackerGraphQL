@@ -1,9 +1,14 @@
-import {inject, Injectable, signal, Signal} from '@angular/core';
-import {Account} from './account';
-import {firstValueFrom} from 'rxjs';
-import {SnackbarService} from '../../shared/services/snackbar.service';
-import {CreateAccountGQL, GetAccountByEmailGQL, LoginGQL, VerifyTokenGQL} from '../../generated/graphql';
-import {SessionData} from '../session-data';
+
+import { firstValueFrom } from 'rxjs';
+
+import { inject, Injectable, signal, Signal } from '@angular/core';
+
+import {
+    CreateAccountGQL, GetAccountByEmailGQL, LoginGQL, VerifyTokenGQL
+} from '../../generated/graphql';
+import { SnackbarService } from '../../shared/services/snackbar.service';
+import { SessionData } from '../session-data';
+import { Account } from './account';
 
 @Injectable({
   providedIn: 'root'

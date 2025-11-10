@@ -8,6 +8,8 @@ using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using HotChocolate.AspNetCore;
 using HotChocolate.Authorization;
+using Microsoft.EntityFrameworkCore;
+using PhantomDave.BankTracking.Data.Context;
 
 namespace PhantomDave.BankTracking.Api;
 
@@ -21,12 +23,10 @@ public class Program
             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not configured.");
         builder.Services.AddDataAccess(connectionString);
 
-        // Register services
         builder.Services.AddScoped<AccountService>();
         builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
         builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
 
-        // Authentication & Authorization
         var jwtSection = builder.Configuration.GetSection("Jwt");
         var secret = jwtSection["Secret"];
         if (string.IsNullOrWhiteSpace(secret))
@@ -78,15 +78,18 @@ public class Program
             .AddQueryType()
             .AddMutationType();
 
-        // Auto-register all type extensions from the current assembly
         RegisterTypeExtensions(graphqlBuilder, typeof(Program).Assembly);
 
         var app = builder.Build();
 
-        // Abilita CORS prima del mapping GraphQL
+        using (var scope = app.Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<BankTrackerDbContext>();
+            dbContext.Database.Migrate();
+        }
+
         app.UseCors();
 
-        // Authentication/Authorization middleware
         app.UseAuthentication();
         app.UseAuthorization();
 
