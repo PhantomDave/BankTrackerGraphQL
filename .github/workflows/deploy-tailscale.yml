@@ -18,7 +18,7 @@ jobs:
       contents: read
     env:
       TAILSCALE_TARGET: ${{ secrets.TAILSCALE_SSH_TARGET }}
-      TAILSCALE_DEPLOY_COMMAND: docker compose -f /home/deploy/banktracker/compose.yml up -d --build
+      TAILSCALE_DEPLOY_COMMAND: ${{ secrets.TAILSCALE_DEPLOY_COMMAND }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -28,7 +28,6 @@ jobs:
         with:
           authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
           hostname: banktracker-ci-${{ github.run_id }}
-          args: --accept-dns=true --accept-routes=true
 
       - name: Validate deployment secrets
         run: |
