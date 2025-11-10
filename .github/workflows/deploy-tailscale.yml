@@ -18,7 +18,7 @@ jobs:
       contents: read
     env:
       TAILSCALE_TARGET: ${{ secrets.TAILSCALE_SSH_TARGET }}
-      TAILSCALE_DEPLOY_COMMAND: ${{ secrets.TAILSCALE_DEPLOY_COMMAND }}
+      DEPLOY_DIR: /opt/banktracker
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -70,24 +70,30 @@ jobs:
             echo "Missing required secret: TAILSCALE_SSH_TARGET" >&2
             exit 1
           fi
-          if [ -z "$TAILSCALE_DEPLOY_COMMAND" ]; then
-            echo "Missing required secret: TAILSCALE_DEPLOY_COMMAND" >&2
-            exit 1
-          fi
 
       - name: Test Tailscale connectivity
         run: |
           echo "Testing connection to target host..."
           tailscale ssh "${{ steps.prepare.outputs.target }}" "echo 'Connected successfully' && whoami"
 
-      - name: Deploy through Tailscale SSH
+      - name: Pull latest code
+        run: |
+          echo "📥 Pulling latest changes..."
+          tailscale ssh "${{ steps.prepare.outputs.target }}" "cd $DEPLOY_DIR && git pull origin main"
+
+      - name: Deploy with Docker Compose
         run: |
           echo "🚀 Starting deployment..."
-          tailscale ssh "${{ steps.prepare.outputs.target }}" "${TAILSCALE_DEPLOY_COMMAND}"
+          tailscale ssh "${{ steps.prepare.outputs.target }}" "cd $DEPLOY_DIR && docker compose down && docker compose up -d --build"
           echo "✅ Deployment completed"
 
-      - name: Post-deployment verification (optional)
+      - name: Post-deployment verification
         if: success()
         run: |
           echo "Verifying deployment..."
-          tailscale ssh "${{ steps.prepare.outputs.target }}" "systemctl status your-app || echo 'Status command not available'"
+          echo "Checking Docker containers..."
+          tailscale ssh "${{ steps.prepare.outputs.target }}" "cd $DEPLOY_DIR && docker compose ps"
+          echo "Checking backend health..."
+          tailscale ssh "${{ steps.prepare.outputs.target }}" "curl -f http://localhost:5095/graphql?sdl || echo 'Backend not yet ready'"
+          echo "Checking frontend..."
+          tailscale ssh "${{ steps.prepare.outputs.target }}" "curl -f http://localhost:80 || echo 'Frontend not yet ready'"

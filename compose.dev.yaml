@@ -1,0 +1,26 @@
+# Development Docker Compose
+# Use this for local development where backend runs on host
+
+services:
+  database:
+    image: postgres:18-alpine
+    container_name: banktracking-database-dev
+    environment:
+      POSTGRES_USER: bankuser
+      POSTGRES_PASSWORD: bankpassword
+      POSTGRES_DB: bankdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bankuser -d bankdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+volumes:
+  db_data_dev:
+    name: banktracking-db-data-dev

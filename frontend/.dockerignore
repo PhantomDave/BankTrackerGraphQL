@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.angular/
+coverage/
+.env
+.env.local
+npm-debug.log
+yarn-error.log
+*.md
+!README.md
+.git/
+.gitignore
+.vscode/
+.idea/
+*.user
+*.suo

@@ -22,13 +22,16 @@ WORKDIR /app
 
 COPY --from=publish /app/publish .
 
+# Copy all appsettings files
+COPY PhantomDave.BankTracking.Api/appsettings*.json ./
+
 EXPOSE 5095
 
-ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_ENVIRONMENT=Docker
 ENV ASPNETCORE_URLS=http://+:5095
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD dotnet /app/PhantomDave.BankTracking.Api.dll || exit 1
+  CMD curl -f http://localhost:5095/graphql?sdl || exit 1
 
 ENTRYPOINT ["dotnet", "PhantomDave.BankTracking.Api.dll"]
 
