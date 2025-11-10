@@ -74,7 +74,7 @@ jobs:
       - name: Test Tailscale connectivity
         run: |
           echo "Testing connection to target host..."
-          tailscale ssh "${{ steps.prepare.outputs.target }}" "echo 'Connected successfully' && whoami"
+          tailscale ssh "${{ steps.prepare.outputs.target }}" "echo 'Connected successfully' && whoami && git config --global --add safe.directory /opt/banktracker/BankTrackerGraphQL"
 
       - name: Pull latest code
         run: |
