@@ -52,6 +52,9 @@ jobs:
       env:
         ASPNETCORE_ENVIRONMENT: Development
 
+    - name: Spin up Database with Docker Compose
+      run: docker compose up database -d --wait
+
     - name: Wait for API to be ready
       uses: jtalk/url-health-check-action@v4
       with:
