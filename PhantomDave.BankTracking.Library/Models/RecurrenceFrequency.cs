@@ -1,0 +1,10 @@
+namespace PhantomDave.BankTracking.Library.Models;
+
+public enum RecurrenceFrequency
+{
+    None = 0,
+    Daily = 1,
+    Weekly = 2,
+    Monthly = 3,
+    Yearly = 4
+}

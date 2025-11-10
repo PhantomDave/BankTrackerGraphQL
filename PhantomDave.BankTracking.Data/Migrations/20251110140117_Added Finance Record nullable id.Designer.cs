@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PhantomDave.BankTracking.Data.Context;
@@ -11,9 +12,11 @@ using PhantomDave.BankTracking.Data.Context;
 namespace PhantomDave.BankTracking.Data.Migrations
 {
     [DbContext(typeof(BankTrackerDbContext))]
-    partial class BankTrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251110140117_Added Finance Record nullable id")]
+    partial class AddedFinanceRecordnullableid
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,24 +82,9 @@ namespace PhantomDave.BankTracking.Data.Migrations
                     b.Property<bool>("IsRecurring")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("IsRecurringInstance")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("LastProcessedDate")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int?>("ParentRecurringRecordId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("RecurrenceEndDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("RecurrenceFrequency")
-                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 

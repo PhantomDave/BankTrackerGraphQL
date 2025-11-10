@@ -9,8 +9,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
 import { map } from 'rxjs';
 import { FinanceRecord } from '../../../models/finance-record/finance-record';
+import { RecurrenceFrequency, RECURRENCE_OPTIONS } from '../../../../models/recurrence-frequency';
 
 type FinanceRecordDialogData = Partial<FinanceRecord> | undefined;
 
@@ -27,6 +29,7 @@ type FinanceRecordDialogData = Partial<FinanceRecord> | undefined;
     MatDatepickerModule,
     MatNativeDateModule,
     MatIconModule,
+    MatSelectModule,
   ],
   templateUrl: './add-entry.html',
   styleUrl: './add-entry.css',
@@ -36,6 +39,8 @@ export class AddEntry {
   private readonly dialogData = inject(MAT_DIALOG_DATA) as FinanceRecordDialogData;
   private readonly formBuilder = inject(FormBuilder);
 
+  readonly recurrenceOptions = RECURRENCE_OPTIONS;
+
   private readonly initialValue: FinanceRecord = {
     name: this.dialogData?.name ?? '',
     description: this.dialogData?.description ?? '',
@@ -43,6 +48,10 @@ export class AddEntry {
     amount: this.dialogData?.amount ?? 0,
     currency: this.dialogData?.currency ?? '',
     date: this.dialogData?.date ? new Date(this.dialogData.date) : new Date(),
+    recurrenceFrequency: this.dialogData?.recurrenceFrequency ?? RecurrenceFrequency.None,
+    recurrenceEndDate: this.dialogData?.recurrenceEndDate
+      ? new Date(this.dialogData.recurrenceEndDate)
+      : null,
   };
 
   readonly dialogTitle = this.dialogData ? 'Edit Finance Record' : 'Add Finance Record';
@@ -51,9 +60,11 @@ export class AddEntry {
     name: [this.initialValue.name, [Validators.required, Validators.maxLength(120)]],
     description: [this.initialValue.description, [Validators.maxLength(500)]],
     recurring: [this.initialValue.recurring],
-    amount: [this.initialValue.amount, [Validators.required, Validators.min(0.01)]],
+    amount: [this.initialValue.amount, [Validators.required]],
     currency: [this.initialValue.currency, [Validators.required, Validators.maxLength(3)]],
     date: [this.initialValue.date, [Validators.required]],
+    recurrenceFrequency: [this.initialValue.recurrenceFrequency],
+    recurrenceEndDate: [this.initialValue.recurrenceEndDate],
   });
 
   private readonly formInvalidSignal = toSignal(
@@ -62,6 +73,10 @@ export class AddEntry {
   );
 
   readonly isSubmitDisabled = computed(() => this.formInvalidSignal());
+
+  readonly isRecurringSignal = toSignal(this.financeRecordForm.controls.recurring.valueChanges, {
+    initialValue: this.initialValue.recurring,
+  });
 
   onSubmit(): void {
     if (this.financeRecordForm.invalid) {

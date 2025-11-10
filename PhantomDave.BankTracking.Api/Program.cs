@@ -25,8 +25,12 @@ public class Program
 
         builder.Services.AddScoped<AccountService>();
         builder.Services.AddScoped<FinanceRecordService>();
+        builder.Services.AddHttpContextAccessor();
         builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
         builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
+
+        // Register background service for recurring records
+        builder.Services.AddHostedService<RecurringFinanceRecordService>();
 
         var jwtSection = builder.Configuration.GetSection("Jwt");
         var secret = jwtSection["Secret"];
@@ -77,7 +81,11 @@ public class Program
             .AddGraphQLServer()
             .AddAuthorization()
             .AddQueryType()
-            .AddMutationType();
+            .AddMutationType()
+            .ModifyRequestOptions(options =>
+            {
+                options.IncludeExceptionDetails = builder.Environment.IsDevelopment();
+            });
 
         RegisterTypeExtensions(graphqlBuilder, typeof(Program).Assembly);
 
@@ -94,7 +102,7 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.MapGraphQL().RequireAuthorization();
+        app.MapGraphQL();
 
 
         app.RunWithGraphQLCommands(args);

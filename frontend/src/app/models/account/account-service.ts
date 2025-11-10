@@ -1,17 +1,19 @@
-
 import { firstValueFrom } from 'rxjs';
 
 import { inject, Injectable, signal, Signal } from '@angular/core';
 
 import {
-    CreateAccountGQL, GetAccountByEmailGQL, LoginGQL, VerifyTokenGQL
+  CreateAccountGQL,
+  GetAccountByEmailGQL,
+  LoginGQL,
+  VerifyTokenGQL,
 } from '../../../generated/graphql';
 import { SnackbarService } from '../../shared/services/snackbar.service';
 import { SessionData } from '../session-data';
 import { Account } from './account';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AccountService {
   private readonly createAccountGQL = inject(CreateAccountGQL);
@@ -38,7 +40,7 @@ export class AccountService {
 
     try {
       const result = await firstValueFrom(
-        this.getAccountByEmailGQL.fetch({ variables: { email } })
+        this.getAccountByEmailGQL.fetch({ variables: { email } }),
       );
 
       if (result?.data?.accountByEmail !== null && result?.data?.accountByEmail !== undefined) {
@@ -60,8 +62,8 @@ export class AccountService {
   }
 
   async verifyToken(): Promise<boolean> {
-      const resp =  await firstValueFrom(this.verifyTokenGQL.fetch())
-      return !!resp.data?.isAValidJwt;
+    const resp = await firstValueFrom(this.verifyTokenGQL.fetch());
+    return !!resp.data?.isAValidJwt;
   }
 
   async createAccount(email: string, password: string): Promise<boolean | string> {
@@ -70,7 +72,7 @@ export class AccountService {
 
     try {
       const result = await firstValueFrom(
-        this.createAccountGQL.mutate({ variables: { email, password } })
+        this.createAccountGQL.mutate({ variables: { email, password } }),
       );
 
       if (result?.data?.createAccount) {
@@ -103,9 +105,7 @@ export class AccountService {
     this._loading.set(true);
     this._error.set(null);
     try {
-      const result = await firstValueFrom(
-        this.loginGQL.mutate({ variables: { email, password } })
-      );
+      const result = await firstValueFrom(this.loginGQL.mutate({ variables: { email, password } }));
 
       const token = result?.data?.login?.token;
       const account = result?.data?.login?.account;
@@ -113,14 +113,14 @@ export class AccountService {
         const sessionData: SessionData = {
           token,
           lastCheck: Date.now(),
-          isValid: true
+          isValid: true,
         };
         localStorage.setItem('sessionData', JSON.stringify(sessionData));
         this._selectedAccount.set({
           id: account.id,
           email: account.email,
           createdAt: account.createdAt,
-          updatedAt: account.updatedAt ?? null
+          updatedAt: account.updatedAt ?? null,
         });
         this.snackbar.success('Login effettuato');
         return true;

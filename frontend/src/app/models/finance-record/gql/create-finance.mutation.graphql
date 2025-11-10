@@ -1,0 +1,11 @@
+mutation CreateFinanceRecord($newRecord: FinanceRecordInput!)  {
+    createFinanceRecord(newRecord: $newRecord) {
+      id
+      name
+      description
+      amount
+      currency
+      date
+      isRecurring
+    }
+}

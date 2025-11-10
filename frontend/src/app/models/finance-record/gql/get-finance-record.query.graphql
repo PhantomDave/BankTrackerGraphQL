@@ -1,0 +1,11 @@
+query getFinanceRecords {
+  financeRecordsForAccount {
+    id
+    name
+    description
+    amount
+    currency
+    date
+    isRecurring
+  }
+}

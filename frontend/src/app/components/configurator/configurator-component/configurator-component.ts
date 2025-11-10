@@ -1,65 +1,39 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { Router } from '@angular/router';
+import { FinanceRecordService } from '../../../models/finance-record/finance-record-service';
 import { AddEntry } from '../add-entry/add-entry';
-import { MatDialog } from '@angular/material/dialog';
+import { FinanceRecord } from '../../../models/finance-record/finance-record';
 
 @Component({
   selector: 'app-configurator',
-  imports: [MatTableModule, MatCardModule, MatButtonModule, MatIconModule, DatePipe, CurrencyPipe],
+  imports: [
+    MatTableModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDialogModule,
+    DatePipe,
+    CurrencyPipe,
+  ],
   templateUrl: './configurator-component.html',
   styleUrl: './configurator-component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-class ConfiguratorComponent {
+class ConfiguratorComponent implements OnInit {
   private readonly dialog = inject(MatDialog);
+  private readonly financeRecordService = inject(FinanceRecordService);
 
-  readonly data = signal([
-    {
-      name: 'Sample Configuration',
-      description: 'This is a sample configuration for demonstration purposes.',
-      recurring: true,
-      amount: 10,
-      currency: 'EUR',
-      date: new Date(),
-    },
-    {
-      name: 'Sample Configuration',
-      description: 'This is a sample configuration for demonstration purposes.',
-      recurring: false,
-      amount: 20,
-      currency: 'USD',
-      date: new Date(),
-    },
-    {
-      name: 'Sample Configuration',
-      description: 'This is a sample configuration for demonstration purposes.',
-      recurring: true,
-      amount: 30,
-      currency: 'USD',
-      date: new Date(),
-    },
-    {
-      name: 'Sample Configuration',
-      description: 'This is a sample configuration for demonstration purposes.',
-      recurring: false,
-      amount: 40,
-      currency: 'USD',
-      date: new Date(),
-    },
-    {
-      name: 'Sample Configuration',
-      description: 'This is a sample configuration for demonstration purposes.',
-      recurring: true,
-      amount: 50,
-      currency: 'USD',
-      date: new Date(),
-    },
-  ]);
+  readonly loading = computed(() => this.financeRecordService.loading());
+  readonly data = computed(() => this.financeRecordService.financeRecords());
+
+  async ngOnInit(): Promise<void> {
+    await this.financeRecordService.getFinanceRecords();
+  }
 
   displayedColumns: string[] = ['name', 'description', 'recurring', 'amount', 'date'];
 
@@ -70,9 +44,9 @@ class ConfiguratorComponent {
       panelClass: 'add-entry-dialog',
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result !== undefined) {
-        this.data.update((prev) => [...prev, result]);
+    dialogRef.afterClosed().subscribe((result: FinanceRecord | undefined) => {
+      if (result) {
+        this.financeRecordService.createFinanceRecord(result);
       }
     });
   }

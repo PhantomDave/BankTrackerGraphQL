@@ -47,10 +47,13 @@ public class FinanceRecordService
     public async Task<FinanceRecord?> CreateFinanceRecordAsync(
         int accountId,
         decimal amount,
+        string name,
         string currency,
         string? description,
         DateTime? date,
-        bool isRecurring)
+        bool isRecurring,
+        RecurrenceFrequency? recurrenceFrequency = null,
+        DateTime? recurrenceEndDate = null)
     {
         var account = await _unitOfWork.Accounts.GetByIdAsync(accountId);
         if (account is null)
@@ -68,10 +71,13 @@ public class FinanceRecordService
         {
             AccountId = accountId,
             Amount = amount,
+            Name = name,
             Currency = normalizedCurrency,
             Description = NormalizeDescription(description),
             Date = EnsureUtc(date ?? DateTime.UtcNow),
-            IsRecurring = isRecurring
+            IsRecurring = isRecurring,
+            RecurrenceFrequency = recurrenceFrequency ?? RecurrenceFrequency.None,
+            RecurrenceEndDate = recurrenceEndDate.HasValue ? EnsureUtc(recurrenceEndDate.Value) : null
         };
 
         await _unitOfWork.FinanceRecords.AddAsync(record);
@@ -86,7 +92,10 @@ public class FinanceRecordService
         string? currency = null,
         string? description = null,
         DateTime? date = null,
-        bool? isRecurring = null)
+        bool? isRecurring = null,
+        string? name = null,
+        RecurrenceFrequency? recurrenceFrequency = null,
+        DateTime? recurrenceEndDate = null)
     {
         var record = await _unitOfWork.FinanceRecords.GetByIdAsync(id);
         if (record is null)
@@ -123,6 +132,21 @@ public class FinanceRecordService
         if (isRecurring.HasValue)
         {
             record.IsRecurring = isRecurring.Value;
+        }
+
+        if (name is not null)
+        {
+            record.Name = name;
+        }
+
+        if (recurrenceFrequency.HasValue)
+        {
+            record.RecurrenceFrequency = recurrenceFrequency.Value;
+        }
+
+        if (recurrenceEndDate.HasValue)
+        {
+            record.RecurrenceEndDate = EnsureUtc(recurrenceEndDate.Value);
         }
 
         await _unitOfWork.FinanceRecords.UpdateAsync(record);

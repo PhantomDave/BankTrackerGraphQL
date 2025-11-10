@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PhantomDave.BankTracking.Data.Context;
@@ -11,9 +12,11 @@ using PhantomDave.BankTracking.Data.Context;
 namespace PhantomDave.BankTracking.Data.Migrations
 {
     [DbContext(typeof(BankTrackerDbContext))]
-    partial class BankTrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251110135452_Added Finance Record Name")]
+    partial class AddedFinanceRecordName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,7 +60,7 @@ namespace PhantomDave.BankTracking.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AccountId")
+                    b.Property<int>("AccountId")
                         .HasColumnType("integer");
 
                     b.Property<decimal>("Amount")
@@ -79,24 +82,9 @@ namespace PhantomDave.BankTracking.Data.Migrations
                     b.Property<bool>("IsRecurring")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("IsRecurringInstance")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("LastProcessedDate")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int?>("ParentRecurringRecordId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("RecurrenceEndDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("RecurrenceFrequency")
-                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -110,7 +98,8 @@ namespace PhantomDave.BankTracking.Data.Migrations
                     b.HasOne("PhantomDave.BankTracking.Library.Models.Account", null)
                         .WithMany()
                         .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

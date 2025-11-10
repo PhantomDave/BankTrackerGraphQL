@@ -1,15 +1,17 @@
 using HotChocolate.Authorization;
+using Microsoft.AspNetCore.Http;
 using PhantomDave.BankTracking.Api.ObjectTypes;
 using PhantomDave.BankTracking.Api.Services;
 
-
 namespace PhantomDave.BankTracking.Api.Types.Queries;
 
+[ExtendObjectType(OperationTypeNames.Query)]
 public class FinanceRecordQueries
 {
     /// <summary>   
     /// Get All Finance Records for an Account
     /// </summary>
+    [Authorize]
     public async Task<IEnumerable<FinanceRecordType>> GetFinanceRecordsForAccount(
         DateTime? startDate,
         DateTime? endDate,
@@ -28,6 +30,7 @@ public class FinanceRecordQueries
     /// <summary>
     /// Get Single Finance Record
     /// </summary>
+    [Authorize]
     public async Task<FinanceRecordType?> GetFinanceRecord(
         int id,
         [Service] FinanceRecordService financeRecordService)

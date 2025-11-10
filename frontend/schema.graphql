@@ -38,14 +38,56 @@ type AuthPayload {
 """The `DateTime` scalar represents an ISO-8601 compliant date time type."""
 scalar DateTime
 
+"""The `Decimal` scalar type represents a decimal floating-point number."""
+scalar Decimal
+
+input FinanceRecordInput {
+  amount: Decimal!
+  currency: String!
+  date: DateTime
+  description: String
+  id: Int
+  isRecurring: Boolean!
+  name: String!
+  recurrenceEndDate: DateTime
+  recurrenceFrequency: RecurrenceFrequency
+}
+
+type FinanceRecordType {
+  amount: Decimal!
+  currency: String!
+  date: DateTime!
+  description: String!
+  id: Int!
+  isRecurring: Boolean!
+  isRecurringInstance: Boolean!
+  lastProcessedDate: DateTime
+  name: String!
+  parentRecurringRecordId: Int
+  recurrenceEndDate: DateTime
+  recurrenceFrequency: RecurrenceFrequency!
+}
+
 type Mutation {
   createAccount(email: String!, password: String!): AccountType!
+  createFinanceRecord(newRecord: FinanceRecordInput!): FinanceRecordType!
   login(email: String!, password: String!): AuthPayload!
   loginAccount(email: String!, password: String!): AccountType
+  updateFinanceRecord(amount: Decimal, currency: String, date: DateTime, description: String, id: Int!, isRecurring: Boolean, name: String, recurrenceEndDate: DateTime, recurrenceFrequency: RecurrenceFrequency): FinanceRecordType!
 }
 
 type Query {
   accountByEmail(email: String!): AccountType
   accounts: [AccountType!]!
+  financeRecord(id: Int!): FinanceRecordType
+  financeRecordsForAccount(endDate: DateTime, startDate: DateTime): [FinanceRecordType!]!
   isAValidJwt: Boolean!
+}
+
+enum RecurrenceFrequency {
+  DAILY
+  MONTHLY
+  NONE
+  WEEKLY
+  YEARLY
 }

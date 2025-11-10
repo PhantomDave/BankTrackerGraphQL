@@ -14,6 +14,7 @@ public class AccountQueries
     /// <summary>
     /// Get all accounts
     /// </summary>
+    [Authorize]
     public async Task<IEnumerable<AccountType>> GetAccounts(
         [Service] AccountService accountService)
     {
@@ -24,6 +25,7 @@ public class AccountQueries
     /// <summary>
     /// Get an account by email
     /// </summary>
+    [Authorize]
     public async Task<AccountType?> GetAccountByEmail(
         string email,
         [Service] AccountService accountService)
@@ -32,6 +34,7 @@ public class AccountQueries
         return account != null ? AccountType.FromAccount(account) : null;
     }
 
+    [Authorize]
     public Task<bool> IsAValidJwt([Service] IHttpContextAccessor httpContextAccessor)
     {
         var user = httpContextAccessor.HttpContext?.User;

@@ -7,7 +7,7 @@ import { SideNavComponent } from './components/side-nav-component/side-nav-compo
   selector: 'app-root',
   imports: [RouterOutlet, SideNavComponent],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
   protected readonly title = signal('Banking Helper');

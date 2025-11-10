@@ -1,11 +1,11 @@
 using System.Linq;
 using HotChocolate.Authorization;
 using Microsoft.AspNetCore.Http;
+using PhantomDave.BankTracking.Api;
 using PhantomDave.BankTracking.Api.ObjectTypes;
 using PhantomDave.BankTracking.Api.Services;
+using PhantomDave.BankTracking.Api.Types.Inputs;
 using PhantomDave.BankTracking.Api.Types.ObjectTypes;
-using PhantomDave.BankTracking.Library.Models;
-using PhantomDave.BankTracking.Api;
 
 namespace PhantomDave.BankTracking.Api.Types.Mutations;
 
@@ -20,7 +20,7 @@ public class FinanceRecordMutations
     /// </summary>
     [Authorize]
     public async Task<FinanceRecordType> CreateFinanceRecord(
-        FinanceRecord newRecord,
+        CreateFinanceRecordInput newRecord,
         [Service] FinanceRecordService financeRecordService,
         [Service] IHttpContextAccessor httpContextAccessor)
     {
@@ -38,10 +38,13 @@ public class FinanceRecordMutations
         var createdRecord = await financeRecordService.CreateFinanceRecordAsync(
             accountId,
             newRecord.Amount,
+            newRecord.Name,
             newRecord.Currency,
             newRecord.Description,
             newRecord.Date,
-            newRecord.IsRecurring) ?? throw new GraphQLException(
+            newRecord.IsRecurring,
+            newRecord.RecurrenceFrequency,
+            newRecord.RecurrenceEndDate) ?? throw new GraphQLException(
                 ErrorBuilder.New()
                     .SetMessage("Failed to create finance record. Please check the provided data.")
                     .SetCode("BAD_USER_INPUT")
@@ -52,6 +55,7 @@ public class FinanceRecordMutations
     /// <summary>
     /// Update an existing finance record
     /// </summary>
+    [Authorize]
     public async Task<FinanceRecordType> UpdateFinanceRecord(
         int id,
         decimal? amount,
@@ -59,6 +63,9 @@ public class FinanceRecordMutations
         string? description,
         DateTime? date,
         bool? isRecurring,
+        string? name,
+        Library.Models.RecurrenceFrequency? recurrenceFrequency,
+        DateTime? recurrenceEndDate,
         [Service] FinanceRecordService financeRecordService)
     {
         var updatedRecord = await financeRecordService.UpdateFinanceRecordAsync(
@@ -67,7 +74,10 @@ public class FinanceRecordMutations
             currency,
             description,
             date,
-            isRecurring) ?? throw new GraphQLException(
+            isRecurring,
+            name,
+            recurrenceFrequency,
+            recurrenceEndDate) ?? throw new GraphQLException(
                 ErrorBuilder.New()
                     .SetMessage("Failed to update finance record. Please check the provided data.")
                     .SetCode("BAD_USER_INPUT")
