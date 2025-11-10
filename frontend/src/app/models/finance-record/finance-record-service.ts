@@ -1,8 +1,7 @@
 import { inject, Injectable, Signal, signal } from '@angular/core';
-import { FinanceRecord } from './finance-record';
-import { CreateFinanceRecordGQL, GetFinanceRecordsGQL } from '../../../generated/graphql';
-import { RecurrenceFrequency } from '../../../models/recurrence-frequency';
 import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
+import { CreateFinanceRecordGQL, GetFinanceRecordsGQL, RecurrenceFrequency } from '../../../generated/graphql';
+import { FinanceRecord } from './finance-record';
 
 @Injectable({
   providedIn: 'root',
@@ -63,16 +62,18 @@ export class FinanceRecordService {
     description: string;
     amount: number;
     currency: string;
-    date: any;
+    date: string;
     isRecurring: boolean;
+    isRecurringInstance: boolean;
+    recurrenceFrequency?: RecurrenceFrequency;
+    recurrenceEndDate?: string | null;
+    lastProcessedDate?: string | null;
   }): FinanceRecord {
     return {
-      id: data.id,
-      name: data.name,
-      description: data.description,
-      amount: data.amount,
-      currency: data.currency,
+      ...data,
       date: new Date(data.date),
+      recurrenceEndDate: data.recurrenceEndDate ? new Date(data.recurrenceEndDate) : undefined,
+      lastProcessedDate: data.lastProcessedDate ? new Date(data.lastProcessedDate) : undefined,
       recurring: data.isRecurring,
     };
   }
@@ -93,6 +94,11 @@ export class FinanceRecordService {
           currency: record.currency,
           date: new Date(record.date),
           recurring: record.isRecurring,
+          recurrenceFrequency: record.recurrenceFrequency,
+          recurrenceEndDate: record.recurrenceEndDate ? new Date(record.recurrenceEndDate) : null,
+          lastProcessedDate: record.lastProcessedDate ? new Date(record.lastProcessedDate) : null,
+          parentRecurringRecordId: record.parentRecurringRecordId,
+          isRecurringInstance: record.isRecurringInstance,
         })) ?? [];
 
       this._financeRecords.set(records);

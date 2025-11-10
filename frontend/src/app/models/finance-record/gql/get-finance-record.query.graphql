@@ -7,5 +7,10 @@ query getFinanceRecords {
     currency
     date
     isRecurring
+    recurrenceFrequency
+    recurrenceEndDate
+    lastProcessedDate
+    parentRecurringRecordId
+    isRecurringInstance
   }
 }

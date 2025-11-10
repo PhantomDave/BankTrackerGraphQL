@@ -1,11 +1,16 @@
 mutation CreateFinanceRecord($newRecord: FinanceRecordInput!)  {
     createFinanceRecord(newRecord: $newRecord) {
-      id
-      name
-      description
-      amount
-      currency
-      date
-      isRecurring,
+    id
+    name
+    description
+    amount
+    currency
+    date
+    isRecurring
+    recurrenceFrequency
+    recurrenceEndDate
+    lastProcessedDate
+    parentRecurringRecordId
+    isRecurringInstance
     }
 }
