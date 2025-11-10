@@ -1,5 +1,12 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, LOCALE_ID, OnInit, computed, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  LOCALE_ID,
+  OnInit,
+  computed,
+  inject,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -33,7 +40,9 @@ class MonthlyRecapComponent implements OnInit {
   readonly data = computed(() => this.financeRecordService.financeRecords());
   readonly recordCount = computed(() => this.data().length);
   readonly recurringCount = computed(() => this.data().filter((record) => record.recurring).length);
-  readonly totalAmount = computed(() => this.data().reduce((sum, record) => sum + record.amount, 0));
+  readonly totalAmount = computed(() =>
+    this.data().reduce((sum, record) => sum + record.amount, 0),
+  );
   readonly primaryCurrency = computed(() => this.data()[0]?.currency ?? 'USD');
   readonly signedTotalAmount = computed(() => {
     const total = this.totalAmount();
@@ -48,7 +57,14 @@ class MonthlyRecapComponent implements OnInit {
     await this.financeRecordService.getFinanceRecords();
   }
 
-  readonly displayedColumns: string[] = ['name', 'description', 'recurring', 'recurrenceFrequency', 'amount', 'date'];
+  readonly displayedColumns: string[] = [
+    'name',
+    'description',
+    'recurring',
+    'recurrenceFrequency',
+    'amount',
+    'date',
+  ];
 
   async onCreateClicked(): Promise<void> {
     const dialogRef = this.dialog.open(AddEntry, {
