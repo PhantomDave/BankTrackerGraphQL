@@ -44,9 +44,17 @@ jobs:
           fi
           echo "target=$target" >> "$GITHUB_OUTPUT"
 
+      - name: Configure SSH known hosts
+        shell: bash
+        run: |
+          mkdir -p "$HOME/.ssh"
+          touch "$HOME/.ssh/tailscale_known_hosts"
+          chmod 600 "$HOME/.ssh/tailscale_known_hosts"
+          echo "TAILSCALE_SSH_FLAGS=--ssh-flag -oStrictHostKeyChecking=accept-new --ssh-flag -oUserKnownHostsFile=$HOME/.ssh/tailscale_known_hosts" >> "$GITHUB_ENV"
+
       - name: Validate deployment secrets
         run: |
-          if [ -z "$TAILSCALE_TARGET" ]; then
+          if [ -z "${{ steps.prepare.outputs.target }}" ]; then
             echo "Missing required secret: TAILSCALE_SSH_TARGET" >&2
             exit 1
           fi
@@ -58,16 +66,16 @@ jobs:
       - name: Test Tailscale connectivity
         run: |
           echo "Testing connection to target host..."
-          tailscale ssh "${{ steps.prepare.outputs.target }}" "echo 'Connected successfully' && whoami"
+          tailscale ssh $TAILSCALE_SSH_FLAGS "${{ steps.prepare.outputs.target }}" "echo 'Connected successfully' && whoami"
 
       - name: Deploy through Tailscale SSH
         run: |
           echo "🚀 Starting deployment..."
-          tailscale ssh "${{ steps.prepare.outputs.target }}" "${TAILSCALE_DEPLOY_COMMAND}"
+          tailscale ssh $TAILSCALE_SSH_FLAGS "${{ steps.prepare.outputs.target }}" "${TAILSCALE_DEPLOY_COMMAND}"
           echo "✅ Deployment completed"
 
       - name: Post-deployment verification (optional)
         if: success()
         run: |
           echo "Verifying deployment..."
-          tailscale ssh "${{ steps.prepare.outputs.target }}" "systemctl status your-app || echo 'Status command not available'"
+          tailscale ssh $TAILSCALE_SSH_FLAGS "${{ steps.prepare.outputs.target }}" "systemctl status your-app || echo 'Status command not available'"
