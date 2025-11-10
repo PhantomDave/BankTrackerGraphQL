@@ -18,7 +18,7 @@ jobs:
       contents: read
     env:
       TAILSCALE_TARGET: ${{ secrets.TAILSCALE_SSH_TARGET }}
-      DEPLOY_DIR: /opt/banktracker
+      DEPLOY_DIR: /opt/banktracker/BankTrackerGraphQL
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
