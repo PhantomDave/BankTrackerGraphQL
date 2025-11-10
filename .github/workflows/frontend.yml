@@ -36,6 +36,38 @@ jobs:
       working-directory: ./frontend
       run: npm ci
 
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore PhantomDave.BankTracking.Api/PhantomDave.BankTracking.Api.csproj
+
+    - name: Start API in background
+      working-directory: ./PhantomDave.BankTracking.Api
+      run: |
+        dotnet run &
+        echo $! > api.pid
+      env:
+        ASPNETCORE_ENVIRONMENT: Development
+
+    - name: Wait for API to be ready
+      run: |
+        echo "Waiting for API to start..."
+        max_attempts=30
+        attempt=0
+        until curl -sf http://localhost:5000/graphql > /dev/null 2>&1 || [ $attempt -eq $max_attempts ]; do
+          echo "Attempt $((attempt + 1))/$max_attempts: API not ready yet..."
+          sleep 2
+          attempt=$((attempt + 1))
+        done
+        if [ $attempt -eq $max_attempts ]; then
+          echo "API failed to start within timeout"
+          exit 1
+        fi
+        echo "API is ready!"
+
     - name: Generate GraphQL types
       working-directory: ./frontend
       run: npm run codegen
