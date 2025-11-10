@@ -29,6 +29,21 @@ jobs:
           authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
           hostname: banktracker-ci-${{ github.run_id }}
 
+      - name: Prepare deployment parameters
+        id: prepare
+        shell: bash
+        run: |
+          target="$(printf '%s' "$TAILSCALE_TARGET" | tr -d '\r' | tr -d '\n')"
+          if [ -z "$target" ]; then
+            echo "::error::TAILSCALE_SSH_TARGET resolved to an empty string" >&2
+            exit 1
+          fi
+          if ! [[ "$target" =~ ^[a-zA-Z0-9_.:@-]+$ ]]; then
+            echo "::error::TAILSCALE_SSH_TARGET contains unsupported characters" >&2
+            exit 1
+          fi
+          echo "target=$target" >> "$GITHUB_OUTPUT"
+
       - name: Validate deployment secrets
         run: |
           if [ -z "$TAILSCALE_TARGET" ]; then
@@ -42,17 +57,17 @@ jobs:
 
       - name: Test Tailscale connectivity
         run: |
-          echo "Testing connection to $TAILSCALE_TARGET..."
-          tailscale ssh "$TAILSCALE_TARGET" "echo 'Connected successfully' && whoami"
+          echo "Testing connection to target host..."
+          tailscale ssh "${{ steps.prepare.outputs.target }}" "echo 'Connected successfully' && whoami"
 
       - name: Deploy through Tailscale SSH
         run: |
           echo "🚀 Starting deployment..."
-          tailscale ssh "$TAILSCALE_TARGET" "${TAILSCALE_DEPLOY_COMMAND}"
+          tailscale ssh "${{ steps.prepare.outputs.target }}" "${TAILSCALE_DEPLOY_COMMAND}"
           echo "✅ Deployment completed"
 
       - name: Post-deployment verification (optional)
         if: success()
         run: |
           echo "Verifying deployment..."
-          tailscale ssh "$TAILSCALE_TARGET" "systemctl status your-app || echo 'Status command not available'"
+          tailscale ssh "${{ steps.prepare.outputs.target }}" "systemctl status your-app || echo 'Status command not available'"
