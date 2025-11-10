@@ -10,7 +10,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { map } from 'rxjs';
-import { FinanceRecord } from '../../../models/finance-record';
+import { FinanceRecord } from '../../../models/finance-record/finance-record';
 
 type FinanceRecordDialogData = Partial<FinanceRecord> | undefined;
 

@@ -1,6 +1,6 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
-const schemaUrl = process.env.GRAPHQL_SCHEMA_URL || 'http://localhost:5095/graphql';
+const schemaUrl = process.env.GRAPHQL_SCHEMA_URL || 'http://127.0.0.1:5095/graphql';
 
 const config: CodegenConfig = {
   schema: schemaUrl,

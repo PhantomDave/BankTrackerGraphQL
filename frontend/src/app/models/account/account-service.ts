@@ -5,7 +5,7 @@ import { inject, Injectable, signal, Signal } from '@angular/core';
 
 import {
     CreateAccountGQL, GetAccountByEmailGQL, LoginGQL, VerifyTokenGQL
-} from '../../generated/graphql';
+} from '../../../generated/graphql';
 import { SnackbarService } from '../../shared/services/snackbar.service';
 import { SessionData } from '../session-data';
 import { Account } from './account';

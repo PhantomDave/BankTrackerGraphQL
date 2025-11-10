@@ -11,7 +11,7 @@ import { provideRouter } from '@angular/router';
 import { ApolloLink, InMemoryCache } from '@apollo/client';
 import { SetContextLink } from '@apollo/client/link/context';
 
-import { environment } from '../environments/environment';
+import { environment } from './environments/environment';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
