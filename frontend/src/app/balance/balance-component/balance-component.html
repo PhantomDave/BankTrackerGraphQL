@@ -3,7 +3,19 @@
   Your current balance is: <strong>{{ balance() | currency }}</strong>
 </p>
 <p>
+  Total Recurring Expenses:
+  <strong>{{ totalRecurringExpenses() | currency }}</strong>
+</p>
+<p>
   Predicted balance at the end of the month:
   <strong>{{ endOfMonthPrediction() | currency }}</strong>
+</p>
+<p>
+  Average daily expense this month:
+  <strong>{{ averageDailyExpense() | currency }}</strong>
+</p>
+<p>
+  Average daily income this month:
+  <strong>{{ averageDailyIncome() | currency }}</strong>
 </p>
 <p>Last updated on: {{ lastUpdated() | date: 'short' }}</p>
