@@ -1,94 +1,93 @@
 .balance-card {
-	display: block;
-	position: relative;
+  display: block;
+  position: relative;
 }
 
 .loading-overlay {
-	position: absolute;
-	inset: 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 12px;
-	background-color: rgba(0, 0, 0, 0.05);
-	z-index: 1;
-	pointer-events: all;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background-color: rgba(0, 0, 0, 0.05);
+  z-index: 1;
+  pointer-events: all;
 }
 
 .loading-text {
-	font: var(--mat-sys-title-small);
-	color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-title-small);
+  color: var(--mat-sys-on-surface);
 }
 
 [mat-card-avatar] {
-	color: var(--mat-sys-primary);
+  color: var(--mat-sys-primary);
 }
 
 .balance-hero {
-	padding: 8px 16px 8px;
+  padding: 8px 16px 8px;
 }
 
 .balance-hero .amount {
-	font: var(--mat-sys-headline-medium);
+  font: var(--mat-sys-headline-medium);
 }
 
 .balance-hero .label {
-	color: var(--mat-sys-on-surface-variant);
-	font: var(--mat-sys-label-medium);
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-label-medium);
 }
 
 mat-card-content {
-	padding: 8px 16px 16px;
+  padding: 8px 16px 16px;
 }
 
 .stats-grid {
-	display: grid;
-	grid-template-columns: repeat(1, minmax(0, 1fr));
-	gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 12px;
 }
 
 @media (min-width: 600px) {
-	.stats-grid {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .stat {
-	display: grid;
-	grid-template-columns: auto 1fr;
-	gap: 12px;
-	align-items: center;
-	padding: 12px;
-	border-radius: 12px;
-	background: var(--mat-sys-surface-container-lowest);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--mat-sys-surface-container-lowest);
 }
 
 .stat mat-icon {
-	color: var(--mat-sys-primary);
+  color: var(--mat-sys-primary);
 }
 
 .stat .title {
-	display: block;
-	color: var(--mat-sys-on-surface-variant);
-	font: var(--mat-sys-label-large);
+  display: block;
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-label-large);
 }
 
 .stat .value {
-	display: block;
-	font: var(--mat-sys-title-large);
+  display: block;
+  font: var(--mat-sys-title-large);
 }
 
 .stat .value.neg {
-	color: var(--mat-sys-error);
+  color: var(--mat-sys-error);
 }
 
 .stat .value.pos {
-	color: var(--mat-sys-secondary);
+  color: var(--mat-sys-secondary);
 }
 
 .updated {
-	display: block;
-	padding: 8px 16px 16px;
-	color: var(--mat-sys-on-surface-variant);
+  display: block;
+  padding: 8px 16px 16px;
+  color: var(--mat-sys-on-surface-variant);
 }
-

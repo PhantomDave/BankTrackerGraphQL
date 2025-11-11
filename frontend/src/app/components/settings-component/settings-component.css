@@ -1,46 +1,46 @@
 :host {
-	display: block;
-	padding: 24px;
+  display: block;
+  padding: 24px;
 }
 
 .settings-card {
-	margin: 0 auto;
-	max-width: 520px;
+  margin: 0 auto;
+  max-width: 520px;
 }
 
 .account-form {
-	display: flex;
-	flex-direction: column;
-	gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .form-field {
-	width: 100%;
+  width: 100%;
 }
 
 .form-actions {
-	display: flex;
-	justify-content: flex-end;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .error-message {
-	color: var(--mat-sys-error, #b3261e);
-	margin-bottom: 16px;
+  color: var(--mat-sys-error, #b3261e);
+  margin-bottom: 16px;
 }
 
 .helper-text {
-	color: var(--mat-sys-on-surface-variant, rgba(0, 0, 0, 0.6));
-	margin: 0 0 16px;
+  color: var(--mat-sys-on-surface-variant, rgba(0, 0, 0, 0.6));
+  margin: 0 0 16px;
 }
 
 .loading-state {
-	align-items: center;
-	display: flex;
-	gap: 12px;
-	margin-bottom: 16px;
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .empty-state {
-	color: var(--mat-sys-on-surface-variant, rgba(0, 0, 0, 0.6));
-	margin: 16px 0 0;
+  color: var(--mat-sys-on-surface-variant, rgba(0, 0, 0, 0.6));
+  margin: 16px 0 0;
 }

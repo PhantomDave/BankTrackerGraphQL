@@ -11,7 +11,7 @@
       strokeWidth="4"
       aria-label="Loading account balance"
     ></mat-progress-spinner>
-  <span class="loading-text">Loading balance...</span>
+    <span class="loading-text">Loading balance...</span>
   </div>
 
   <mat-card-header>
@@ -61,6 +61,8 @@
   </mat-card-content>
 
   <mat-card-footer>
-    <small class="updated">Last updated: <time>{{ lastUpdated() | date: 'short' }}</time></small>
+    <small class="updated"
+      >Last updated: <time>{{ lastUpdated() | date: 'short' }}</time></small
+    >
   </mat-card-footer>
 </mat-card>
