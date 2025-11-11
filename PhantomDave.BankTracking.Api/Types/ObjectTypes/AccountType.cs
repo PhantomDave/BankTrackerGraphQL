@@ -23,7 +23,7 @@ public class AccountType
     {
         Id = account.Id,
         Email = account.Email,
-    CurrentBalance = account.CurrentBalance ?? 0,
+        CurrentBalance = account.CurrentBalance ?? 0,
         CreatedAt = account.CreatedAt,
         UpdatedAt = account.UpdatedAt,
     };
