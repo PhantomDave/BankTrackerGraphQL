@@ -1,21 +1,21 @@
 <h1>Your Account Balance</h1>
 <p>
-  Your current balance is: <strong>{{ balance() | currency }}</strong>
+  Your current balance is: <strong>{{ balance() | currency: defaultCurrency }}</strong>
 </p>
 <p>
   Total Recurring Expenses:
-  <strong>{{ totalRecurringExpenses() | currency }}</strong>
+  <strong>{{ totalRecurringExpenses() | currency: defaultCurrency }}</strong>
 </p>
 <p>
   Predicted balance at the end of the month:
-  <strong>{{ endOfMonthPrediction() | currency }}</strong>
+  <strong>{{ endOfMonthPrediction() | currency: defaultCurrency }}</strong>
 </p>
 <p>
   Average daily expense this month:
-  <strong>{{ averageDailyExpense() | currency }}</strong>
+  <strong>{{ averageDailyExpense() | currency: defaultCurrency }}</strong>
 </p>
 <p>
   Average daily income this month:
-  <strong>{{ averageDailyIncome() | currency }}</strong>
+  <strong>{{ averageDailyIncome() | currency: defaultCurrency }}</strong>
 </p>
 <p>Last updated on: {{ lastUpdated() | date: 'short' }}</p>

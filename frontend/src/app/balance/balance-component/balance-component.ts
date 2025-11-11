@@ -14,6 +14,9 @@ export class BalanceComponent implements OnInit {
   private readonly records = signal<readonly FinanceRecord[]>(
     this.financeRecordService.financeRecords(),
   );
+
+  readonly defaultCurrency = 'EUR';
+
   readonly balance = computed(() => {
     const records = this.records();
     const total = records.reduce((sum, record) => sum + record.amount, 0);

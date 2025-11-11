@@ -2,6 +2,7 @@ import { inject, Injectable, Signal, signal } from '@angular/core';
 import { firstValueFrom, tap } from 'rxjs';
 import {
   CreateFinanceRecordGQL,
+  DeleteFinanceRecordGQL,
   GetFinanceRecordsGQL,
   RecurrenceFrequency,
   UpdateFinanceRecordGQL,
@@ -15,6 +16,7 @@ export class FinanceRecordService {
   private readonly createFinanceRecordGQL = inject(CreateFinanceRecordGQL);
   private readonly getFinanceRecordsGQL = inject(GetFinanceRecordsGQL);
   private readonly updateFinanceRecordGQL = inject(UpdateFinanceRecordGQL);
+  private readonly deleteFinanceRecordGQL = inject(DeleteFinanceRecordGQL);
 
   private readonly _selectedFinanceRecord = signal<FinanceRecord | null>(null);
   readonly selectedFinanceRecord: Signal<FinanceRecord | null> =
@@ -132,6 +134,30 @@ export class FinanceRecordService {
       }
     } catch (_error) {
       this._error.set('Failed to create finance record');
+    } finally {
+      this._loading.set(false);
+    }
+  }
+
+  async deleteFinanceRecordAsync(id: number): Promise<void> {
+    this._loading.set(true);
+    this._error.set(null);
+
+    try {
+      const result = await firstValueFrom(
+        this.deleteFinanceRecordGQL.mutate({
+          variables: {
+            id,
+          },
+        }),
+      );
+
+      if (result?.data?.deleteFinanceRecord) {
+        this._selectedFinanceRecord.set(null);
+        this._financeRecords.update((records) => records.filter((record) => record.id !== id));
+      }
+    } catch (_error) {
+      this._error.set('Failed to fetch finance records');
     } finally {
       this._loading.set(false);
     }

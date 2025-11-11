@@ -81,8 +81,8 @@ class MonthlyRecapComponent implements OnInit {
     });
   }
 
-  onDeleteClicked(record: FinanceRecord) {
-    throw new Error('Method not implemented.');
+  async onDeleteClicked(record: FinanceRecord) {
+    await this.financeRecordService.deleteFinanceRecordAsync(record.id!);
   }
   onEditClicked(record: FinanceRecord) {
     const dialogRef = this.dialog.open(AddEntry, {

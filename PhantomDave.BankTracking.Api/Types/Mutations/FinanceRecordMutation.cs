@@ -84,4 +84,21 @@ public class FinanceRecordMutations
                     .Build());
         return FinanceRecordType.FromFinanceRecord(updatedRecord);
     }
+
+    [Authorize]
+    public async Task<bool> DeleteFinanceRecord(
+        int id,
+        [Service] FinanceRecordService financeRecordService)
+    {
+        var deletedRecord = await financeRecordService.DeleteFinanceRecordAsync(id);
+        if (!deletedRecord)
+        {
+            throw new GraphQLException(
+            ErrorBuilder.New()
+                .SetMessage("Failed to delete finance record. Please check the provided data.")
+                .SetCode("BAD_USER_INPUT")
+                .Build());
+        }
+        return deletedRecord;
+    }
 }

@@ -71,6 +71,7 @@ type FinanceRecordType {
 type Mutation {
   createAccount(email: String!, password: String!): AccountType!
   createFinanceRecord(newRecord: FinanceRecordInput!): FinanceRecordType!
+  deleteFinanceRecord(id: Int!): Boolean!
   login(email: String!, password: String!): AuthPayload!
   loginAccount(email: String!, password: String!): AccountType
   updateFinanceRecord(amount: Decimal, currency: String, date: DateTime, description: String, id: Int!, isRecurring: Boolean, name: String, recurrenceEndDate: DateTime, recurrenceFrequency: RecurrenceFrequency): FinanceRecordType!
