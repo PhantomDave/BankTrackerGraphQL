@@ -12,6 +12,7 @@ import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/mat
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { AccountService } from '../../models/account/account-service';
+import { ThemeService } from '../../services/theme.service';
 import { FlexComponent } from '../ui-library/flex-component/flex-component';
 
 @Component({
@@ -38,9 +39,14 @@ import { FlexComponent } from '../ui-library/flex-component/flex-component';
 export class SideNavComponent {
   private readonly accountService = inject(AccountService);
   private readonly router = inject(Router);
+  protected readonly themeService = inject(ThemeService);
 
   protected async onLogout(): Promise<void> {
     this.accountService.logout();
     await this.router.navigate(['/login']);
+  }
+
+  protected onToggleTheme(): void {
+    this.themeService.toggleTheme();
   }
 }

@@ -14,10 +14,6 @@
   border-right: 1px solid var(--mat-sys-outline-variant);
 }
 
-.mat-drawer-side {
-  overflow: hidden;
-}
-
 .sidenav-header {
   display: flex;
   align-items: center;
@@ -62,4 +58,8 @@
 
 .content {
   padding: 16px;
+}
+
+.mat-mdc-list-base {
+  width: 100%;
 }
