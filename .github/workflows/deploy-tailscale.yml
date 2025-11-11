@@ -84,7 +84,7 @@ jobs:
       - name: Deploy with Docker Compose
         run: |
           echo "🚀 Starting deployment..."
-          tailscale ssh "${{ steps.prepare.outputs.target }}" "cd $DEPLOY_DIR && docker compose down && docker compose up -d --build"
+          tailscale ssh "${{ steps.prepare.outputs.target }}" "cd $DEPLOY_DIR && docker compose down && docker compose up -d --build --wait"
           echo "✅ Deployment completed"
 
       - name: Post-deployment verification
