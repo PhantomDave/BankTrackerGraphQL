@@ -35,6 +35,16 @@ public class AccountQueries
     }
 
     [Authorize]
+    public async Task<AccountType?> GetUserAccount(
+        [Service] AccountService accountService,
+        [Service] IHttpContextAccessor httpContextAccessor)
+    {
+        var accountId = httpContextAccessor.GetAccountIdFromContext();
+        var account = await accountService.GetAccountAsync(accountId);
+        return account != null ? AccountType.FromAccount(account) : null;
+    }
+
+    [Authorize]
     public Task<bool> IsAValidJwt([Service] IHttpContextAccessor httpContextAccessor)
     {
         var user = httpContextAccessor.HttpContext?.User;

@@ -15,6 +15,7 @@ directive @cost(
 
 type AccountType {
   createdAt: DateTime!
+  currentBalance: Decimal!
   email: String!
   id: Int!
   updatedAt: DateTime
@@ -74,6 +75,7 @@ type Mutation {
   deleteFinanceRecord(id: Int!): Boolean!
   login(email: String!, password: String!): AuthPayload!
   loginAccount(email: String!, password: String!): AccountType
+  updateAccount(currentBalance: Decimal, email: String!): AccountType!
   updateFinanceRecord(amount: Decimal, currency: String, date: DateTime, description: String, id: Int!, isRecurring: Boolean, name: String, recurrenceEndDate: DateTime, recurrenceFrequency: RecurrenceFrequency): FinanceRecordType!
 }
 
@@ -83,6 +85,7 @@ type Query {
   financeRecord(id: Int!): FinanceRecordType
   financeRecordsForAccount(endDate: DateTime, startDate: DateTime): [FinanceRecordType!]!
   isAValidJwt: Boolean!
+  userAccount: AccountType
 }
 
 enum RecurrenceFrequency {

@@ -64,6 +64,9 @@ public class AccountService
         if (!string.IsNullOrEmpty(email))
             account.Email = email;
 
+        if (balance.HasValue)
+            account.CurrentBalance = balance.Value;
+
         account.UpdatedAt = DateTime.UtcNow;
 
         await _unitOfWork.Accounts.UpdateAsync(account);

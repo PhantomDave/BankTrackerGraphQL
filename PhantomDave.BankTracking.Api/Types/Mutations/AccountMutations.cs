@@ -1,6 +1,7 @@
 using PhantomDave.BankTracking.Api.Services;
 using PhantomDave.BankTracking.Api.Types.ObjectTypes;
 using HotChocolate.Authorization;
+using PhantomDave.BankTracking.Library.Models;
 
 namespace PhantomDave.BankTracking.Api.Types.Mutations;
 
@@ -114,6 +115,38 @@ public class AccountMutations
             Account = AccountType.FromAccount(account)
         };
     }
+
+    public async Task<AccountType> UpdateAccount(
+        string email,
+        decimal? currentBalance,
+        [Service] AccountService accountService,
+                [Service] IHttpContextAccessor httpContextAccessor)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            throw new GraphQLException(
+                ErrorBuilder.New()
+                    .SetMessage("Email is required.")
+                    .SetCode("BAD_USER_INPUT")
+                    .SetExtension("field", "email")
+                    .SetExtension("reason", "required")
+                    .Build());
+        }
+
+
+        int accountId = httpContextAccessor.GetAccountIdFromContext();
+
+        var account = (await accountService.UpdateAccountAsync(accountId, email, currentBalance)) ?? throw new GraphQLException(
+                ErrorBuilder.New()
+                    .SetMessage("Unable to update account.")
+                    .SetCode("ACCOUNT_UPDATE_FAILED")
+                    .SetExtension("field", "email")
+                    .SetExtension("reason", "invalid")
+                    .Build());
+                    
+        return AccountType.FromAccount(account);
+    }
+    
 }
 
 public sealed class AuthPayload

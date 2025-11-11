@@ -4,5 +4,6 @@ query GetAccountByEmail($email: String!) {
     email
     createdAt
     updatedAt
+    currentBalance
   }
 }

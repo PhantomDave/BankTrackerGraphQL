@@ -1,0 +1,9 @@
+mutation UpdateAccount($email: String!, $currentBalance: Decimal) {
+  updateAccount(email: $email, currentBalance: $currentBalance) {
+    id
+    email
+    createdAt
+    updatedAt
+    currentBalance
+  }
+}

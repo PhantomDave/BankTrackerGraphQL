@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PhantomDave.BankTracking.Data.Context;
@@ -11,9 +12,11 @@ using PhantomDave.BankTracking.Data.Context;
 namespace PhantomDave.BankTracking.Data.Migrations
 {
     [DbContext(typeof(BankTrackerDbContext))]
-    partial class BankTrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251111193952_Added balance field to account")]
+    partial class Addedbalancefieldtoaccount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

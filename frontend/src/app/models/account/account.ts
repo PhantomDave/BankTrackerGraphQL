@@ -3,4 +3,5 @@ export interface Account {
   email: string;
   createdAt: string;
   updatedAt?: string | null;
+  currentBalance?: number;
 }

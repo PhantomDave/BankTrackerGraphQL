@@ -4,5 +4,6 @@ mutation CreateAccount($email: String!, $password: String!) {
     email
     createdAt
     updatedAt
+    currentBalance
   }
 }

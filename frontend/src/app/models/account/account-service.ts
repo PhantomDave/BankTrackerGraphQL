@@ -1,11 +1,14 @@
 import { firstValueFrom } from 'rxjs';
 
 import { inject, Injectable, signal, Signal } from '@angular/core';
+import type { GraphQLError } from 'graphql';
 
 import {
   CreateAccountGQL,
   GetAccountByEmailGQL,
+  GetUserAccountGQL,
   LoginGQL,
+  UpdateAccountGQL,
   VerifyTokenGQL,
 } from '../../../generated/graphql';
 import { SnackbarService } from '../../shared/services/snackbar.service';
@@ -21,6 +24,8 @@ export class AccountService {
   private readonly snackbar = inject(SnackbarService);
   private readonly loginGQL = inject(LoginGQL);
   private readonly verifyTokenGQL = inject(VerifyTokenGQL);
+  private readonly updateAccountGQL = inject(UpdateAccountGQL);
+  private readonly getUserAccountGQL = inject(GetUserAccountGQL);
 
   private readonly _isAuthenticated = signal<boolean>(false);
   readonly isAuthenticated: Signal<boolean> = this._isAuthenticated.asReadonly();
@@ -37,6 +42,14 @@ export class AccountService {
   private readonly _error = signal<string | null>(null);
   readonly error: Signal<string | null> = this._error.asReadonly();
 
+  private extractGraphQLError(result: unknown, fallback: string): string | null {
+    const errors = (result as { errors?: readonly GraphQLError[] | null | undefined })?.errors ?? [];
+    if (errors.length > 0) {
+      return errors[0]?.message ?? fallback;
+    }
+    return null;
+  }
+
   constructor() {
     const token = localStorage.getItem('sessionData');
     this._isAuthenticated.set(token !== null);
@@ -52,11 +65,19 @@ export class AccountService {
       );
 
       if (result?.data?.accountByEmail !== null && result?.data?.accountByEmail !== undefined) {
-        this._selectedAccount.set(result.data.accountByEmail as Account);
+        const account = result.data.accountByEmail;
+        this._selectedAccount.set({
+          id: account.id,
+          email: account.email,
+          createdAt: account.createdAt,
+          updatedAt: account.updatedAt ?? null,
+          currentBalance: account.currentBalance,
+        });
       }
 
-      if (result && (result as any).error) {
-        const message = (result as any).error?.message ?? 'Errore durante il caricamento account';
+      const graphQLErrors = result.errors ?? [];
+      if (graphQLErrors.length > 0) {
+        const message = graphQLErrors[0]?.message ?? 'Errore durante il caricamento account';
         this._error.set(message);
         this.snackbar.error(message);
       }
@@ -88,8 +109,9 @@ export class AccountService {
         return true;
       }
 
-      if (result && (result as any).error) {
-        const message = (result as any).error?.message ?? 'Creazione account fallita';
+      const graphQLErrors = result?.errors ?? [];
+      if (graphQLErrors.length > 0) {
+        const message = graphQLErrors[0]?.message ?? 'Creazione account fallita';
         this._error.set(message);
         this.snackbar.error(message);
         return message;
@@ -113,7 +135,9 @@ export class AccountService {
     this._loading.set(true);
     this._error.set(null);
     try {
-      const result = await firstValueFrom(this.loginGQL.mutate({ variables: { email, password } }));
+      const result = await firstValueFrom(
+        this.loginGQL.mutate({ variables: { email, password } }),
+      );
 
       const token = result?.data?.login?.token;
       const account = result?.data?.login?.account;
@@ -129,10 +153,19 @@ export class AccountService {
           email: account.email,
           createdAt: account.createdAt,
           updatedAt: account.updatedAt ?? null,
+          currentBalance: account.currentBalance,
         });
         this._isAuthenticated.set(true);
         this.snackbar.success('Login effettuato');
         return true;
+      }
+
+      const graphQLErrors = result?.errors ?? [];
+      if (graphQLErrors.length > 0) {
+        const message = graphQLErrors[0]?.message ?? 'Credenziali non valide';
+        this._error.set(message);
+        this.snackbar.error(message);
+        return message;
       }
 
       const message = 'Credenziali non valide';
@@ -149,9 +182,99 @@ export class AccountService {
     }
   }
 
+  async getUserAccount(): Promise<Account> {
+    this._loading.set(true);
+    this._error.set(null);
+    try {
+      const result = await firstValueFrom(this.getUserAccountGQL.fetch());
+
+      if (result?.data?.userAccount) {
+        const account = result.data.userAccount;
+        const acc: Account = {
+          id: account.id,
+          email: account.email,
+          createdAt: account.createdAt,
+          updatedAt: account.updatedAt ?? null,
+          currentBalance: account.currentBalance,
+        };
+        this._selectedAccount.set(acc);
+        return acc;
+      }
+
+      const graphQLErrors = result.errors ?? [];
+      if (graphQLErrors.length > 0) {
+        const message = graphQLErrors[0]?.message ?? 'Errore durante il caricamento account';
+        this._error.set(message);
+        this.snackbar.error(message);
+        throw new Error(message);
+      }
+
+      const message = 'Errore durante il caricamento account';
+      this._error.set(message);
+      this.snackbar.error(message);
+      throw new Error(message);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Errore imprevisto';
+      this._error.set(message);
+      this.snackbar.error(message);
+      throw err;
+    } finally {
+      this._loading.set(false);
+    }
+  }
+
   logout(): void {
     localStorage.removeItem('sessionData');
     this._selectedAccount.set(null);
     this._isAuthenticated.set(false);
+  }
+
+  async updateAccount(email: string, currentBalance: number): Promise<boolean | string> {
+    this._loading.set(true);
+    this._error.set(null);
+
+    try {
+      const result = await firstValueFrom(
+        this.updateAccountGQL.mutate({
+          variables: {
+            email,
+            currentBalance,
+          },
+        }),
+      );
+
+      const updatedAccount = result?.data?.updateAccount;
+      if (updatedAccount) {
+        this._selectedAccount.set({
+          id: updatedAccount.id,
+          email: updatedAccount.email,
+          createdAt: updatedAccount.createdAt,
+          updatedAt: updatedAccount.updatedAt ?? null,
+          currentBalance: updatedAccount.currentBalance,
+        });
+        this.snackbar.success('Account aggiornato');
+        return true;
+      }
+
+      const graphQLErrors = result?.errors ?? [];
+      if (graphQLErrors.length > 0) {
+        const message = graphQLErrors[0]?.message ?? 'Aggiornamento account non riuscito';
+        this._error.set(message);
+        this.snackbar.error(message);
+        return message;
+      }
+
+      const message = 'Aggiornamento account non riuscito';
+      this._error.set(message);
+      this.snackbar.error(message);
+      return message;
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Errore imprevisto';
+      this._error.set(message);
+      this.snackbar.error(message);
+      return message;
+    } finally {
+      this._loading.set(false);
+    }
   }
 }
