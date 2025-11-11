@@ -1,11 +1,14 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
 import { FinanceRecordService } from '../../models/finance-record/finance-record-service';
 import { FinanceRecord } from '../../models/finance-record/finance-record';
 
 @Component({
   selector: 'app-balance-component',
-  imports: [CurrencyPipe, DatePipe],
+  imports: [CurrencyPipe, DatePipe, MatCardModule, MatIconModule, MatDividerModule],
   templateUrl: './balance-component.html',
   styleUrl: './balance-component.css',
 })

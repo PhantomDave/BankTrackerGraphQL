@@ -10,7 +10,7 @@
     "4200": { "label": "Angular Frontend" },
     "5000": { "label": "API / GraphQL" }
   },
-  "postCreateCommand": "dotnet tool install --global dotnet-ef && dotnet restore && cd frontend && npm install",
+  "postCreateCommand": "dotnet nuget locals all --clear || true && (dotnet tool install --global dotnet-ef --version 9.* --disable-parallel || dotnet tool install --global dotnet-ef --version 8.* --disable-parallel || echo 'dotnet-ef install failed, continuing') && dotnet restore && cd frontend && (npm ci || npm install)",
   "remoteUser": "vscode",
   "customizations": {
     "vscode": {

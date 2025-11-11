@@ -1,0 +1,76 @@
+.balance-card {
+	display: block;
+}
+
+[mat-card-avatar] {
+	color: var(--mat-sys-primary);
+}
+
+.balance-hero {
+	padding: 8px 16px 8px;
+}
+
+.balance-hero .amount {
+	font: var(--mat-sys-headline-medium);
+}
+
+.balance-hero .label {
+	color: var(--mat-sys-on-surface-variant);
+	font: var(--mat-sys-label-medium);
+}
+
+mat-card-content {
+	padding: 8px 16px 16px;
+}
+
+.stats-grid {
+	display: grid;
+	grid-template-columns: repeat(1, minmax(0, 1fr));
+	gap: 12px;
+}
+
+@media (min-width: 600px) {
+	.stats-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+.stat {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 12px;
+	align-items: center;
+	padding: 12px;
+	border-radius: 12px;
+	background: var(--mat-sys-surface-container-lowest);
+}
+
+.stat mat-icon {
+	color: var(--mat-sys-primary);
+}
+
+.stat .title {
+	display: block;
+	color: var(--mat-sys-on-surface-variant);
+	font: var(--mat-sys-label-large);
+}
+
+.stat .value {
+	display: block;
+	font: var(--mat-sys-title-large);
+}
+
+.stat .value.neg {
+	color: var(--mat-sys-error);
+}
+
+.stat .value.pos {
+	color: var(--mat-sys-secondary);
+}
+
+.updated {
+	display: block;
+	padding: 8px 16px 16px;
+	color: var(--mat-sys-on-surface-variant);
+}
+

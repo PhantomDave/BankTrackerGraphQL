@@ -1,21 +1,51 @@
-<h1>Your Account Balance</h1>
-<p>
-  Your current balance is: <strong>{{ balance() | currency: defaultCurrency }}</strong>
-</p>
-<p>
-  Total Recurring Expenses:
-  <strong>{{ totalRecurringExpenses() | currency: defaultCurrency }}</strong>
-</p>
-<p>
-  Predicted balance at the end of the month:
-  <strong>{{ endOfMonthPrediction() | currency: defaultCurrency }}</strong>
-</p>
-<p>
-  Average daily expense this month:
-  <strong>{{ averageDailyExpense() | currency: defaultCurrency }}</strong>
-</p>
-<p>
-  Average daily income this month:
-  <strong>{{ averageDailyIncome() | currency: defaultCurrency }}</strong>
-</p>
-<p>Last updated on: {{ lastUpdated() | date: 'short' }}</p>
+<mat-card appearance="outlined" class="balance-card" aria-label="Account balance summary">
+  <mat-card-header>
+    <mat-icon mat-card-avatar aria-hidden="true">account_balance_wallet</mat-icon>
+    <mat-card-title>Account Balance</mat-card-title>
+    <mat-card-subtitle>Overview of current funds and projections</mat-card-subtitle>
+  </mat-card-header>
+
+  <div class="balance-hero" aria-label="Current balance">
+    <div class="amount">{{ balance() | currency: defaultCurrency }}</div>
+    <div class="label">Current</div>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <mat-card-content>
+    <div class="stats-grid">
+      <div class="stat" aria-label="Total recurring expenses">
+        <mat-icon fontIcon="repeat" aria-hidden="true"></mat-icon>
+        <div class="stat-body">
+          <span class="title">Recurring Expenses</span>
+          <span class="value neg">{{ totalRecurringExpenses() | currency: defaultCurrency }}</span>
+        </div>
+      </div>
+      <div class="stat" aria-label="End of month prediction">
+        <mat-icon fontIcon="calendar_month" aria-hidden="true"></mat-icon>
+        <div class="stat-body">
+          <span class="title">End of Month Prediction</span>
+          <span class="value">{{ endOfMonthPrediction() | currency: defaultCurrency }}</span>
+        </div>
+      </div>
+      <div class="stat" aria-label="Average daily expense">
+        <mat-icon fontIcon="trending_down" aria-hidden="true"></mat-icon>
+        <div class="stat-body">
+          <span class="title">Avg Daily Expense</span>
+          <span class="value neg">{{ averageDailyExpense() | currency: defaultCurrency }}</span>
+        </div>
+      </div>
+      <div class="stat" aria-label="Average daily income">
+        <mat-icon fontIcon="trending_up" aria-hidden="true"></mat-icon>
+        <div class="stat-body">
+          <span class="title">Avg Daily Income</span>
+          <span class="value pos">{{ averageDailyIncome() | currency: defaultCurrency }}</span>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+
+  <mat-card-footer>
+    <small class="updated">Last updated: <time>{{ lastUpdated() | date: 'short' }}</time></small>
+  </mat-card-footer>
+</mat-card>
