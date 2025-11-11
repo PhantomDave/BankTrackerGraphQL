@@ -9,6 +9,11 @@ RUN npm ci
 
 COPY . .
 
+# Generate GraphQL types from local schema file (downloaded before build)
+# Set USE_LOCAL_SCHEMA=true to use the schema.graphql file instead of fetching from URL
+ENV USE_LOCAL_SCHEMA=true
+RUN if [ -f schema.graphql ]; then npm run codegen; else echo "Warning: schema.graphql not found, skipping codegen"; fi
+
 # Build for production
 RUN npm run build -- --configuration production
 

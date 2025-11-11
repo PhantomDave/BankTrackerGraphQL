@@ -87,6 +87,8 @@ jobs:
           echo "📦 Building and starting database and backend first..."
           tailscale ssh "${{ steps.prepare.outputs.target }}" "cd $DEPLOY_DIR && docker compose down && docker compose up -d --build --wait database backend"
           echo "✅ Backend is ready"
+          echo "📥 Downloading GraphQL schema from backend..."
+          tailscale ssh "${{ steps.prepare.outputs.target }}" "cd $DEPLOY_DIR/frontend && curl -f http://localhost:5095/graphql?sdl -o schema.graphql"
           echo "📦 Building and starting frontend..."
           tailscale ssh "${{ steps.prepare.outputs.target }}" "cd $DEPLOY_DIR && docker compose up -d --build --wait frontend"
           echo "✅ Deployment completed"
