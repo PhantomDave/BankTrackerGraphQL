@@ -42,6 +42,7 @@ export class AddEntry {
   readonly recurrenceOptions = RECURRENCE_OPTIONS;
 
   private readonly initialValue: FinanceRecord = {
+    id: this.dialogData?.id ?? undefined,
     name: this.dialogData?.name ?? '',
     description: this.dialogData?.description ?? '',
     recurring: this.dialogData?.recurring ?? false,
@@ -57,6 +58,7 @@ export class AddEntry {
   readonly dialogTitle = this.dialogData ? 'Edit Finance Record' : 'Add Finance Record';
 
   readonly financeRecordForm = this.formBuilder.nonNullable.group({
+    id: [this.initialValue.id],
     name: [this.initialValue.name, [Validators.required, Validators.maxLength(120)]],
     description: [this.initialValue.description, [Validators.maxLength(500)]],
     recurring: [this.initialValue.recurring],

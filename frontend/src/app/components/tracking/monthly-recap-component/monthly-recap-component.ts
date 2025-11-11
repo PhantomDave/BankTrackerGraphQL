@@ -64,6 +64,7 @@ class MonthlyRecapComponent implements OnInit {
     'recurrenceFrequency',
     'amount',
     'date',
+    'actions',
   ];
 
   async onCreateClicked(): Promise<void> {
@@ -76,6 +77,24 @@ class MonthlyRecapComponent implements OnInit {
     dialogRef.afterClosed().subscribe(async (result: FinanceRecord | undefined) => {
       if (result) {
         await this.financeRecordService.createFinanceRecord(result);
+      }
+    });
+  }
+
+  onDeleteClicked(record: FinanceRecord) {
+    throw new Error('Method not implemented.');
+  }
+  onEditClicked(record: FinanceRecord) {
+    const dialogRef = this.dialog.open(AddEntry, {
+      data: record,
+      width: '600px',
+      maxWidth: '90vw',
+      panelClass: 'add-entry-dialog',
+    });
+
+    dialogRef.afterClosed().subscribe(async (result: FinanceRecord | undefined) => {
+      if (result) {
+        await this.financeRecordService.updateFinanceRecord(result);
       }
     });
   }

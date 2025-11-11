@@ -4,6 +4,7 @@ import {
   CreateFinanceRecordGQL,
   GetFinanceRecordsGQL,
   RecurrenceFrequency,
+  UpdateFinanceRecordGQL,
 } from '../../../generated/graphql';
 import { FinanceRecord } from './finance-record';
 
@@ -13,6 +14,7 @@ import { FinanceRecord } from './finance-record';
 export class FinanceRecordService {
   private readonly createFinanceRecordGQL = inject(CreateFinanceRecordGQL);
   private readonly getFinanceRecordsGQL = inject(GetFinanceRecordsGQL);
+  private readonly updateFinanceRecordGQL = inject(UpdateFinanceRecordGQL);
 
   private readonly _selectedFinanceRecord = signal<FinanceRecord | null>(null);
   readonly selectedFinanceRecord: Signal<FinanceRecord | null> =
@@ -60,6 +62,43 @@ export class FinanceRecordService {
       .subscribe();
   }
 
+  async updateFinanceRecord(record: FinanceRecord): Promise<void> {
+    this._loading.set(true);
+    this._error.set(null);
+
+    try {
+      const result = await firstValueFrom(
+        this.updateFinanceRecordGQL.mutate({
+          variables: {
+            id: record.id!,
+            name: record.name,
+            description: record.description,
+            amount: record.amount,
+            currency: record.currency,
+            date: record.date.toISOString(),
+            isRecurring: record.recurring,
+            recurrenceFrequency: record.recurrenceFrequency,
+            recurrenceEndDate: record.recurrenceEndDate
+              ? record.recurrenceEndDate.toISOString()
+              : undefined,
+          },
+          refetchQueries: ['getFinanceRecords'],
+        }),
+      );
+
+      if (result?.data?.updateFinanceRecord) {
+        const updatedRecord = this.mapToFinanceRecord(result.data.updateFinanceRecord);
+        this._selectedFinanceRecord.set(updatedRecord);
+      } else {
+        this._error.set('Failed to update finance record');
+      }
+    } catch (_error) {
+      this._error.set('Failed to update finance record');
+    } finally {
+      this._loading.set(false);
+    }
+  }
+
   async createFinanceRecord(record: FinanceRecord): Promise<void> {
     this._loading.set(true);
     this._error.set(null);
@@ -88,7 +127,6 @@ export class FinanceRecordService {
       if (result?.data?.createFinanceRecord) {
         const newRecord = this.mapToFinanceRecord(result.data.createFinanceRecord);
         this._selectedFinanceRecord.set(newRecord);
-        console.log('[FinanceRecordService] Record created, refetch triggered');
       } else {
         this._error.set('Failed to create finance record');
       }
@@ -122,9 +160,6 @@ export class FinanceRecordService {
   }
 
   async getFinanceRecords(): Promise<void> {
-    // This method is now just for triggering a refetch
-    // The actual data updates happen through the watch subscription
-    console.log('[FinanceRecordService] getFinanceRecords called - triggering refetch');
     await firstValueFrom(this.getFinanceRecordsGQL.fetch());
   }
 }

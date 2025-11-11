@@ -44,7 +44,11 @@ public class Repository<T> : IRepository<T> where T : class
 
     public async Task<T> UpdateAsync(T entity)
     {
-        _dbSet.Update(entity);
+        if (_context.Entry(entity).State == EntityState.Detached)
+        {
+            _dbSet.Attach(entity);
+        }
+        _context.Entry(entity).State = EntityState.Modified;
         return entity;
     }
 

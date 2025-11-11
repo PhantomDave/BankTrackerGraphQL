@@ -1,3 +1,15 @@
 .footer-cell-label {
   font-weight: 600;
 }
+
+.action-icon {
+  cursor: pointer;
+}
+
+.action-icon.delete {
+  color: var(--mat-sys-error);
+}
+
+.action-icon.edit {
+  color: var(--mat-sys-primary);
+}

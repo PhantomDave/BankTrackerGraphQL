@@ -1,0 +1,36 @@
+mutation UpdateFinanceRecord(
+  $id: Int!
+  $name: String
+  $amount: Decimal
+  $currency: String
+  $date: DateTime
+  $description: String
+  $isRecurring: Boolean
+  $recurrenceFrequency: RecurrenceFrequency
+  $recurrenceEndDate: DateTime
+) {
+  updateFinanceRecord(
+    id: $id
+    name: $name
+    amount: $amount
+    currency: $currency
+    date: $date
+    description: $description
+    isRecurring: $isRecurring
+    recurrenceFrequency: $recurrenceFrequency
+    recurrenceEndDate: $recurrenceEndDate
+  ) {
+    id
+    name
+    amount
+    currency
+    date
+    description
+    isRecurring
+    isRecurringInstance
+    recurrenceFrequency
+    recurrenceEndDate
+    parentRecurringRecordId
+    lastProcessedDate
+  }
+}
