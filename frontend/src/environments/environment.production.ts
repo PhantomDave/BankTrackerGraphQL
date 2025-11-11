@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  graphqlUri: '/graphql',
+  graphqlUri: '/graphql', // Proxied by nginx to backend
 };
