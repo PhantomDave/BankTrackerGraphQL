@@ -15,6 +15,9 @@ RUN npm run build -- --configuration production
 # Production stage
 FROM nginx:alpine AS final
 
+# Install curl for healthcheck
+RUN apk add --no-cache curl
+
 # Copy built files to nginx
 COPY --from=build /app/dist/frontend /usr/share/nginx/html
 

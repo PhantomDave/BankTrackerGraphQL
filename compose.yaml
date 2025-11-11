@@ -38,12 +38,12 @@
         condition: service_healthy
     networks:
       - banktracking-network
-    # healthcheck:
-    #   test: ["CMD-SHELL", "curl -f http://localhost:5095/graphql?sdl || exit 1"]
-    #   interval: 10s
-    #   timeout: 10s
-    #   retries: 3
-    #   start_period: 5s
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5095/graphql?sdl || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
     restart: unless-stopped
   
   frontend:
@@ -54,17 +54,17 @@
       dockerfile: Dockerfile
     ports:
       - "80:4200"
-    # depends_on:
-      # backend:
-        # condition: service_healthy
+    depends_on:
+      backend:
+        condition: service_healthy
     networks:
       - banktracking-network
-    # healthcheck:
-    #   test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:4200 || exit 1"]
-    #   interval: 30s
-    #   timeout: 10s
-    #   retries: 3
-    #   start_period: 10s
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:80 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     restart: unless-stopped
 
 networks:
