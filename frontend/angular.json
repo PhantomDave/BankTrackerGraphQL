@@ -99,7 +99,13 @@
                 }
               },
               "subresourceIntegrity": true,
-              "crossOrigin": "anonymous"
+              "crossOrigin": "anonymous",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.production.ts"
+                }
+              ]
             },
             "development": {
               "optimization": false,
