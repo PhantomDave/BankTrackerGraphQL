@@ -1,0 +1,14 @@
+node_modules
+dist
+build
+**/bin
+**/obj
+frontend/generated
+frontend/node_modules
+frontend/dist
+.idea
+.vscode
+*.lock
+coverage
+public
+.parcel-cache

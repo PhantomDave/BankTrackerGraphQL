@@ -52,25 +52,15 @@
               {
                 "glob": "**/*",
                 "input": "public",
-                "ignore": [
-                  "**/.DS_Store",
-                  "**/Thumbs.db"
-                ]
+                "ignore": ["**/.DS_Store", "**/Thumbs.db"]
               }
             ],
-            "styles": [
-              "src/custom-theme.scss",
-              "src/styles.css"
-            ],
+            "styles": ["src/custom-theme.scss", "src/styles.css"],
             "inlineStyleLanguage": "scss",
             "stylePreprocessorOptions": {
-              "includePaths": [
-                "src"
-              ]
+              "includePaths": ["src"]
             },
-            "allowedCommonJsDependencies": [
-              "graphql"
-            ]
+            "allowedCommonJsDependencies": ["graphql"]
           },
           "configurations": {
             "production": {
@@ -148,15 +138,10 @@
               {
                 "glob": "**/*",
                 "input": "public",
-                "ignore": [
-                  "**/.DS_Store",
-                  "**/Thumbs.db"
-                ]
+                "ignore": ["**/.DS_Store", "**/Thumbs.db"]
               }
             ],
-            "styles": [
-              "src/styles.css"
-            ]
+            "styles": ["src/styles.css"]
           }
         }
       }

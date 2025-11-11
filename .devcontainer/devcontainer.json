@@ -18,8 +18,16 @@
         "ms-dotnettools.csharp",
         "ms-azuretools.vscode-docker",
         "graphql.vscode-graphql",
+        "graphql.vscode-graphql-syntax",
         "Angular.ng-template",
         "esbenp.prettier-vscode",
+        "rvest.vs-code-prettier-eslint",
+        "dbaeumer.vscode-eslint",
+        "christian-kohler.npm-intellisense",
+        "christian-kohler.path-intellisense",
+        "redhat.vscode-yaml",
+        "github.vscode-github-actions",
+        "EditorConfig.EditorConfig",
         "streetsidesoftware.code-spell-checker"
       ]
     }

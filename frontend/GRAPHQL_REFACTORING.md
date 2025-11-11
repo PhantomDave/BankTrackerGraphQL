@@ -9,25 +9,27 @@ All account operations have been migrated from using raw GraphQL queries/mutatio
 ## What Changed
 
 ### Before
+
 ```typescript
 // Direct Apollo usage
 this.apollo.query({
   query: GET_ACCOUNT_BY_EMAIL,
-  variables: { email }
-})
+  variables: { email },
+});
 
 this.apollo.mutate({
   mutation: CREATE_ACCOUNT,
-  variables: { email, password }
-})
+  variables: { email, password },
+});
 ```
 
 ### After
+
 ```typescript
 // Generated typed GQL services
-this.getAccountByEmailGQL.fetch({ variables: { email } })
-this.createAccountGQL.mutate({ variables: { email, password } })
-this.loginAccountGQL.mutate({ variables: { email, password } })
+this.getAccountByEmailGQL.fetch({ variables: { email } });
+this.createAccountGQL.mutate({ variables: { email, password } });
+this.loginAccountGQL.mutate({ variables: { email, password } });
 ```
 
 ## Generated GQL Classes
@@ -35,16 +37,19 @@ this.loginAccountGQL.mutate({ variables: { email, password } })
 The following injectable GQL classes are now available in `src/generated/graphql.ts`:
 
 ### Queries
+
 - **GetAccountByEmailGQL** - Fetch account by email
 - **GetAccountsGQL** - Fetch all accounts
 
 ### Mutations
+
 - **CreateAccountGQL** - Create a new account
 - **LoginAccountGQL** - Login with email and password (changed from Query to Mutation for proper authentication semantics)
 
 ## Usage
 
 ### Using AccountService (Recommended)
+
 The AccountService provides high-level methods that wrap the GQL classes with error handling and state management:
 
 ```typescript
@@ -52,11 +57,11 @@ import { AccountService } from './models/account/account-service';
 
 export class MyComponent {
   private readonly accountService = inject(AccountService);
-  
+
   async login() {
     const account = await this.accountService.loginAccount(email, password);
   }
-  
+
   async register() {
     const result = await this.accountService.createAccount(email, password);
   }
@@ -64,6 +69,7 @@ export class MyComponent {
 ```
 
 ### Using GQL Classes Directly (Advanced)
+
 For more control, you can inject the GQL classes directly:
 
 ```typescript
@@ -73,17 +79,17 @@ import { firstValueFrom } from 'rxjs';
 export class MyComponent {
   private readonly loginGQL = inject(LoginAccountGQL);
   private readonly createAccountGQL = inject(CreateAccountGQL);
-  
+
   async login(email: string, password: string) {
     const result = await firstValueFrom(
-      this.loginGQL.watch({ variables: { email, password } }).valueChanges
+      this.loginGQL.watch({ variables: { email, password } }).valueChanges,
     );
     return result.data?.loginAccount;
   }
-  
+
   async register(email: string, password: string) {
     const result = await firstValueFrom(
-      this.createAccountGQL.mutate({ variables: { email, password } })
+      this.createAccountGQL.mutate({ variables: { email, password } }),
     );
     return result.data?.createAccount;
   }
@@ -95,6 +101,7 @@ export class MyComponent {
 To add a new account operation:
 
 1. Create a `.graphql` file in `src/graphql/`:
+
 ```graphql
 # src/graphql/update-account.mutation.graphql
 mutation UpdateAccount($id: Int!, $email: String!) {
@@ -108,21 +115,21 @@ mutation UpdateAccount($id: Int!, $email: String!) {
 ```
 
 2. Run code generation:
+
 ```bash
 npm run codegen
 ```
 
 3. The new `UpdateAccountGQL` class will be generated and can be injected:
+
 ```typescript
 import { UpdateAccountGQL } from './generated/graphql';
 
 export class AccountService {
   private readonly updateAccountGQL = inject(UpdateAccountGQL);
-  
+
   async updateAccount(id: number, email: string) {
-    const result = await firstValueFrom(
-      this.updateAccountGQL.mutate({ variables: { id, email } })
-    );
+    const result = await firstValueFrom(this.updateAccountGQL.mutate({ variables: { id, email } }));
     return result.data?.updateAccount;
   }
 }

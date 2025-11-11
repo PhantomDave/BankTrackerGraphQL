@@ -17,7 +17,8 @@ th.mat-header-cell {
   border-bottom: 1px solid var(--mat-sys-outline-variant);
 }
 
-td.mat-cell, td.mat-footer-cell {
+td.mat-cell,
+td.mat-footer-cell {
   background-color: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);

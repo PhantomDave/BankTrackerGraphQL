@@ -80,6 +80,17 @@
             }
           </span>
         </a>
+        <a
+          mat-list-item
+          #rlaSettings="routerLinkActive"
+          class="nav-item"
+          routerLink="/settings"
+          routerLinkActive="active"
+          [attr.aria-current]="rlaSettings.isActive ? 'page' : null"
+        >
+          <mat-icon matListItemIcon>settings</mat-icon>
+          <span matListItemTitle>Settings</span>
+        </a>
         <a mat-list-item class="nav-item" (click)="onLogout()" style="cursor: pointer">
           <mat-icon matListItemIcon>logout</mat-icon>
           <span matListItemTitle>Logout</span>
