@@ -143,10 +143,10 @@ public class AccountMutations
                     .SetExtension("field", "email")
                     .SetExtension("reason", "invalid")
                     .Build());
-                    
+
         return AccountType.FromAccount(account);
     }
-    
+
 }
 
 public sealed class AuthPayload
