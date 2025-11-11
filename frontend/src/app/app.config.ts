@@ -10,6 +10,7 @@ import {
   provideZonelessChangeDetection,
 } from '@angular/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { provideRouter } from '@angular/router';
 import { ApolloLink, InMemoryCache } from '@apollo/client';
 import { SetContextLink } from '@apollo/client/link/context';
@@ -23,6 +24,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     importProvidersFrom(MatSnackBarModule),
+    provideNativeDateAdapter(),
     provideRouter(routes),
     provideHttpClient(withInterceptors([unauthorizedInterceptor])),
     provideApollo(() => {
