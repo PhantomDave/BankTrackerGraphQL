@@ -79,7 +79,7 @@ jobs:
       - name: Pull latest code
         run: |
           echo "📥 Pulling latest changes..."
-          tailscale ssh "${{ steps.prepare.outputs.target }}" "cd $DEPLOY_DIR && git pull origin main"
+          tailscale ssh "${{ steps.prepare.outputs.target }}" "cd $DEPLOY_DIR && git restore . && git pull origin main"
 
       - name: Deploy with Docker Compose
         run: |
