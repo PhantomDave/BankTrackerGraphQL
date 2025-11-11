@@ -53,7 +53,7 @@
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "80:4200"
+      - "80:80"
     depends_on:
       backend:
         condition: service_healthy
