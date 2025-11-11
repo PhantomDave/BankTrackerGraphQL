@@ -1,5 +1,23 @@
 .balance-card {
 	display: block;
+	position: relative;
+}
+
+.loading-overlay {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	background-color: rgba(0, 0, 0, 0.05);
+	z-index: 1;
+	pointer-events: all;
+}
+
+.loading-text {
+	font: var(--mat-sys-title-small);
+	color: var(--mat-sys-on-surface);
 }
 
 [mat-card-avatar] {

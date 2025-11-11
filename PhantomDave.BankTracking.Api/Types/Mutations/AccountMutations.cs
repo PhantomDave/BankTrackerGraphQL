@@ -29,6 +29,7 @@ public class AccountMutations
                     .SetExtension("field", "email")
                     .SetExtension("reason", "required")
                     .Build());
+
         }
 
         if (string.IsNullOrWhiteSpace(password))
@@ -90,6 +91,7 @@ public class AccountMutations
                     .SetExtension("field", "email")
                     .SetExtension("reason", "invalid_credentials")
                     .Build());
+                    
         return AccountType.FromAccount(account);
     }
 

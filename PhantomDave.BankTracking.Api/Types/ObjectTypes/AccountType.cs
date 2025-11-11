@@ -1,3 +1,4 @@
+using HotChocolate.Types;
 using PhantomDave.BankTracking.Library.Models;
 
 namespace PhantomDave.BankTracking.Api.Types.ObjectTypes;
@@ -7,6 +8,8 @@ public class AccountType
     public int Id { get; set; }
 
     public string Email { get; set; } = string.Empty;
+
+    [GraphQLType(typeof(DecimalType))]
     public decimal CurrentBalance { get; set; }
 
     public DateTime CreatedAt { get; set; }
@@ -20,7 +23,7 @@ public class AccountType
     {
         Id = account.Id,
         Email = account.Email,
-        CurrentBalance = account.CurrentBalance ?? 0,
+    CurrentBalance = account.CurrentBalance ?? 0,
         CreatedAt = account.CreatedAt,
         UpdatedAt = account.UpdatedAt,
     };

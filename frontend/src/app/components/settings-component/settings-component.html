@@ -31,7 +31,7 @@
 					@let emailControl = accountForm.controls.email;
 					<mat-form-field appearance="outline" class="form-field">
 						<mat-label>Email</mat-label>
-						<input matInput type="email" formControlName="email" required autocomplete="email" />
+						<input matInput type="email" formControlName="email" required autocomplete="email" [value]="account()?.email"/>
 						@if (emailControl.hasError('required') && (emailControl.dirty || emailControl.touched)) {
 							<mat-error>Email is required.</mat-error>
 						}
@@ -62,7 +62,7 @@
 							mat-flat-button
 							color="primary"
 							type="submit"
-							[disabled]="accountForm.invalid || loading()"
+							[disabled]="loading()"
 						>
 							Save changes
 						</button>

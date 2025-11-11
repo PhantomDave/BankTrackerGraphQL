@@ -15,7 +15,7 @@ directive @cost(
 
 type AccountType {
   createdAt: DateTime!
-  currentBalance: Decimal!
+  currentBalance: Decimal
   email: String!
   id: Int!
   updatedAt: DateTime

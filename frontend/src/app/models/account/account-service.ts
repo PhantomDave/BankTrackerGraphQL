@@ -43,7 +43,8 @@ export class AccountService {
   readonly error: Signal<string | null> = this._error.asReadonly();
 
   private extractGraphQLError(result: unknown, fallback: string): string | null {
-    const errors = (result as { errors?: readonly GraphQLError[] | null | undefined })?.errors ?? [];
+    const errors =
+      (result as { errors?: readonly GraphQLError[] | null | undefined })?.errors ?? [];
     if (errors.length > 0) {
       return errors[0]?.message ?? fallback;
     }
@@ -71,15 +72,14 @@ export class AccountService {
           email: account.email,
           createdAt: account.createdAt,
           updatedAt: account.updatedAt ?? null,
-          currentBalance: account.currentBalance,
+          currentBalance: account.currentBalance || undefined,
         });
       }
 
-      const graphQLErrors = result.errors ?? [];
-      if (graphQLErrors.length > 0) {
-        const message = graphQLErrors[0]?.message ?? 'Errore durante il caricamento account';
-        this._error.set(message);
-        this.snackbar.error(message);
+      const gqlMessage = this.extractGraphQLError(result, 'Errore durante il caricamento account');
+      if (gqlMessage) {
+        this._error.set(gqlMessage);
+        this.snackbar.error(gqlMessage);
       }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Errore imprevisto';
@@ -109,17 +109,16 @@ export class AccountService {
         return true;
       }
 
-      const graphQLErrors = result?.errors ?? [];
-      if (graphQLErrors.length > 0) {
-        const message = graphQLErrors[0]?.message ?? 'Creazione account fallita';
-        this._error.set(message);
-        this.snackbar.error(message);
-        return message;
+      const gqlMessage = this.extractGraphQLError(result, 'Creazione account fallita');
+      if (gqlMessage) {
+        this._error.set(gqlMessage);
+        this.snackbar.error(gqlMessage);
+        return gqlMessage;
       }
 
-      const message = 'Creazione account fallita';
-      this._error.set(message);
-      this.snackbar.error(message);
+      const fallbackMessage = 'Creazione account fallita';
+      this._error.set(fallbackMessage);
+      this.snackbar.error(fallbackMessage);
       return false;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Errore imprevisto';
@@ -135,9 +134,7 @@ export class AccountService {
     this._loading.set(true);
     this._error.set(null);
     try {
-      const result = await firstValueFrom(
-        this.loginGQL.mutate({ variables: { email, password } }),
-      );
+      const result = await firstValueFrom(this.loginGQL.mutate({ variables: { email, password } }));
 
       const token = result?.data?.login?.token;
       const account = result?.data?.login?.account;
@@ -153,25 +150,24 @@ export class AccountService {
           email: account.email,
           createdAt: account.createdAt,
           updatedAt: account.updatedAt ?? null,
-          currentBalance: account.currentBalance,
+          currentBalance: account.currentBalance || undefined,
         });
         this._isAuthenticated.set(true);
         this.snackbar.success('Login effettuato');
         return true;
       }
 
-      const graphQLErrors = result?.errors ?? [];
-      if (graphQLErrors.length > 0) {
-        const message = graphQLErrors[0]?.message ?? 'Credenziali non valide';
-        this._error.set(message);
-        this.snackbar.error(message);
-        return message;
+      const gqlMessage = this.extractGraphQLError(result, 'Credenziali non valide');
+      if (gqlMessage) {
+        this._error.set(gqlMessage);
+        this.snackbar.error(gqlMessage);
+        return gqlMessage;
       }
 
-      const message = 'Credenziali non valide';
-      this._error.set(message);
-      this.snackbar.error(message);
-      return message;
+      const fallbackMessage = 'Credenziali non valide';
+      this._error.set(fallbackMessage);
+      this.snackbar.error(fallbackMessage);
+      return fallbackMessage;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Errore imprevisto';
       this._error.set(message);
@@ -182,7 +178,7 @@ export class AccountService {
     }
   }
 
-  async getUserAccount(): Promise<Account> {
+  async getUserAccount(): Promise<void> {
     this._loading.set(true);
     this._error.set(null);
     try {
@@ -195,24 +191,23 @@ export class AccountService {
           email: account.email,
           createdAt: account.createdAt,
           updatedAt: account.updatedAt ?? null,
-          currentBalance: account.currentBalance,
+          currentBalance: account.currentBalance || undefined,
         };
         this._selectedAccount.set(acc);
-        return acc;
+        return;
       }
 
-      const graphQLErrors = result.errors ?? [];
-      if (graphQLErrors.length > 0) {
-        const message = graphQLErrors[0]?.message ?? 'Errore durante il caricamento account';
-        this._error.set(message);
-        this.snackbar.error(message);
-        throw new Error(message);
+      const gqlMessage = this.extractGraphQLError(result, 'Errore durante il caricamento account');
+      if (gqlMessage) {
+        this._error.set(gqlMessage);
+        this.snackbar.error(gqlMessage);
+        throw new Error(gqlMessage);
       }
 
-      const message = 'Errore durante il caricamento account';
-      this._error.set(message);
-      this.snackbar.error(message);
-      throw new Error(message);
+      const fallbackMessage = 'Errore durante il caricamento account';
+      this._error.set(fallbackMessage);
+      this.snackbar.error(fallbackMessage);
+      throw new Error(fallbackMessage);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Errore imprevisto';
       this._error.set(message);
@@ -250,24 +245,23 @@ export class AccountService {
           email: updatedAccount.email,
           createdAt: updatedAccount.createdAt,
           updatedAt: updatedAccount.updatedAt ?? null,
-          currentBalance: updatedAccount.currentBalance,
+          currentBalance: updatedAccount.currentBalance || undefined,
         });
         this.snackbar.success('Account aggiornato');
         return true;
       }
 
-      const graphQLErrors = result?.errors ?? [];
-      if (graphQLErrors.length > 0) {
-        const message = graphQLErrors[0]?.message ?? 'Aggiornamento account non riuscito';
-        this._error.set(message);
-        this.snackbar.error(message);
-        return message;
+      const gqlMessage = this.extractGraphQLError(result, 'Aggiornamento account non riuscito');
+      if (gqlMessage) {
+        this._error.set(gqlMessage);
+        this.snackbar.error(gqlMessage);
+        return gqlMessage;
       }
 
-      const message = 'Aggiornamento account non riuscito';
-      this._error.set(message);
-      this.snackbar.error(message);
-      return message;
+      const fallbackMessage = 'Aggiornamento account non riuscito';
+      this._error.set(fallbackMessage);
+      this.snackbar.error(fallbackMessage);
+      return fallbackMessage;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Errore imprevisto';
       this._error.set(message);
