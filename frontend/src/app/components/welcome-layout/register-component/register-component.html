@@ -1,7 +1,10 @@
 <app-welcome-layout-component
   title="Register Into the bank tracker"
   subtitle="Please enter your credentials to create your account"
-  [actions]="[{ text: 'Submit', action: onSubmit.bind(this) }]"
+  [actions]="[
+    { text: 'Login', action: redirectToLogin.bind(this) },
+    { text: 'Submit', action: onSubmit.bind(this) },
+  ]"
 >
   <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="login-form">
     <app-flex [vertical]="true" gap="8px" justify="center" align="center" class="login-form-flex">

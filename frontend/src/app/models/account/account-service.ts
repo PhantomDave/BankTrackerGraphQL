@@ -22,6 +22,9 @@ export class AccountService {
   private readonly loginGQL = inject(LoginGQL);
   private readonly verifyTokenGQL = inject(VerifyTokenGQL);
 
+  private readonly _isAuthenticated = signal<boolean>(false);
+  readonly isAuthenticated: Signal<boolean> = this._isAuthenticated.asReadonly();
+
   private readonly _selectedAccount = signal<Account | null>(null);
   readonly selectedAccount: Signal<Account | null> = this._selectedAccount.asReadonly();
 
@@ -33,6 +36,11 @@ export class AccountService {
 
   private readonly _error = signal<string | null>(null);
   readonly error: Signal<string | null> = this._error.asReadonly();
+
+  constructor() {
+    const token = localStorage.getItem('sessionData');
+    this._isAuthenticated.set(token !== null);
+  }
 
   async getAccountByEmail(email: string): Promise<void> {
     this._loading.set(true);
@@ -122,6 +130,7 @@ export class AccountService {
           createdAt: account.createdAt,
           updatedAt: account.updatedAt ?? null,
         });
+        this._isAuthenticated.set(true);
         this.snackbar.success('Login effettuato');
         return true;
       }
@@ -143,5 +152,6 @@ export class AccountService {
   logout(): void {
     localStorage.removeItem('sessionData');
     this._selectedAccount.set(null);
+    this._isAuthenticated.set(false);
   }
 }

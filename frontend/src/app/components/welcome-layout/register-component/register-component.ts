@@ -8,6 +8,7 @@ import { AccountService } from '../../../models/account/account-service';
 import { SnackbarService } from '../../../shared/services/snackbar.service';
 import { FlexComponent } from '../../ui-library/flex-component/flex-component';
 import { WelcomeLayoutComponent } from '../welcome-layout-component/welcome-layout-component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register-component',
@@ -27,10 +28,15 @@ export class RegisterComponent {
   private readonly fb = inject(FormBuilder);
   private readonly _accountService = inject(AccountService);
   private readonly _snackbarService = inject(SnackbarService);
+  private readonly router = inject(Router);
   protected readonly registerForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
+
+  protected async redirectToLogin() {
+    await this.router.navigate(['login']);
+  }
 
   protected async onSubmit() {
     if (this.registerForm.valid) {

@@ -44,4 +44,7 @@ export class LoginComponent {
       this.loginForm.markAllAsTouched();
     }
   }
+  protected async redirectToRegister() {
+    await this.router.navigate(['register']);
+  }
 }

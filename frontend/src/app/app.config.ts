@@ -1,7 +1,7 @@
 import { provideApollo } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 
-import { HttpHeaders, provideHttpClient } from '@angular/common/http';
+import { HttpHeaders, provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
   ApplicationConfig,
   importProvidersFrom,
@@ -16,6 +16,7 @@ import { SetContextLink } from '@apollo/client/link/context';
 
 import { routes } from './app.routes';
 import { environment } from '../environments/environment';
+import { unauthorizedInterceptor } from './interceptor/unauthorized-interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -23,7 +24,7 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     importProvidersFrom(MatSnackBarModule),
     provideRouter(routes),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([unauthorizedInterceptor])),
     provideApollo(() => {
       const httpLink = inject(HttpLink);
 

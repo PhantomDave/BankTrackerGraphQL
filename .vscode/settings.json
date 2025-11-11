@@ -11,5 +11,19 @@
       "database": "bankdb",
       "username": "bankuser"
     }
+  ],
+  "cSpell.words": [
+    "appsettings",
+    "aspnet",
+    "ASPNETCORE",
+    "bankdb",
+    "bankpassword",
+    "banktracking",
+    "banktrackingapplication",
+    "banktrackingfrontend",
+    "bankuser",
+    "codegen",
+    "healthcheck",
+    "isready"
   ]
 }

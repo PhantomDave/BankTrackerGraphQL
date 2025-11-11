@@ -42,6 +42,7 @@ export const authenticateGuard: CanActivateFn = async (route, state) => {
     localStorage.removeItem('sessionData');
     return router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
   } catch {
+    localStorage.removeItem('sessionData');
     return router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
   }
 };

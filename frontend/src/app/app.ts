@@ -1,7 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 import { SideNavComponent } from './components/side-nav-component/side-nav-component';
+import { AccountService } from './models/account/account-service';
 
 @Component({
   selector: 'app-root',
@@ -10,12 +11,7 @@ import { SideNavComponent } from './components/side-nav-component/side-nav-compo
   styleUrl: './app.css',
 })
 export class App {
+  private readonly accountService = inject(AccountService);
   protected readonly title = signal('Banking Helper');
-
-  isAuthenticated = signal(false);
-
-  constructor() {
-    const token = localStorage.getItem('sessionData');
-    this.isAuthenticated.set(token !== null);
-  }
+  protected readonly isAuthenticated = this.accountService.isAuthenticated;
 }

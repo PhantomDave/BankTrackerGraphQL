@@ -37,13 +37,26 @@
                 routerLink="/config"
                 class="nav-item"
                 routerLinkActive="active"
-                #rlaConfig="routerLinkActive"
+                #tlaTracking="routerLinkActive"
                 [routerLinkActiveOptions]="{ exact: true }"
-                [attr.aria-current]="rlaConfig.isActive ? 'page' : null"
+                [attr.aria-current]="tlaTracking.isActive ? 'page' : null"
               >
                 <mat-icon matListItemIcon>query_stats</mat-icon>
                 <span matListItemTitle>Tracking</span>
                 <span matListItemLine>Add and Track your expenses</span>
+              </a>
+              <a
+                mat-list-item
+                routerLink="/balance"
+                class="nav-item"
+                routerLinkActive="active"
+                #rlaBalance="routerLinkActive"
+                [routerLinkActiveOptions]="{ exact: true }"
+                [attr.aria-current]="rlaBalance.isActive ? 'page' : null"
+              >
+                <mat-icon matListItemIcon>query_stats</mat-icon>
+                <span matListItemTitle>Balance</span>
+                <span matListItemLine>View your account balance</span>
               </a>
             </app-flex>
           </mat-nav-list>
@@ -51,7 +64,7 @@
       </div>
 
       <mat-nav-list aria-label="Account actions">
-        <a mat-list-item class="nav-item">
+        <a mat-list-item class="nav-item" (click)="onLogout()" style="cursor: pointer">
           <mat-icon matListItemIcon>logout</mat-icon>
           <span matListItemTitle>Logout</span>
         </a>
