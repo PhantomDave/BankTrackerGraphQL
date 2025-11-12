@@ -1,0 +1,18 @@
+mutation previewImport($file: PreviewImportInput!) {
+  previewImport(input: $file) {
+    headers
+    sampleRows {
+      key
+      value
+    }
+    totalRows
+    detectedColumns {
+      key
+      value {
+        column
+        confidence
+        suggestedMapping
+      }
+    }
+  }
+}

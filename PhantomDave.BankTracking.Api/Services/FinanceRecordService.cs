@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using PhantomDave.BankTracking.Api.Types.ObjectTypes;
 using PhantomDave.BankTracking.Data.UnitOfWork;
 using PhantomDave.BankTracking.Library.Models;
 
@@ -192,6 +193,47 @@ public class FinanceRecordService
             DateTimeKind.Utc => value,
             DateTimeKind.Unspecified => DateTime.SpecifyKind(value, DateTimeKind.Utc),
             _ => value.ToUniversalTime()
+        };
+    }
+    
+    public async Task<List<FinanceRecord>> FindDuplicatesAsync(
+        int accountId,
+        List<FinanceRecord> candidates)
+    {
+        var dupes = _unitOfWork.FinanceRecords.Query().Where(r => r.AccountId == accountId && 
+            candidates.Select(c => new { c.Date, c.Amount, Description = NormalizeDescription(c.Description) })
+                .Contains(new { r.Date, r.Amount, Description = NormalizeDescription(r.Description) })
+        );
+        return await dupes.ToListAsync();
+    }
+
+    public async Task<ImportResultType> BulkCreateWithDuplicateCheckAsync(
+        int accountId,
+        List<FinanceRecord> records)
+    {
+        var dupes = _unitOfWork.FinanceRecords.Query().Where(r => r.AccountId == accountId && 
+                                                                  records.Select(c => new { c.Date, c.Amount, Description = NormalizeDescription(c.Description) })
+                                                                      .Contains(new { r.Date, r.Amount, Description = NormalizeDescription(r.Description) })
+        );
+
+        var error = new List<ImportError>();
+        
+        foreach (var record in dupes)
+        {
+            error.Add(new ImportError
+            {
+                Message = $"Duplicate record found for {record.Name} at {record.Amount} {record.Date}."
+            });
+        }
+        
+        var addResult = (await _unitOfWork.FinanceRecords.AddRangeAsync(records.Except(dupes).ToList())).ToArray();
+        return new ImportResultType
+        {
+            CreatedRecords = addResult.Select(FinanceRecordType.FromFinanceRecord).ToList(),
+            DuplicateCount = dupes.Count(),
+            Errors = error,
+            FailureCount = error.Count,
+            SuccessCount = addResult.Count()
         };
     }
 }

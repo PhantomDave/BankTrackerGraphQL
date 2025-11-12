@@ -46,4 +46,25 @@ public class ImportMutations
             SuccessCount = 0
         });
     }
+
+
+    // [Authorize]
+    // public async Task<BankImportTemplateType> CreateImportTemplate(
+    //     string bankName,
+    //     Dictionary<string, string> columnMappings,
+    //     string dateFormat,
+    //     string decimalSeparator,
+    //     string thousandsSeparator,
+    //     bool isDefault,
+    //     [Service] ImportTemplateService templateService,
+    //     [Service] IHttpContextAccessor httpContextAccessor)
+    // {
+    // }
+    //
+    // [Authorize]
+    // public async Task<BankImportTemplateType> UpdateImportTemplate(...)
+    //
+    // [Authorize]
+    // public async Task<bool> DeleteImportTemplate(int id, ...)
+    
 }

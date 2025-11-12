@@ -1,0 +1,23 @@
+mutation confirmImport($file: ConfirmImportInput!) {
+  confirmImport(input: $file) {
+    createdRecords {
+      id
+      name
+      description
+      amount
+      currency
+      date
+    }
+    duplicateCount
+    errors {
+      message
+      rowNumber
+      rowData {
+        key
+        value
+      }
+    }
+    failureCount
+    successCount
+  }
+}

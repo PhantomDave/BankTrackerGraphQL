@@ -8,6 +8,7 @@ public interface IRepository<T> where T : class
     Task<T?> GetByIdAsync(object id);
     Task<IEnumerable<T>> GetAllAsync();
     Task<T> AddAsync(T entity);
+    Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entity);
     Task<T> UpdateAsync(T entity);
     Task<bool> DeleteAsync(object id);
     Task<T?> GetSingleOrDefaultAsync(Expression<Func<T, bool>> predicate);
@@ -39,6 +40,13 @@ public class Repository<T> : IRepository<T> where T : class
     public async Task<T> AddAsync(T entity)
     {
         await _dbSet.AddAsync(entity);
+        return entity;
+    }
+    
+    public async Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entity)
+    {
+        entity = entity.ToArray();
+        await _dbSet.AddRangeAsync(entity);
         return entity;
     }
 
