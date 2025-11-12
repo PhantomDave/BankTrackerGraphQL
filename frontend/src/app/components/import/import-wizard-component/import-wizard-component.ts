@@ -6,6 +6,4 @@ import { Component } from '@angular/core';
   templateUrl: './import-wizard-component.html',
   styleUrl: './import-wizard-component.css',
 })
-export class ImportWizardComponent {
-
-}
+export class ImportWizardComponent {}
