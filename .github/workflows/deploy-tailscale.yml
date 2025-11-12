@@ -2,104 +2,69 @@ name: Deploy via Tailscale
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
 
 concurrency:
   group: deploy-main
   cancel-in-progress: false
 
+env:
+  DEPLOY_DIR: /opt/banktracker/BankTrackerGraphQL
+
 jobs:
   deploy:
-    name: Deploy over Tailscale
+    name: Deploy to Production
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    env:
-      TAILSCALE_TARGET: ${{ secrets.TAILSCALE_SSH_TARGET }}
-      DEPLOY_DIR: /opt/banktracker/BankTrackerGraphQL
+    
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Authenticate to Tailscale
+      - name: Connect to Tailscale
         uses: tailscale/github-action@v4
         with:
-          authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
+          oauth-client-id: ${{ secrets.TAILSCALE_OAUTH_CLIENTID }}
+          oauth-secret: ${{ secrets.TAILSCALE_OAUTH_CLIENT_SECRET }}
           hostname: banktracker-ci-${{ github.run_id }}
 
-      - name: Prepare deployment parameters
-        id: prepare
-        shell: bash
+      - name: Configure SSH target
+        id: ssh
         run: |
-          target="$(printf '%s' "$TAILSCALE_TARGET" | tr -d '\r' | tr -d '\n')"
-          if [ -z "$target" ]; then
-            echo "::error::TAILSCALE_SSH_TARGET resolved to an empty string" >&2
+          TARGET="${{ secrets.TAILSCALE_SSH_TARGET }}"
+          if [[ -z "$TARGET" ]]; then
+            echo "::error::TAILSCALE_SSH_TARGET secret is not set"
             exit 1
           fi
-          if ! [[ "$target" =~ ^[a-zA-Z0-9_.:@-]+$ ]]; then
-            echo "::error::TAILSCALE_SSH_TARGET contains unsupported characters" >&2
-            exit 1
-          fi
-          user_prefix=""
-          host_port="$target"
-          if [[ "$host_port" == *@* ]]; then
-            user_prefix="${host_port%%@*}@"
-            host_port="${host_port#*@}"
-          fi
-          host_only="$host_port"
-          port_suffix=""
-          if [[ "$host_only" == *:* ]]; then
-            host_only="${host_only%%:*}"
-            port_suffix=":${host_port#*:}"
-          fi
-          while [[ "$host_only" == *"." ]] && [ -n "$host_only" ]; do
-            host_only="${host_only%?}"
-          done
-          if [ -z "$host_only" ]; then
-            echo "::error::TAILSCALE_SSH_TARGET host portion resolved to empty after sanitization" >&2
-            exit 1
-          fi
-          sanitized_target="${user_prefix}${host_only}${port_suffix}"
-          echo "target=$sanitized_target" >> "$GITHUB_OUTPUT"
+          echo "target=$TARGET" >> "$GITHUB_OUTPUT"
 
-      - name: Validate deployment secrets
+      - name: Test connectivity
         run: |
-          if [ -z "${{ steps.prepare.outputs.target }}" ]; then
-            echo "Missing required secret: TAILSCALE_SSH_TARGET" >&2
-            exit 1
-          fi
-
-      - name: Test Tailscale connectivity
-        run: |
-          echo "Testing connection to target host..."
-          tailscale ssh "${{ steps.prepare.outputs.target }}" "echo 'Connected successfully' && whoami && git config --global --add safe.directory /opt/banktracker/BankTrackerGraphQL"
+          tailscale ssh "${{ steps.ssh.outputs.target }}" "echo 'Connected' && git config --global --add safe.directory $DEPLOY_DIR"
 
       - name: Pull latest code
         run: |
-          echo "📥 Pulling latest changes..."
-          tailscale ssh "${{ steps.prepare.outputs.target }}" "cd $DEPLOY_DIR && git restore . && git pull origin main"
+          tailscale ssh "${{ steps.ssh.outputs.target }}" \
+            "cd $DEPLOY_DIR && git restore . && git pull origin main"
 
-      - name: Deploy with Docker Compose
+      - name: Deploy backend services
         run: |
-          echo "🚀 Starting deployment..."
-          echo "📦 Building and starting database and backend first..."
-          tailscale ssh "${{ steps.prepare.outputs.target }}" "cd $DEPLOY_DIR && docker compose down && docker compose up -d --build --wait database backend"
-          echo "✅ Backend is ready"
-          echo "📥 Downloading GraphQL schema from backend..."
-          tailscale ssh "${{ steps.prepare.outputs.target }}" "cd $DEPLOY_DIR/frontend && curl -f http://localhost:5095/graphql?sdl -o schema.graphql"
-          echo "📦 Building and starting frontend..."
-          tailscale ssh "${{ steps.prepare.outputs.target }}" "cd $DEPLOY_DIR && docker compose up -d --build --wait frontend"
-          echo "✅ Deployment completed"
+          tailscale ssh "${{ steps.ssh.outputs.target }}" \
+            "cd $DEPLOY_DIR && docker compose down && docker compose up -d --build --wait database backend"
 
-      - name: Post-deployment verification
+      - name: Download GraphQL schema
+        run: |
+          tailscale ssh "${{ steps.ssh.outputs.target }}" \
+            "cd $DEPLOY_DIR/frontend && curl -f http://localhost:5095/graphql?sdl -o schema.graphql"
+
+      - name: Deploy frontend
+        run: |
+          tailscale ssh "${{ steps.ssh.outputs.target }}" \
+            "cd $DEPLOY_DIR && docker compose up -d --build --wait frontend"
+
+      - name: Verify deployment
         if: success()
         run: |
-          echo "Verifying deployment..."
-          echo "Checking Docker containers..."
-          tailscale ssh "${{ steps.prepare.outputs.target }}" "cd $DEPLOY_DIR && docker compose ps"
-          echo "Checking backend health..."
-          tailscale ssh "${{ steps.prepare.outputs.target }}" "curl -f http://localhost:5095/graphql?sdl || echo 'Backend not yet ready'"
-          echo "Checking frontend..."
-          tailscale ssh "${{ steps.prepare.outputs.target }}" "curl -f http://localhost:80 || echo 'Frontend not yet ready'"
+          tailscale ssh "${{ steps.ssh.outputs.target }}" "cd $DEPLOY_DIR && docker compose ps"

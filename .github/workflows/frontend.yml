@@ -44,6 +44,9 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore PhantomDave.BankTracking.Api/PhantomDave.BankTracking.Api.csproj
 
+    - name: Spin up Database with Docker Compose
+      run: docker compose up database -d --wait
+
     - name: Start API in background
       working-directory: ./PhantomDave.BankTracking.Api
       run: |
@@ -51,9 +54,6 @@ jobs:
         echo $! > api.pid
       env:
         ASPNETCORE_ENVIRONMENT: Development
-
-    - name: Spin up Database with Docker Compose
-      run: docker compose up database -d --wait
 
     - name: Wait for API to be ready
       uses: jtalk/url-health-check-action@v4
