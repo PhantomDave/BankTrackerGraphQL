@@ -7,6 +7,7 @@ import { RegisterComponent } from './components/welcome-layout/register-componen
 import { authenticateGuard } from './guards/authenticate-guard';
 import { BalanceComponent } from './balance/balance-component/balance-component';
 import { SettingsComponent } from './components/settings-component/settings-component';
+import { ImportWizardComponent } from './components/import/import-wizard-component/import-wizard-component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -16,5 +17,6 @@ export const routes: Routes = [
   { path: 'config', component: MonthlyRecapComponent, canActivate: [authenticateGuard] },
   { path: 'balance', component: BalanceComponent, canActivate: [authenticateGuard] },
   { path: 'settings', component: SettingsComponent, canActivate: [authenticateGuard] },
+  { path: 'import', component: ImportWizardComponent, canActivate: [authenticateGuard] },
   { path: '**', redirectTo: 'login' },
 ];

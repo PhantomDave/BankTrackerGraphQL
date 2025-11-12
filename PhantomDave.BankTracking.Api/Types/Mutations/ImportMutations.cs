@@ -22,7 +22,7 @@ public class ImportMutations
         {
             DetectedColumns = detectionResults,
             Headers = parsedFile.Headers,
-            SampleRows = parsedFile.Rows.Take(5).ToList(),
+            SampleRows = [.. parsedFile.Rows.Take(5)],
             TotalRows = parsedFile.Rows.Count
         });
     }

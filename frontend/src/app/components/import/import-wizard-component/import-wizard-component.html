@@ -1,1 +1,28 @@
-<p>import-wizard-component works!</p>
+<app-flex><mat-stepper orientation="vertical" [linear]="isLinear" #stepper>
+  <mat-step>
+    <ng-template matStepLabel>Select file</ng-template>
+    <app-import-step1-upload></app-import-step1-upload>
+    <div class="step-nav">
+      <button matButton matStepperNext [disabled]="!preview()">Next</button>
+    </div>
+  </mat-step>
+  <mat-step>
+    <form>
+      <ng-template matStepLabel>Preview Column mapping</ng-template>
+      <app-import-step2-detect></app-import-step2-detect>
+      <div>
+        <button matButton matStepperPrevious>Back</button>
+        <button matButton matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Confirm</ng-template>
+    <p>Review and confirm import (placeholder).</p>
+    <div>
+      <button matButton matStepperPrevious>Back</button>
+      <button matButton (click)="stepper.reset()">Reset</button>
+    </div>
+  </mat-step>
+</mat-stepper>
+</app-flex>

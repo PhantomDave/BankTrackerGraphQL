@@ -1,0 +1,68 @@
+<div class="upload-container" [class.loading]="loading()">
+	<div class="drop-zone">
+			<input
+			id="file-input"
+			type="file"
+			accept=".csv,.xlsx"
+			(change)="onFileSelected($event)"
+				hidden
+				#fileInput
+		/>
+		<p class="hint">
+			Choose a CSV or Excel file to import.
+		</p>
+		<div class="actions">
+							<button mat-raised-button color="primary" (click)="fileInput.click()">
+				Select file
+			</button>
+			@if (selectedFile(); as f) {
+				<span class="filename">{{ f.name }}</span>
+			}
+		</div>
+		@if (validationError(); as e) {
+			<div class="error">{{ e }}</div>
+		}
+		@if (!validationError() && serviceError(); as se) {
+			<div class="error">{{ se }}</div>
+		}
+	</div>
+
+	<div class="preview-actions">
+		<button mat-stroked-button color="primary" [disabled]="!selectedFile() || !!validationError() || loading()" (click)="onPreviewClick()">
+			Preview import
+		</button>
+	</div>
+
+	@if (loading()) {
+		<mat-progress-bar mode="indeterminate"></mat-progress-bar>
+	}
+
+	@if (preview(); as p) {
+		<div class="preview">
+			<h3>Preview</h3>
+			<p>Total rows: {{ p.totalRows }}</p>
+			@if (p.sampleRows.length) {
+				<div class="table-wrapper">
+					<table>
+						<thead>
+							<tr>
+								@for (h of p.headers; track h) {
+									<th>{{ h }}</th>
+								}
+							</tr>
+						</thead>
+						<tbody>
+							@for (row of p.sampleRows; track row) {
+								<tr>
+									@for (h of p.headers; track h) {
+										<td>{{ row[h] }}</td>
+									}
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			}
+		</div>
+	}
+</div>

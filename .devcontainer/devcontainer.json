@@ -16,6 +16,7 @@
     "vscode": {
       "extensions": [
         "ms-dotnettools.csharp",
+        "ms-dotnettools.csdevkit",
         "ms-azuretools.vscode-docker",
         "graphql.vscode-graphql",
         "graphql.vscode-graphql-syntax",

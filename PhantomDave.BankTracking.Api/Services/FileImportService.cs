@@ -19,7 +19,8 @@ public class ParsedFileData
     public int TotalRows { get; set; }
     public string DetectedDelimiter { get; set; } = ",";
     public string DetectedEncoding { get; set; } = "UTF-8";
-    public FileType FileTypeExt { get; set; } = FileType.Xlsx; 
+    public FileType FileTypeExt { get; set; } = FileType.Xlsx;
+    public int HeaderRowIndex { get; set; } = 1;
 }
 public class FileImportService
 {
@@ -36,12 +37,17 @@ public class FileImportService
             var sampleText = await streamReader.ReadToEndAsync();
             parsedData.DetectedDelimiter = DetectDelimiter(sampleText);
             reader.Position = 0;
-            parsedData.Rows = await ParseCsvAsync(reader);
+            var (rows, headerRowIndex) = await ParseCsvAsync(reader);
+            parsedData.Rows = rows;
+            parsedData.HeaderRowIndex = headerRowIndex;
         }
         else if (file.Name.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
         {
             parsedData.FileTypeExt = FileType.Xlsx;
-            parsedData.Rows = ParseXlsxAsync(reader).Result;
+            var parsedXlsxData = await ParseXlsxAsync(reader);
+            parsedData.Rows = parsedXlsxData.Rows;
+            parsedData.Headers = parsedXlsxData.Headers;
+            parsedData.HeaderRowIndex = parsedXlsxData.HeaderRowIndex;
         }
         else
         {
@@ -51,7 +57,7 @@ public class FileImportService
         return parsedData;
     }
 
-    private static async Task<List<Dictionary<string, string>>> ParseCsvAsync(Stream stream)
+    private static async Task<(List<Dictionary<string, string>> Rows, int HeaderRowIndex)> ParseCsvAsync(Stream stream)
     {
         var rows = new List<Dictionary<string, string>>();
         
@@ -71,7 +77,7 @@ public class FileImportService
         
         if (headers == null || headers.Length == 0)
         {
-            return rows;
+            return (rows, 1);
         }
         
         while (await csv.ReadAsync())
@@ -84,40 +90,108 @@ public class FileImportService
             rows.Add(row);
         }
         
-        return rows;
+        return (rows, 1);
     }
 
-    private static async Task<List<Dictionary<string, string>>> ParseXlsxAsync(Stream stream)
+    private async Task<ParsedFileData> ParseXlsxAsync(Stream stream)
     {
-        var rows = new List<Dictionary<string, string>>();
+        var parsedData = new ParsedFileData();
+        
+        parsedData.Rows = new List<Dictionary<string, string>>();
         
         using var package = new ExcelPackage(stream);
         var worksheet = package.Workbook.Worksheets.FirstOrDefault();
         
         if (worksheet?.Dimension == null)
         {
-            return rows;
+            return new ParsedFileData { Rows = parsedData.Rows, HeaderRowIndex = 1 };
         }
         
-        var headers = new List<string>();
+        var headerRowIndex = DetectHeaderRow(worksheet);
+        
+        parsedData.Headers = new List<string>();
         for (var col = 1; col <= worksheet.Dimension.End.Column; col++)
         {
-            var headerValue = worksheet.Cells[1, col].Text ?? $"Column{col}";
-            headers.Add(headerValue);
+            var headerValue = worksheet.Cells[headerRowIndex, col].Text ?? $"Column{col}";
+            parsedData.Headers.Add(headerValue);
         }
         
-        for (var row = 2; row <= worksheet.Dimension.End.Row; row++)
+        for (var row = headerRowIndex + 1; row <= worksheet.Dimension.End.Row; row++)
         {
             var rowData = new Dictionary<string, string>();
             for (var col = 1; col <= worksheet.Dimension.End.Column; col++)
             {
                 var cellValue = worksheet.Cells[row, col].Text ?? string.Empty;
-                rowData[headers[col - 1]] = cellValue;
+                rowData[parsedData.Headers[col - 1]] = cellValue;
             }
-            rows.Add(rowData);
+            parsedData.Rows.Add(rowData);
         }
         
-        return await Task.FromResult(rows);
+        return await Task.FromResult(parsedData);
+    }
+    
+    private static int DetectHeaderRow(ExcelWorksheet worksheet)
+    {
+        var maxRowsToCheck = Math.Min(50, worksheet.Dimension.End.Row);
+        var bestRow = 1;
+        var bestScore = 0;
+        
+        var headerKeywords = new[]
+        {
+            "date", "data", "fecha", "datum",
+            "amount", "importo", "monto", "betrag",
+            "description", "descrizione", "descripcion", "beschreibung",
+            "balance", "saldo", "name", "nome", "currency", "valuta"
+        };
+        
+        for (var row = 1; row <= maxRowsToCheck; row++)
+        {
+            var score = 0;
+            var hasContent = false;
+            var nonEmptyCells = 0;
+            
+            for (var col = 1; col <= worksheet.Dimension.End.Column; col++)
+            {
+                var cellText = worksheet.Cells[row, col].Text?.Trim() ?? string.Empty;
+                
+                if (!string.IsNullOrWhiteSpace(cellText))
+                {
+                    hasContent = true;
+                    nonEmptyCells++;
+                    
+                    var lowerText = cellText.ToLowerInvariant();
+                    
+                    foreach (var keyword in headerKeywords)
+                    {
+                        if (lowerText.Contains(keyword))
+                        {
+                            score += 10;
+                            break;
+                        }
+                    }
+                    
+                    if (cellText.Length > 3 && cellText.Length < 50 && 
+                        !decimal.TryParse(cellText.Replace(",", "."), out _) &&
+                        !DateTime.TryParse(cellText, out _))
+                    {
+                        score += 2;
+                    }
+                }
+            }
+            
+            if (hasContent && nonEmptyCells >= worksheet.Dimension.End.Column / 2)
+            {
+                score += nonEmptyCells;
+            }
+            
+            if (score > bestScore)
+            {
+                bestScore = score;
+                bestRow = row;
+            }
+        }
+        
+        return bestRow;
     }
 
     private static string DetectDelimiter(string sampleText)
