@@ -9,7 +9,7 @@
 - [ ] **Budget vs Actual Reports** - Visual comparison of planned vs actual spending
 
 ### Data Management
-- [ ] **CSV Import/Export** - Import transactions from bank statements, export data for backup or analysis
+- [ ] **CSV Import/Export** - Import transactions from bank statements, export data for backup or analysis **In Progress**
 - [ ] **Bulk Operations** - Edit/delete multiple finance records at once
 - [ ] **Data Backup/Restore** - Easy backup and restore functionality
 - [ ] **Duplicate Detection** - Automatically flag potential duplicate transactions
