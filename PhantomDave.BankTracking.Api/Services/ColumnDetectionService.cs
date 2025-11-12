@@ -18,7 +18,7 @@ public class ColumnDetectionService
         ["fecha valor"] = "Date",
         ["fecha operacion"] = "Date",
         ["operation date"] = "Date",
-        
+
         // Amount patterns
         ["amount"] = "Amount",
         ["importo"] = "Amount",
@@ -35,7 +35,7 @@ public class ColumnDetectionService
         ["importe"] = "Amount",
         ["total"] = "Amount",
         ["totale"] = "Amount",
-        
+
         // Description patterns
         ["description"] = "Description",
         ["descrizione"] = "Description",
@@ -52,7 +52,7 @@ public class ColumnDetectionService
         ["reference"] = "Description",
         ["riferimento"] = "Description",
         ["motivo"] = "Description",
-        
+
         // Name patterns
         ["name"] = "Name",
         ["nome"] = "Name",
@@ -64,7 +64,7 @@ public class ColumnDetectionService
         ["controparte"] = "Name",
         ["merchant"] = "Name",
         ["vendor"] = "Name",
-        
+
         // Balance patterns
         ["balance"] = "Balance",
         ["saldo"] = "Balance",
@@ -74,7 +74,7 @@ public class ColumnDetectionService
         ["current balance"] = "Balance",
         ["balance after"] = "Balance",
         ["saldo final"] = "Balance",
-        
+
         // Currency patterns
         ["currency"] = "Currency",
         ["valuta"] = "Currency",
@@ -95,7 +95,7 @@ public class ColumnDetectionService
                 continue;
 
             var (suggestedMapping, confidence) = FindBestMatch(cleanHeader);
-            
+
             results[cleanHeader] = new ColumnDetectionResult
             {
                 Column = cleanHeader,
@@ -110,7 +110,7 @@ public class ColumnDetectionService
     private (string SuggestedMapping, int Confidence) FindBestMatch(string header)
     {
         var normalizedHeader = header.ToLowerInvariant().Trim();
-        
+
         if (PatternToFieldMapping.TryGetValue(normalizedHeader, out var exactMatch))
         {
             return (exactMatch, 100);
@@ -122,7 +122,7 @@ public class ColumnDetectionService
         foreach (var (pattern, fieldName) in PatternToFieldMapping)
         {
             var confidence = CalculateConfidence(normalizedHeader, pattern);
-            
+
             if (confidence > bestConfidence)
             {
                 bestConfidence = confidence;
@@ -131,8 +131,8 @@ public class ColumnDetectionService
         }
 
         // Return "Unknown" if confidence is too low
-        return bestConfidence >= 50 
-            ? (bestMatch, bestConfidence) 
+        return bestConfidence >= 50
+            ? (bestMatch, bestConfidence)
             : ("Unknown", 0);
     }
 

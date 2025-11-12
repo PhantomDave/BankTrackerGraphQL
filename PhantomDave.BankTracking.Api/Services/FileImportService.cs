@@ -32,7 +32,7 @@ public class FileImportService
         {
             parsedData.FileTypeExt = FileType.Csv;
             parsedData.DetectedEncoding = DetectEncoding(reader).WebName;
-            reader.Position = 0; 
+            reader.Position = 0;
             using var streamReader = new StreamReader(reader, Encoding.GetEncoding(parsedData.DetectedEncoding));
             var sampleText = await streamReader.ReadToEndAsync();
             parsedData.DetectedDelimiter = DetectDelimiter(sampleText);
@@ -60,7 +60,7 @@ public class FileImportService
     private static async Task<(List<Dictionary<string, string>> Rows, int HeaderRowIndex)> ParseCsvAsync(Stream stream)
     {
         var rows = new List<Dictionary<string, string>>();
-        
+
         using var reader = new StreamReader(stream);
         var config = new CsvConfiguration(CultureInfo.InvariantCulture)
         {
@@ -68,18 +68,18 @@ public class FileImportService
             MissingFieldFound = null,
             BadDataFound = null
         };
-        
+
         using var csv = new CsvReader(reader, config);
-        
+
         await csv.ReadAsync();
         csv.ReadHeader();
         var headers = csv.HeaderRecord;
-        
+
         if (headers == null || headers.Length == 0)
         {
             return (rows, 1);
         }
-        
+
         while (await csv.ReadAsync())
         {
             var row = new Dictionary<string, string>();
@@ -89,33 +89,33 @@ public class FileImportService
             }
             rows.Add(row);
         }
-        
+
         return (rows, 1);
     }
 
     private async Task<ParsedFileData> ParseXlsxAsync(Stream stream)
     {
         var parsedData = new ParsedFileData();
-        
+
         parsedData.Rows = new List<Dictionary<string, string>>();
-        
+
         using var package = new ExcelPackage(stream);
         var worksheet = package.Workbook.Worksheets.FirstOrDefault();
-        
+
         if (worksheet?.Dimension == null)
         {
             return new ParsedFileData { Rows = parsedData.Rows, HeaderRowIndex = 1 };
         }
-        
+
         var headerRowIndex = DetectHeaderRow(worksheet);
-        
+
         parsedData.Headers = new List<string>();
         for (var col = 1; col <= worksheet.Dimension.End.Column; col++)
         {
             var headerValue = worksheet.Cells[headerRowIndex, col].Text ?? $"Column{col}";
             parsedData.Headers.Add(headerValue);
         }
-        
+
         for (var row = headerRowIndex + 1; row <= worksheet.Dimension.End.Row; row++)
         {
             var rowData = new Dictionary<string, string>();
@@ -126,16 +126,16 @@ public class FileImportService
             }
             parsedData.Rows.Add(rowData);
         }
-        
+
         return await Task.FromResult(parsedData);
     }
-    
+
     private static int DetectHeaderRow(ExcelWorksheet worksheet)
     {
         var maxRowsToCheck = Math.Min(50, worksheet.Dimension.End.Row);
         var bestRow = 1;
         var bestScore = 0;
-        
+
         var headerKeywords = new[]
         {
             "date", "data", "fecha", "datum",
@@ -143,24 +143,24 @@ public class FileImportService
             "description", "descrizione", "descripcion", "beschreibung",
             "balance", "saldo", "name", "nome", "currency", "valuta"
         };
-        
+
         for (var row = 1; row <= maxRowsToCheck; row++)
         {
             var score = 0;
             var hasContent = false;
             var nonEmptyCells = 0;
-            
+
             for (var col = 1; col <= worksheet.Dimension.End.Column; col++)
             {
                 var cellText = worksheet.Cells[row, col].Text?.Trim() ?? string.Empty;
-                
+
                 if (!string.IsNullOrWhiteSpace(cellText))
                 {
                     hasContent = true;
                     nonEmptyCells++;
-                    
+
                     var lowerText = cellText.ToLowerInvariant();
-                    
+
                     foreach (var keyword in headerKeywords)
                     {
                         if (lowerText.Contains(keyword))
@@ -169,8 +169,8 @@ public class FileImportService
                             break;
                         }
                     }
-                    
-                    if (cellText.Length > 3 && cellText.Length < 50 && 
+
+                    if (cellText.Length > 3 && cellText.Length < 50 &&
                         !decimal.TryParse(cellText.Replace(",", "."), out _) &&
                         !DateTime.TryParse(cellText, out _))
                     {
@@ -178,19 +178,19 @@ public class FileImportService
                     }
                 }
             }
-            
+
             if (hasContent && nonEmptyCells >= worksheet.Dimension.End.Column / 2)
             {
                 score += nonEmptyCells;
             }
-            
+
             if (score > bestScore)
             {
                 bestScore = score;
                 bestRow = row;
             }
         }
-        
+
         return bestRow;
     }
 
@@ -199,16 +199,16 @@ public class FileImportService
         var delimiters = new[] { ",", ";", "\t", "|" };
         var maxCount = 0;
         var detectedDelimiter = ",";
-        
+
         foreach (var delimiter in delimiters)
         {
             var count = sampleText.Split('\n').FirstOrDefault()?.Split(delimiter).Length ?? 0;
             if (count <= maxCount) continue;
-            
+
             maxCount = count;
             detectedDelimiter = delimiter;
         }
-        
+
         return detectedDelimiter;
     }
 
@@ -216,7 +216,7 @@ public class FileImportService
     {
         var buffer = new byte[4096];
         var bytesRead = stream.Read(buffer, 0, buffer.Length);
-        
+
         // Check for BOM
         if (bytesRead >= 3 && buffer[0] == 0xEF && buffer[1] == 0xBB && buffer[2] == 0xBF)
         {
@@ -230,7 +230,7 @@ public class FileImportService
         {
             return Encoding.BigEndianUnicode; // UTF-16 BE
         }
-        
+
         // Try to detect UTF-8 without BOM
         try
         {

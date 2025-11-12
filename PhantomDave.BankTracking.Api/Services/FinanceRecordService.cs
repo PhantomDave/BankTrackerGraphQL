@@ -195,12 +195,12 @@ public class FinanceRecordService
             _ => value.ToUniversalTime()
         };
     }
-    
+
     public async Task<List<FinanceRecord>> FindDuplicatesAsync(
         int accountId,
         List<FinanceRecord> candidates)
     {
-        var dupes = _unitOfWork.FinanceRecords.Query().Where(r => r.AccountId == accountId && 
+        var dupes = _unitOfWork.FinanceRecords.Query().Where(r => r.AccountId == accountId &&
             candidates.Select(c => new { c.Date, c.Amount, Description = NormalizeDescription(c.Description) })
                 .Contains(new { r.Date, r.Amount, Description = NormalizeDescription(r.Description) })
         );
@@ -211,13 +211,13 @@ public class FinanceRecordService
         int accountId,
         List<FinanceRecord> records)
     {
-        var dupes = _unitOfWork.FinanceRecords.Query().Where(r => r.AccountId == accountId && 
+        var dupes = _unitOfWork.FinanceRecords.Query().Where(r => r.AccountId == accountId &&
                                                                   records.Select(c => new { c.Date, c.Amount, Description = NormalizeDescription(c.Description) })
                                                                       .Contains(new { r.Date, r.Amount, Description = NormalizeDescription(r.Description) })
         );
 
         var error = new List<ImportError>();
-        
+
         foreach (var record in dupes)
         {
             error.Add(new ImportError
@@ -225,7 +225,7 @@ public class FinanceRecordService
                 Message = $"Duplicate record found for {record.Name} at {record.Amount} {record.Date}."
             });
         }
-        
+
         var addResult = (await _unitOfWork.FinanceRecords.AddRangeAsync(records.Except(dupes).ToList())).ToArray();
         return new ImportResultType
         {

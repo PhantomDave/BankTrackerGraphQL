@@ -34,7 +34,7 @@ public class ImportMutations
         [Service] FinanceRecordService financeService,
         [Service] IHttpContextAccessor httpContextAccessor)
     {
-        
+
         //TODO: Implement this
         // Placeholder to not break the build
         return await Task.FromResult(new ImportResultType()
@@ -66,5 +66,5 @@ public class ImportMutations
     //
     // [Authorize]
     // public async Task<bool> DeleteImportTemplate(int id, ...)
-    
+
 }
