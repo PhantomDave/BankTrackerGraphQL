@@ -1,7 +1,10 @@
-﻿services:
+# Local Development Docker Compose with Build
+# Use this to build and test containers locally before pushing
+
+services:
   database:
     image: postgres:18-alpine
-    container_name: banktracking-database
+    container_name: banktracking-database-local
     environment:
       POSTGRES_USER: bankuser
       POSTGRES_PASSWORD: bankpassword
@@ -9,7 +12,7 @@
     ports:
       - "5432:5432"
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data_local:/var/lib/postgresql/data
     networks:
       - banktracking-network
     healthcheck:
@@ -21,8 +24,11 @@
     restart: unless-stopped
 
   backend:
-    image: ghcr.io/phantomdave/banktrackergraphql/backend:latest
-    container_name: banktracking-backend
+    image: banktrackingapplication
+    container_name: banktracking-backend-local
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports: 
       - "5095:5095"
     environment:
@@ -44,8 +50,11 @@
     restart: unless-stopped
   
   frontend:
-    image: ghcr.io/phantomdave/banktrackergraphql/frontend:latest
-    container_name: banktracking-frontend
+    image: banktrackingfrontend
+    container_name: banktracking-frontend-local
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     ports:
       - "80:80"
     depends_on:
@@ -67,6 +76,5 @@ networks:
     name: banktracking-network
 
 volumes:
-  db_data:
-    name: banktracking-db-data
-
+  db_data_local:
+    name: banktracking-db-data-local

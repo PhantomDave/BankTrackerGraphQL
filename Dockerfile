@@ -11,10 +11,9 @@ RUN dotnet restore "PhantomDave.BankTracking.Api/PhantomDave.BankTracking.Api.cs
 COPY . .
 
 WORKDIR /src/PhantomDave.BankTracking.Api
-RUN dotnet build "PhantomDave.BankTracking.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "PhantomDave.BankTracking.Api.csproj" -c Release -o /app/publish
+RUN dotnet publish "PhantomDave.BankTracking.Api.csproj" -c Release -o /app/publish --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 

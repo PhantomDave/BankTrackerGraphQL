@@ -11,6 +11,8 @@ All services are connected via a custom bridge network called `banktracking-netw
 
 ## Quick Start
 
+### Production Deployment (Pre-built Images)
+
 1. **Copy the environment file**:
    ```bash
    cp .env.example .env
@@ -21,9 +23,10 @@ All services are connected via a custom bridge network called `banktracking-netw
    JWT_SECRET=your_secure_random_string_here
    ```
 
-3. **Build and start all services**:
+3. **Pull and start all services**:
    ```bash
-   docker compose up -d --build
+   docker compose pull
+   docker compose up -d
    ```
 
 4. **Access the application**:
@@ -31,7 +34,29 @@ All services are connected via a custom bridge network called `banktracking-netw
    - Backend API: http://localhost:5095/graphql
    - Database: localhost:5432
 
+### Local Testing (Build Containers)
+
+To test container builds locally before pushing:
+
+```bash
+docker compose -f compose.local.yaml up -d --build
+```
+
+### Development Mode (Database Only)
+
+To run only the database in Docker while running backend/frontend on host:
+
+```bash
+docker compose -f compose.dev.yaml up -d
+```
+
 ## Configuration Files
+
+### Docker Compose Files
+
+- `compose.yaml` - Production deployment (pulls pre-built images from GHCR)
+- `compose.local.yaml` - Local testing with builds (for testing containers before pushing)
+- `compose.dev.yaml` - Development database only (for running backend/frontend on host)
 
 ### Backend
 - `appsettings.json` - Base configuration
@@ -85,9 +110,15 @@ docker compose logs -f frontend
 docker compose logs -f database
 ```
 
-### Rebuild after code changes
+### Pull latest images (production)
 ```bash
-docker compose up -d --build
+docker compose pull
+docker compose up -d
+```
+
+### Rebuild after code changes (local testing)
+```bash
+docker compose -f compose.local.yaml up -d --build
 ```
 
 ### Clean everything (including volumes)
@@ -123,15 +154,34 @@ The backend accepts these environment overrides:
 
 ## Production Deployment
 
+### Container Images
+
+Production images are automatically built and pushed to GitHub Container Registry (GHCR) on every push to the `main` branch:
+- Backend: `ghcr.io/phantomdave/banktrackergraphql/backend:latest`
+- Frontend: `ghcr.io/phantomdave/banktrackergraphql/frontend:latest`
+
+The deployment workflow pulls these pre-built images instead of building on the server.
+
+### Deployment Process
+
+1. **Automated**: Push to `main` triggers:
+   - Build workflows create and push container images to GHCR
+   - Deploy workflow pulls latest images and restarts services
+
+2. **Manual**: Run deployment workflow via GitHub Actions
+
+### Production Checklist
+
 For production:
 
 1. **Update secrets**: Change all default passwords and JWT secret
-2. **Use secrets management**: Consider Docker secrets or external secret management
-3. **Enable HTTPS**: Add SSL certificates and update Nginx config
-4. **Remove port mappings**: Only expose frontend (port 80/443)
-5. **Set resource limits**: Add memory and CPU limits to services
-6. **Use external database**: Point to a managed PostgreSQL instance
-7. **Enable monitoring**: Add logging and monitoring solutions
+2. **Configure GHCR access**: Ensure deployment server can pull from GHCR
+3. **Use secrets management**: Consider Docker secrets or external secret management
+4. **Enable HTTPS**: Add SSL certificates and update Nginx config
+5. **Remove port mappings**: Only expose frontend (port 80/443)
+6. **Set resource limits**: Add memory and CPU limits to services
+7. **Use external database**: Point to a managed PostgreSQL instance
+8. **Enable monitoring**: Add logging and monitoring solutions
 
 ## Troubleshooting
 
