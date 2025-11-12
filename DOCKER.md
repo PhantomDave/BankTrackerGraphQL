@@ -11,6 +11,8 @@ All services are connected via a custom bridge network called `banktracking-netw
 
 ## Quick Start
 
+### Production Deployment (Pre-built Images)
+
 1. **Copy the environment file**:
    ```bash
    cp .env.example .env
@@ -21,9 +23,10 @@ All services are connected via a custom bridge network called `banktracking-netw
    JWT_SECRET=your_secure_random_string_here
    ```
 
-3. **Build and start all services**:
+3. **Pull and start all services**:
    ```bash
-   docker compose up -d --build
+   docker compose pull
+   docker compose up -d
    ```
 
 4. **Access the application**:
@@ -31,7 +34,29 @@ All services are connected via a custom bridge network called `banktracking-netw
    - Backend API: http://localhost:5095/graphql
    - Database: localhost:5432
 
+### Local Testing (Build Containers)
+
+To test container builds locally before pushing:
+
+```bash
+docker compose -f compose.local.yaml up -d --build
+```
+
+### Development Mode (Database Only)
+
+To run only the database in Docker while running backend/frontend on host:
+
+```bash
+docker compose -f compose.dev.yaml up -d
+```
+
 ## Configuration Files
+
+### Docker Compose Files
+
+- `compose.yaml` - Production deployment (pulls pre-built images from GHCR)
+- `compose.local.yaml` - Local testing with builds (for testing containers before pushing)
+- `compose.dev.yaml` - Development database only (for running backend/frontend on host)
 
 ### Backend
 - `appsettings.json` - Base configuration
@@ -85,9 +110,15 @@ docker compose logs -f frontend
 docker compose logs -f database
 ```
 
-### Rebuild after code changes
+### Pull latest images (production)
 ```bash
-docker compose up -d --build
+docker compose pull
+docker compose up -d
+```
+
+### Rebuild after code changes (local testing)
+```bash
+docker compose -f compose.local.yaml up -d --build
 ```
 
 ### Clean everything (including volumes)

@@ -1,0 +1,80 @@
+# Local Development Docker Compose with Build
+# Use this to build and test containers locally before pushing
+
+services:
+  database:
+    image: postgres:18-alpine
+    container_name: banktracking-database-local
+    environment:
+      POSTGRES_USER: bankuser
+      POSTGRES_PASSWORD: bankpassword
+      POSTGRES_DB: bankdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data_local:/var/lib/postgresql/data
+    networks:
+      - banktracking-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bankuser -d bankdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  backend:
+    image: banktrackingapplication
+    container_name: banktracking-backend-local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports: 
+      - "5095:5095"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_URLS=http://+:5095
+      - ConnectionStrings__DefaultConnection=Host=database;Port=5432;Database=bankdb;Username=bankuser;Password=bankpassword
+      - Jwt__Secret=${JWT_SECRET:-docker_secret_key_change_in_production_via_env_vars}
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - banktracking-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5095/graphql?sdl || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+  
+  frontend:
+    image: banktrackingfrontend
+    container_name: banktracking-frontend-local
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - banktracking-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:80 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+networks:
+  banktracking-network:
+    driver: bridge
+    name: banktracking-network
+
+volumes:
+  db_data_local:
+    name: banktracking-db-data-local
