@@ -1,6 +1,6 @@
 using PhantomDave.BankTracking.Library.Models;
 
-namespace PhantomDave.BankTracking.Api.ObjectTypes;
+namespace PhantomDave.BankTracking.Api.Types.ObjectTypes;
 
 public record FinanceRecordType
 {

@@ -1,11 +1,9 @@
-using System.Linq;
+using HotChocolate;
 using HotChocolate.Authorization;
 using Microsoft.AspNetCore.Http;
-using PhantomDave.BankTracking.Api;
-using PhantomDave.BankTracking.Api.ObjectTypes;
 using PhantomDave.BankTracking.Api.Services;
-using PhantomDave.BankTracking.Api.Types.Inputs;
 using PhantomDave.BankTracking.Api.Types.ObjectTypes;
+using PhantomDave.BankTracking.Api.Types.Inputs;
 
 namespace PhantomDave.BankTracking.Api.Types.Mutations;
 

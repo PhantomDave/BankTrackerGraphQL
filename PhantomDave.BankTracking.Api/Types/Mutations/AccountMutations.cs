@@ -136,7 +136,7 @@ public class AccountMutations
         }
 
 
-        int accountId = httpContextAccessor.GetAccountIdFromContext();
+        var accountId = httpContextAccessor.GetAccountIdFromContext();
 
         var account = (await accountService.UpdateAccountAsync(accountId, email, currentBalance)) ?? throw new GraphQLException(
                 ErrorBuilder.New()

@@ -93,6 +93,19 @@ public string DetectDelimiter(string sampleText)
 public Encoding DetectEncoding(Stream stream)
 ```
 
+**Example ParsedFileData class**:
+```csharp
+public class ParsedFileData
+{
+    public List<string> Headers { get; set; } = new();
+    public List<Dictionary<string, string>> Rows { get; set; } = new();
+    public int TotalRows { get; set; }
+    public string DetectedDelimiter { get; set; } = ",";
+    public string DetectedEncoding { get; set; } = "UTF-8";
+    public string FileType { get; set; } = "CSV"; // "CSV" or "XLSX"
+}
+```
+
 **Dependencies**: CsvHelper, EPPlus
 
 ---

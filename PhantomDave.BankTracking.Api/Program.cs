@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using PhantomDave.BankTracking.Data.Context;
 using PhantomDave.BankTracking.Library.Models;
 using HotChocolate.Types;
+using OfficeOpenXml;
 
 namespace PhantomDave.BankTracking.Api;
 
@@ -27,6 +28,8 @@ public class Program
 
         builder.Services.AddScoped<AccountService>();
         builder.Services.AddScoped<FinanceRecordService>();
+        builder.Services.AddScoped<FileImportService>();
+        builder.Services.AddScoped<ColumnDetectionService>();
         builder.Services.AddHttpContextAccessor();
         builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
         builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
@@ -73,7 +76,7 @@ public class Program
         {
             options.AddDefaultPolicy(policy =>
                 policy
-                    .WithOrigins("http://localhost:4200")
+                    .WithOrigins("http://localhost:4200", "http://localhost:5095/graphql", "*")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials());
@@ -84,6 +87,7 @@ public class Program
             .AddAuthorization()
             .AddQueryType()
             .AddMutationType()
+            .AddType<UploadType>()
             .BindRuntimeType<RecurrenceFrequency, EnumType<RecurrenceFrequency>>()
             .ModifyRequestOptions(options =>
             {
@@ -105,7 +109,13 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.MapGraphQL();
+        app.MapGraphQL()
+            .WithOptions(new GraphQLServerOptions
+            {
+                Tool = {
+                    Enable = builder.Environment.IsDevelopment()
+                }
+            });
 
 
         app.RunWithGraphQLCommands(args);

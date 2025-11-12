@@ -3,7 +3,7 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
-  schema: './schema.graphql',
+  schema: 'http://localhost:5095/graphql',
   documents: ['src/**/*.graphql'],
   generates: {
     './src/generated/graphql.ts': {
@@ -16,6 +16,7 @@ const config: CodegenConfig = {
           Decimal: 'number',
           UUID: 'string',
           Long: 'number',
+          Upload: 'File',
         },
         namingConvention: {
           enumValues: 'keep',

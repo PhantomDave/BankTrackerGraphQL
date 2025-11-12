@@ -1,7 +1,8 @@
 using HotChocolate.Authorization;
-using Microsoft.AspNetCore.Http;
-using PhantomDave.BankTracking.Api.ObjectTypes;
+using Microsoft.EntityFrameworkCore;
 using PhantomDave.BankTracking.Api.Services;
+using PhantomDave.BankTracking.Api.Types.ObjectTypes;
+using PhantomDave.BankTracking.Data.UnitOfWork;
 
 namespace PhantomDave.BankTracking.Api.Types.Queries;
 
