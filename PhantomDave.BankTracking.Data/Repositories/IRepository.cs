@@ -42,7 +42,7 @@ public class Repository<T> : IRepository<T> where T : class
         await _dbSet.AddAsync(entity);
         return entity;
     }
-    
+
     public async Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entity)
     {
         entity = entity.ToArray();
