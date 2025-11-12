@@ -67,12 +67,7 @@ jobs:
 
       - name: Test connectivity
         run: |
-          tailscale ssh "${{ steps.ssh.outputs.target }}" "echo 'Connected' && git config --global --add safe.directory $DEPLOY_DIR"
-
-      - name: Pull latest code
-        run: |
-          tailscale ssh "${{ steps.ssh.outputs.target }}" \
-            "cd $DEPLOY_DIR && git restore . && git pull origin main"
+          tailscale ssh "${{ steps.ssh.outputs.target }}" "echo 'Connected'"
 
       - name: Log in to GitHub Container Registry
         run: |
