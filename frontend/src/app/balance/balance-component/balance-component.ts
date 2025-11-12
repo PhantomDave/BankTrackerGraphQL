@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe, NgIf } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -15,17 +15,18 @@ import { MatIconModule } from '@angular/material/icon';
 import { AccountService } from '../../models/account/account-service';
 import { FinanceRecord } from '../../models/finance-record/finance-record';
 import { FinanceRecordService } from '../../models/finance-record/finance-record-service';
+import { FlexComponent } from '../../components/ui-library/flex-component/flex-component';
 
 @Component({
   selector: 'app-balance-component',
   imports: [
     CurrencyPipe,
     DatePipe,
-    NgIf,
     MatCardModule,
     MatIconModule,
     MatDividerModule,
     MatProgressSpinnerModule,
+    FlexComponent,
   ],
   templateUrl: './balance-component.html',
   styleUrl: './balance-component.css',
@@ -37,6 +38,7 @@ export class BalanceComponent implements OnInit {
   private readonly records = computed<readonly FinanceRecord[]>(() =>
     this.financeRecordService.financeRecords(),
   );
+
   private readonly currentMonthRecords = computed(() => {
     const today = this.today;
     return this.records().filter((record) => {
@@ -46,6 +48,23 @@ export class BalanceComponent implements OnInit {
         recordDate.getFullYear() === today.getFullYear()
       );
     });
+  });
+
+  readonly currentMonthTotals = computed(() => {
+    const totals = { income: 0, expense: 0 };
+    for (const record of this.currentMonthRecords()) {
+      if (record.amount >= 0) {
+        totals.income += record.amount;
+        continue;
+      }
+      totals.expense += record.amount;
+    }
+    return totals;
+  });
+
+  readonly remainingBudget = computed(() => {
+    const { income, expense } = this.currentMonthTotals();
+    return income + expense;
   });
 
   readonly loading = computed(
@@ -64,19 +83,14 @@ export class BalanceComponent implements OnInit {
     0,
   ).getDate();
   private readonly daysElapsed = Math.max(1, Math.min(this.daysInMonth, this.today.getDate()));
+  private readonly averageWindowDays = 30;
 
   readonly averageDailyExpense = computed(() => {
-    const totalExpenses = this.currentMonthRecords()
-      .filter((record) => record.amount < 0)
-      .reduce((sum, record) => sum + record.amount, 0);
-    return totalExpenses / this.daysElapsed;
+    return this.currentMonthTotals().expense / this.averageWindowDays;
   });
 
   readonly averageDailyIncome = computed(() => {
-    const totalIncome = this.currentMonthRecords()
-      .filter((record) => record.amount > 0)
-      .reduce((sum, record) => sum + record.amount, 0);
-    return totalIncome / this.daysElapsed;
+    return this.currentMonthTotals().income / this.averageWindowDays;
   });
 
   readonly totalRecurringExpenses = computed(() => {

@@ -22,10 +22,27 @@
     <mat-card-subtitle>Overview of current funds and projections</mat-card-subtitle>
   </mat-card-header>
 
-  <div class="balance-hero" aria-label="Current balance">
-    <div class="amount">{{ balance() | currency: defaultCurrency }}</div>
-    <div class="label">Current</div>
-  </div>
+  <app-flex>
+    <div class="balance-hero" aria-label="Current balance">
+      <div class="amount">{{ balance() | currency: defaultCurrency }}</div>
+      <div class="label">Current Balance</div>
+    </div>
+
+    <div class="balance-hero" aria-label="Current balance">
+      <div class="amount">{{ currentMonthTotals().income | currency: defaultCurrency }}</div>
+      <div class="label">Monthly Budget</div>
+    </div>
+
+    <div class="balance-hero" aria-label="Current balance">
+      <div class="amount">{{ remainingBudget() | currency: defaultCurrency }}</div>
+      <div class="label">Remaining Budget</div>
+    </div>
+
+    <div class="balance-hero" aria-label="Current balance">
+      <div class="amount">{{ currentMonthTotals().expense | currency: defaultCurrency }}</div>
+      <div class="label">Total Expenses</div>
+    </div>
+  </app-flex>
 
   <mat-divider></mat-divider>
 
