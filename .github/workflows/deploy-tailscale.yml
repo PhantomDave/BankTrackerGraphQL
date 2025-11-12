@@ -28,6 +28,7 @@ jobs:
         with:
           oauth-client-id: ${{ secrets.TAILSCALE_OAUTH_CLIENTID }}
           oauth-secret: ${{ secrets.TAILSCALE_OAUTH_CLIENT_SECRET }}
+          tags: tag:ci
           hostname: banktracker-ci-${{ github.run_id }}
 
       - name: Configure SSH target
