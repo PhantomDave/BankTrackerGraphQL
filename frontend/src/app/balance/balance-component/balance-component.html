@@ -4,15 +4,17 @@
   aria-label="Account balance summary"
   [attr.aria-busy]="loading()"
 >
-  <div *ngIf="loading()" class="loading-overlay" aria-live="polite">
-    <mat-progress-spinner
-      mode="indeterminate"
-      diameter="48"
-      strokeWidth="4"
-      aria-label="Loading account balance"
-    ></mat-progress-spinner>
-    <span class="loading-text">Loading balance...</span>
-  </div>
+  @if (loading()) {
+    <div class="loading-overlay" aria-live="polite">
+      <mat-progress-spinner
+        mode="indeterminate"
+        diameter="48"
+        strokeWidth="4"
+        aria-label="Loading account balance"
+      ></mat-progress-spinner>
+      <span class="loading-text">Loading balance...</span>
+    </div>
+  }
 
   <mat-card-header>
     <mat-icon mat-card-avatar aria-hidden="true">account_balance_wallet</mat-icon>
