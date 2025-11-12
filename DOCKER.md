@@ -123,15 +123,34 @@ The backend accepts these environment overrides:
 
 ## Production Deployment
 
+### Container Images
+
+Production images are automatically built and pushed to GitHub Container Registry (GHCR) on every push to the `main` branch:
+- Backend: `ghcr.io/phantomdave/banktrackergraphql/backend:latest`
+- Frontend: `ghcr.io/phantomdave/banktrackergraphql/frontend:latest`
+
+The deployment workflow pulls these pre-built images instead of building on the server.
+
+### Deployment Process
+
+1. **Automated**: Push to `main` triggers:
+   - Build workflows create and push container images to GHCR
+   - Deploy workflow pulls latest images and restarts services
+
+2. **Manual**: Run deployment workflow via GitHub Actions
+
+### Production Checklist
+
 For production:
 
 1. **Update secrets**: Change all default passwords and JWT secret
-2. **Use secrets management**: Consider Docker secrets or external secret management
-3. **Enable HTTPS**: Add SSL certificates and update Nginx config
-4. **Remove port mappings**: Only expose frontend (port 80/443)
-5. **Set resource limits**: Add memory and CPU limits to services
-6. **Use external database**: Point to a managed PostgreSQL instance
-7. **Enable monitoring**: Add logging and monitoring solutions
+2. **Configure GHCR access**: Ensure deployment server can pull from GHCR
+3. **Use secrets management**: Consider Docker secrets or external secret management
+4. **Enable HTTPS**: Add SSL certificates and update Nginx config
+5. **Remove port mappings**: Only expose frontend (port 80/443)
+6. **Set resource limits**: Add memory and CPU limits to services
+7. **Use external database**: Point to a managed PostgreSQL instance
+8. **Enable monitoring**: Add logging and monitoring solutions
 
 ## Troubleshooting
 

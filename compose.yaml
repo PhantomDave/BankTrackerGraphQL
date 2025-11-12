@@ -21,11 +21,8 @@
     restart: unless-stopped
 
   backend:
-    image: banktrackingapplication
+    image: ghcr.io/phantomdave/banktrackergraphql/backend:latest
     container_name: banktracking-backend
-    build:
-      context: .
-      dockerfile: Dockerfile
     ports: 
       - "5095:5095"
     environment:
@@ -47,11 +44,8 @@
     restart: unless-stopped
   
   frontend:
-    image: banktrackingfrontend
+    image: ghcr.io/phantomdave/banktrackergraphql/frontend:latest
     container_name: banktracking-frontend
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
     ports:
       - "80:80"
     depends_on:

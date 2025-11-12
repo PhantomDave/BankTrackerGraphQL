@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      packages: read
     
     steps:
       - name: Checkout
@@ -50,20 +51,20 @@ jobs:
           tailscale ssh "${{ steps.ssh.outputs.target }}" \
             "cd $DEPLOY_DIR && git restore . && git pull origin main"
 
-      - name: Deploy backend services
+      - name: Log in to GitHub Container Registry
         run: |
           tailscale ssh "${{ steps.ssh.outputs.target }}" \
-            "cd $DEPLOY_DIR && docker compose down && docker compose up -d --build --wait database backend"
+            "echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin"
 
-      - name: Download GraphQL schema
+      - name: Pull latest images
         run: |
           tailscale ssh "${{ steps.ssh.outputs.target }}" \
-            "cd $DEPLOY_DIR/frontend && curl -f http://localhost:5095/graphql?sdl -o schema.graphql"
+            "cd $DEPLOY_DIR && docker compose pull"
 
-      - name: Deploy frontend
+      - name: Deploy all services
         run: |
           tailscale ssh "${{ steps.ssh.outputs.target }}" \
-            "cd $DEPLOY_DIR && docker compose up -d --build --wait frontend"
+            "cd $DEPLOY_DIR && docker compose down && docker compose up -d --wait"
 
       - name: Verify deployment
         if: success()
