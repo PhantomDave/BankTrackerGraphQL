@@ -1,39 +1,40 @@
 <div class="upload-container" [class.loading]="loading()">
-	<div class="drop-zone">
-			<input
-			id="file-input"
-			type="file"
-			accept=".csv,.xlsx"
-			(change)="onFileSelected($event)"
-				hidden
-				#fileInput
-		/>
-		<p class="hint">
-			Choose a CSV or Excel file to import.
-		</p>
-		<div class="actions">
-							<button mat-raised-button color="primary" (click)="fileInput.click()">
-				Select file
-			</button>
-			@if (selectedFile(); as f) {
-				<span class="filename">{{ f.name }}</span>
-			}
-		</div>
-		@if (validationError(); as e) {
-			<div class="error">{{ e }}</div>
-		}
-		@if (!validationError() && serviceError(); as se) {
-			<div class="error">{{ se }}</div>
-		}
-	</div>
+  <div class="drop-zone">
+    <input
+      id="file-input"
+      type="file"
+      accept=".csv,.xlsx"
+      (change)="onFileSelected($event)"
+      hidden
+      #fileInput
+    />
+    <p class="hint">Choose a CSV or Excel file to import.</p>
+    <div class="actions">
+      <button mat-raised-button color="primary" (click)="fileInput.click()">Select file</button>
+      @if (selectedFile(); as f) {
+        <span class="filename">{{ f.name }}</span>
+      }
+    </div>
+    @if (validationError(); as e) {
+      <div class="error">{{ e }}</div>
+    }
+    @if (!validationError() && serviceError(); as se) {
+      <div class="error">{{ se }}</div>
+    }
+  </div>
 
-	<div class="preview-actions">
-		<button mat-stroked-button color="primary" [disabled]="!selectedFile() || !!validationError() || loading()" (click)="onPreviewClick()">
-			Preview import
-		</button>
-	</div>
+  <div class="preview-actions">
+    <button
+      mat-stroked-button
+      color="primary"
+      [disabled]="!selectedFile() || !!validationError() || loading()"
+      (click)="onPreviewClick()"
+    >
+      Preview import
+    </button>
+  </div>
 
-	@if (loading()) {
-		<mat-progress-bar mode="indeterminate"></mat-progress-bar>
-	}
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  }
 </div>
