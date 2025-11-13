@@ -1,1 +1,104 @@
-<p>Step 3 Configure Placeholder</p>
+@if (preview(); as previewData) {
+  <mat-card appearance="outlined" class="configure-card">
+    <mat-card-header>
+      <mat-icon mat-card-avatar>settings</mat-icon>
+      <mat-card-title>Configure Import</mat-card-title>
+      <mat-card-subtitle>Map CSV columns to finance record fields</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- Column Mappings -->
+      <div class="mappings-container">
+        <h3 class="section-title">
+          <mat-icon>swap_horiz</mat-icon>
+          Column Mappings
+        </h3>
+        <p class="section-description">Map CSV columns to finance record fields</p>
+
+        <div class="mappings-list">
+          @for (header of previewData.headers; track header; let idx = $index) {
+            @if (previewData.detectedColumns[header]; as detection) {
+              <div class="mapping-item">
+                <div class="mapping-header">
+                  <div class="column-info">
+                    <mat-icon class="column-icon">view_column</mat-icon>
+                    <span class="column-name">{{ header }}</span>
+                  </div>
+                  <mat-icon class="arrow-icon">arrow_forward</mat-icon>
+                  <mat-form-field class="mapping-select" appearance="outline">
+                    <mat-label>Map to field</mat-label>
+                    <mat-select
+                      [value]="getColumnMapping(header)"
+                      (selectionChange)="updateColumnMapping(header, $event.value)"
+                    >
+                      <mat-option value="">None</mat-option>
+                      @for (field of availableFields; track field) {
+                        <mat-option [value]="field">{{ field }}</mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                @if (getDetectionConfidence(header); as confidence) {
+                  <div class="mapping-confidence">
+                    <mat-icon [class]="'confidence-icon ' + getConfidenceColor(confidence)">
+                      {{
+                        confidence >= 80 ? 'check_circle' : confidence >= 50 ? 'info' : 'warning'
+                      }}
+                    </mat-icon>
+                    <span class="confidence-label"
+                      >{{ getConfidenceLabel(confidence) }} Confidence</span
+                    >
+                    <span class="confidence-percentage">{{ confidence.toFixed(0) }}%</span>
+                    <div class="confidence-bar">
+                      <div
+                        class="confidence-fill"
+                        [class]="getConfidenceColor(confidence)"
+                        [style.width.%]="confidence"
+                      ></div>
+                    </div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="mapping-item unmapped">
+                <div class="mapping-header">
+                  <div class="column-info">
+                    <mat-icon class="column-icon">view_column</mat-icon>
+                    <span class="column-name">{{ header }}</span>
+                  </div>
+                  <mat-icon class="arrow-icon">arrow_forward</mat-icon>
+                  <mat-form-field class="mapping-select" appearance="outline">
+                    <mat-label>Map to field</mat-label>
+                    <mat-select
+                      [value]="getColumnMapping(header)"
+                      (selectionChange)="updateColumnMapping(header, $event.value)"
+                    >
+                      <mat-option value="">None</mat-option>
+                      @for (field of availableFields; track field) {
+                        <mat-option [value]="field">{{ field }}</mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+            }
+          }
+          @if (getDuplicateMapping().length > 0) {
+            <div class="mapping-warning">
+              <mat-icon>warning</mat-icon>
+              <span
+                >Warning: Multiple columns are mapped to the same field. Please ensure each field is
+                mapped uniquely. duplicates: {{ getDuplicateMapping().join(', ') }}</span
+              >
+            </div>
+          }
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+} @else {
+  <div class="no-preview">
+    <mat-icon>cloud_upload</mat-icon>
+    <p>No file uploaded yet. Please upload a file in the previous step.</p>
+  </div>
+}

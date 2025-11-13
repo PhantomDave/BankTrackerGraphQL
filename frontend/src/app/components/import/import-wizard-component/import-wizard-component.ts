@@ -8,6 +8,7 @@ import { Step1UploadComponent } from './steps/step1-upload.component';
 import { Step2DetectComponent } from './steps/step2-detect.component';
 import { FlexComponent } from '../../ui-library/flex-component/flex-component';
 import { ImportService } from '../../../models/import/import-service';
+import { Step3ConfigureComponent } from './steps/step3-configure.component';
 
 @Component({
   selector: 'app-import-wizard-component',
@@ -21,12 +22,12 @@ import { ImportService } from '../../../models/import/import-service';
     Step1UploadComponent,
     Step2DetectComponent,
     FlexComponent,
+    Step3ConfigureComponent,
   ],
   templateUrl: './import-wizard-component.html',
   styleUrl: './import-wizard-component.css',
 })
 export class ImportWizardComponent {
-  private _formBuilder = inject(FormBuilder);
   private readonly importService = inject(ImportService);
 
   readonly preview = computed(() => this.importService.preview());

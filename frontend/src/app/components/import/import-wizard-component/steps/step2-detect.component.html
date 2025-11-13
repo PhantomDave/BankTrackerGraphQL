@@ -3,7 +3,9 @@
     <mat-card-header>
       <mat-icon mat-card-avatar>analytics</mat-icon>
       <mat-card-title>Column Detection Results</mat-card-title>
-      <mat-card-subtitle>Automatic mapping of CSV columns to finance record fields</mat-card-subtitle>
+      <mat-card-subtitle
+        >Automatic mapping of CSV columns to finance record fields</mat-card-subtitle
+      >
     </mat-card-header>
 
     <mat-card-content>
@@ -38,12 +40,18 @@
         @if (detectedColumnsArray().length === 0) {
           <div class="empty-state">
             <mat-icon>info</mat-icon>
-            <p>No column mappings detected automatically. You can configure them manually in the next step.</p>
+            <p>
+              No column mappings detected automatically. You can configure them manually in the next
+              step.
+            </p>
           </div>
         } @else {
           <div class="mappings-list">
             @for (item of detectedColumnsArray(); track item.column) {
-              <div class="mapping-item" [class.confidence-level]="getConfidenceColor(item.confidence)">
+              <div
+                class="mapping-item"
+                [class.confidence-level]="getConfidenceColor(item.confidence)"
+              >
                 <div class="mapping-header">
                   <div class="column-info">
                     <mat-icon class="column-icon">view_column</mat-icon>
@@ -63,7 +71,7 @@
                     {{ getConfidenceIcon(item.confidence) }}
                   </mat-icon>
                   <span class="confidence-label">{{ getConfidenceLabel(item.confidence) }}</span>
-                  <span class="confidence-percentage">{{ (item.confidence).toFixed(0) }}%</span>
+                  <span class="confidence-percentage">{{ item.confidence.toFixed(0) }}%</span>
                   <div class="confidence-bar">
                     <div
                       class="confidence-fill"

@@ -36,33 +36,4 @@
 	@if (loading()) {
 		<mat-progress-bar mode="indeterminate"></mat-progress-bar>
 	}
-
-	@if (preview(); as p) {
-		<div class="preview">
-			<h3>Preview</h3>
-			<p>Total rows: {{ p.totalRows }}</p>
-			@if (p.sampleRows.length) {
-				<div class="table-wrapper">
-					<table>
-						<thead>
-							<tr>
-								@for (h of p.headers; track h) {
-									<th>{{ h }}</th>
-								}
-							</tr>
-						</thead>
-						<tbody>
-							@for (row of p.sampleRows; track row) {
-								<tr>
-									@for (h of p.headers; track h) {
-										<td>{{ row[h] }}</td>
-									}
-								</tr>
-							}
-						</tbody>
-					</table>
-				</div>
-			}
-		</div>
-	}
 </div>
