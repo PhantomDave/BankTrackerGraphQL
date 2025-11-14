@@ -51,7 +51,6 @@ export const appConfig: ApplicationConfig = {
         return { headers };
       });
 
-      // Use UploadHttpLink to support GraphQL multipart requests for file uploads
       const uploadLink = new UploadHttpLink({ uri: environment.graphqlUri });
 
       return {
