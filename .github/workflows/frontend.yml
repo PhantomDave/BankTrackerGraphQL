@@ -78,7 +78,7 @@ jobs:
       run: npx prettier --write "src/**/*.{ts,html,css,scss}"
 
     - name: Commit formatted code
-      uses: stefanzweifel/git-auto-commit-action@v5
+      uses: stefanzweifel/git-auto-commit-action@v7
       if: github.event_name == 'push'
       with:
         commit_message: 'chore: auto-format Frontend code'
