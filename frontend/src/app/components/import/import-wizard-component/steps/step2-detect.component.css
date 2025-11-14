@@ -72,6 +72,12 @@ mat-divider {
   color: var(--mat-sys-on-surface);
 }
 
+.section-description {
+  font-size: 0.875rem;
+  color: var(--mat-sys-on-surface-variant);
+  margin: -1rem 0 1rem 0;
+}
+
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -127,7 +133,16 @@ mat-divider {
   margin-bottom: 0.75rem;
 }
 
-.column-info,
+.column-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background-color: var(--mat-sys-surface-container);
+  border-radius: 4px;
+  flex: 1;
+}
+
 .field-info {
   display: flex;
   align-items: center;
@@ -136,6 +151,11 @@ mat-divider {
   background-color: var(--mat-sys-surface-container);
   border-radius: 4px;
   flex: 1;
+}
+
+.mapping-select {
+  flex: 1;
+  margin: 0;
 }
 
 .column-icon,
@@ -222,6 +242,23 @@ mat-divider {
 
 .confidence-fill.low {
   background-color: var(--mat-sys-error);
+}
+
+.mapping-warning {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  margin-top: 1rem;
+  background-color: rgba(255, 152, 0, 0.1);
+  border: 1px solid #ff9800;
+  border-radius: 8px;
+  color: #f57c00;
+}
+
+.mapping-warning mat-icon {
+  color: #ff9800;
+  flex-shrink: 0;
 }
 
 .sample-preview {

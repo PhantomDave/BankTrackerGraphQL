@@ -37,12 +37,12 @@
 
       <div class="mappings-container">
         <h3 class="section-title">Detected Mappings</h3>
+        <p class="section-description">Review and adjust column mappings as needed. Required fields: Date, Amount</p>
         @if (detectedColumnsArray().length === 0) {
           <div class="empty-state">
             <mat-icon>info</mat-icon>
             <p>
-              No column mappings detected automatically. You can configure them manually in the next
-              step.
+              No column mappings detected automatically. You can configure them manually below.
             </p>
           </div>
         } @else {
@@ -58,10 +58,17 @@
                     <span class="column-name">{{ item.column }}</span>
                   </div>
                   <mat-icon class="arrow-icon">arrow_forward</mat-icon>
-                  <div class="field-info">
-                    <mat-icon class="field-icon">description</mat-icon>
-                    <span class="field-name">{{ item.mapping }}</span>
-                  </div>
+                  <mat-form-field class="mapping-select" appearance="outline">
+                    <mat-label>Map to field</mat-label>
+                    <mat-select
+                      [value]="getColumnMapping(item.column)"
+                      (selectionChange)="updateColumnMapping(item.column, $event.value)"
+                    >
+                      @for (field of availableFields; track field) {
+                        <mat-option [value]="field">{{ field }}</mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
                 </div>
                 <div class="mapping-confidence">
                   <mat-icon
@@ -82,6 +89,15 @@
                 </div>
               </div>
             }
+          </div>
+        }
+        @if (getDuplicateMapping().length > 0) {
+          <div class="mapping-warning">
+            <mat-icon>warning</mat-icon>
+            <span
+              >Warning: Multiple columns are mapped to the same field: {{ getDuplicateMapping().join(', ') }}. 
+              Please ensure each field is mapped uniquely.</span
+            >
           </div>
         }
       </div>
