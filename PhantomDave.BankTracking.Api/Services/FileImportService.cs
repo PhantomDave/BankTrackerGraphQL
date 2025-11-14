@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Text;
 using CsvHelper;
 using CsvHelper.Configuration;
+using Microsoft.Extensions.Logging;
 using OfficeOpenXml;
 using PhantomDave.BankTracking.Api.Types.ObjectTypes;
 using PhantomDave.BankTracking.Library.Models;
@@ -24,8 +25,10 @@ public class ParsedFileData
     public FileType FileTypeExt { get; set; } = FileType.Xlsx;
     public int HeaderRowIndex { get; set; } = 1;
 }
-public class FileImportService
+public class FileImportService(ILogger<FileImportService> logger)
 {
+    private readonly ILogger<FileImportService> _logger = logger;
+
     public async Task<ParsedFileData> ParseFileAsync(IFile file)
     {
         await using var reader = file.OpenReadStream();
@@ -239,8 +242,9 @@ public class FileImportService
             Encoding.UTF8.GetString(buffer, 0, bytesRead);
             return Encoding.UTF8;
         }
-        catch
+        catch (DecoderFallbackException)
         {
+            // If UTF-8 decoding fails, fall back to ISO-8859-1
             return Encoding.GetEncoding("ISO-8859-1");
         }
     }
@@ -283,11 +287,13 @@ public class FileImportService
 
                 records.Add(record);
             }
-            catch
+            catch (Exception ex)
             {
                 failedCount++;
+                _logger.LogWarning(ex, "Failed to parse row {RowIndex} during import", records.Count + failedCount);
             }
-            Console.WriteLine($"Processed {records.Count + failedCount} / {parsedData.Rows.Count}, Failed: {failedCount}");
+            _logger.LogDebug("Processed {ProcessedRows} / {TotalRows}, Failed: {FailedRows}", 
+                records.Count + failedCount, parsedData.Rows.Count, failedCount);
         }
 
         return records;
