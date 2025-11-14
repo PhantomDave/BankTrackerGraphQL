@@ -24,7 +24,8 @@ export class ImportService {
   public readonly result: Signal<ImportResult | null> = this._result.asReadonly();
   public readonly loading: Signal<boolean> = this._loading.asReadonly();
   public readonly error: Signal<string | null> = this._error.asReadonly();
-  public readonly columnMappings: Signal<Record<string, string>> = this._columnMappings.asReadonly();
+  public readonly columnMappings: Signal<Record<string, string>> =
+    this._columnMappings.asReadonly();
   public readonly dateFormat: Signal<string> = this._dateFormat.asReadonly();
   public readonly decimalSeparator: Signal<string> = this._decimalSeparator.asReadonly();
   public readonly thousandsSeparator: Signal<string> = this._thousandsSeparator.asReadonly();

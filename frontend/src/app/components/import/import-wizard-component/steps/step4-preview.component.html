@@ -89,10 +89,7 @@
               [class.invalid-data]="record.validationStatus === 'error'"
               class="amount-cell"
             >
-              {{
-                formatAmount(record.amount)
-                  | currency: record.currency || 'EUR' : 'symbol' : '1.2-2'
-              }}
+              {{ record.amount | currency: record.currency }}
             </td>
           </ng-container>
 

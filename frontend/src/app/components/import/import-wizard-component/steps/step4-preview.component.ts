@@ -215,12 +215,7 @@ export class Step4PreviewComponent {
 
     // Months in JS Date are 0-based
     const date = new Date(year, month - 1, day);
-    // Check that the date components match (to catch invalid dates like 31/02/2024)
-    return (
-      date.getFullYear() === year &&
-      date.getMonth() === month - 1 &&
-      date.getDate() === day
-    );
+    return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
   }
 
   private normalizeAmount(amountStr: string): string {
@@ -272,15 +267,6 @@ export class Step4PreviewComponent {
       default:
         return '';
     }
-  }
-
-  protected formatAmount(amount: string): string {
-    if (!amount) return '';
-
-    const normalized = this.normalizeAmount(amount);
-    const num = parseFloat(normalized);
-    if (isNaN(num)) return amount;
-    return num.toFixed(2);
   }
 
   protected formatDate(dateStr: string): string {
