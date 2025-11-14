@@ -6,41 +6,9 @@
 
 version: 2
 updates:
-  # .NET NuGet packages for backend API
+  # .NET NuGet packages (centralized via Directory.Packages.props)
   - package-ecosystem: "nuget"
-    directory: "/PhantomDave.BankTracking.Api"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-    open-pull-requests-limit: 5
-    labels:
-      - "dependencies"
-      - "dotnet"
-      - "backend"
-    commit-message:
-      prefix: "chore(deps)"
-      include: "scope"
-
-  # .NET NuGet packages for data layer
-  - package-ecosystem: "nuget"
-    directory: "/PhantomDave.BankTracking.Data"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-    open-pull-requests-limit: 5
-    labels:
-      - "dependencies"
-      - "dotnet"
-      - "backend"
-    commit-message:
-      prefix: "chore(deps)"
-      include: "scope"
-
-  # .NET NuGet packages for library/domain layer
-  - package-ecosystem: "nuget"
-    directory: "/PhantomDave.BankTracking.Library"
+    directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"

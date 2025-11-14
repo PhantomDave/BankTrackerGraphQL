@@ -9,24 +9,24 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="BananaCakePop.Middleware" Version="17.0.0" />
-        <PackageReference Include="CsvHelper" Version="33.1.0" />
-        <PackageReference Include="EPPlus" Version="8.2.1" />
-        <PackageReference Include="HotChocolate.AspNetCore" Version="15.1.11" />
-        <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="15.1.11" />
-        <PackageReference Include="HotChocolate.AspNetCore.CommandLine" Version="15.1.11" />
-        <PackageReference Include="HotChocolate.Types.Analyzers" Version="15.1.11">
+        <PackageReference Include="BananaCakePop.Middleware" />
+        <PackageReference Include="CsvHelper" />
+        <PackageReference Include="EPPlus" />
+        <PackageReference Include="HotChocolate.AspNetCore" />
+        <PackageReference Include="HotChocolate.AspNetCore.Authorization" />
+        <PackageReference Include="HotChocolate.AspNetCore.CommandLine" />
+        <PackageReference Include="HotChocolate.Types.Analyzers">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="HotChocolate.Authorization" Version="15.1.11" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.11" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.11">
+        <PackageReference Include="HotChocolate.Authorization" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="9.6.10" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.11" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
     </ItemGroup>
 
     <ItemGroup>

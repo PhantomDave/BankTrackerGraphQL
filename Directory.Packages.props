@@ -1,0 +1,29 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- HotChocolate GraphQL -->
+    <PackageVersion Include="HotChocolate.AspNetCore" Version="15.1.11" />
+    <PackageVersion Include="HotChocolate.AspNetCore.Authorization" Version="15.1.11" />
+    <PackageVersion Include="HotChocolate.AspNetCore.CommandLine" Version="15.1.11" />
+    <PackageVersion Include="HotChocolate.Types.Analyzers" Version="15.1.11" />
+    <PackageVersion Include="HotChocolate.Authorization" Version="15.1.11" />
+    <PackageVersion Include="BananaCakePop.Middleware" Version="17.0.0" />
+    
+    <!-- Entity Framework Core -->
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="9.6.10" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+    
+    <!-- Authentication & Authorization -->
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.11" />
+    
+    <!-- File Processing -->
+    <PackageVersion Include="CsvHelper" Version="33.1.0" />
+    <PackageVersion Include="EPPlus" Version="8.2.1" />
+  </ItemGroup>
+</Project>

@@ -53,7 +53,7 @@ jobs:
       actions: read
     steps:
       - name: Wait for backend image build
-        uses: lewagon/wait-on-check-action@v1.3.4
+        uses: lewagon/wait-on-check-action@v1.4.1
         with:
           ref: ${{ github.sha }}
           check-name: 'Build and Push Backend Container'
@@ -70,7 +70,7 @@ jobs:
       actions: read
     steps:
       - name: Wait for frontend image build
-        uses: lewagon/wait-on-check-action@v1.3.4
+        uses: lewagon/wait-on-check-action@v1.4.1
         with:
           ref: ${{ github.sha }}
           check-name: 'Build and Push Frontend Container'

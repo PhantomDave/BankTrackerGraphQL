@@ -28,7 +28,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         dotnet-version: '9.0.x'
 
@@ -39,7 +39,7 @@ jobs:
       run: dotnet format PhantomDave.BankTracking.Library/PhantomDave.BankTracking.Library.csproj --verbosity diagnostic
 
     - name: Commit formatted code
-      uses: stefanzweifel/git-auto-commit-action@v5
+      uses: stefanzweifel/git-auto-commit-action@v7
       if: github.event_name == 'push'
       with:
         commit_message: 'chore: auto-format Backend Library code'
