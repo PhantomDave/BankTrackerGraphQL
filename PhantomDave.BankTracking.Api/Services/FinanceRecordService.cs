@@ -276,7 +276,7 @@ public class FinanceRecordService
             .Where(candidate => !existingKeys.Contains(candidate.Key))
             .Select(candidate => candidate.Record)
             .ToList();
-            
+
 
         var addResult = (await _unitOfWork.FinanceRecords.AddRangeAsync(recordsToAdd)).ToArray();
         await _unitOfWork.SaveChangesAsync();
