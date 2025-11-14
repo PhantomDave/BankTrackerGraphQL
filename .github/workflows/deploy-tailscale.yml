@@ -57,6 +57,7 @@ jobs:
           check-name: 'Build and Push Backend Container'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 10
+          running-workflow-name: 'Deploy via Tailscale'
 
   wait-for-frontend:
     name: Wait for Frontend Image
@@ -73,6 +74,7 @@ jobs:
           check-name: 'Build and Push Frontend Container'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 10
+          running-workflow-name: 'Deploy via Tailscale'
 
   deploy:
     name: Deploy to Production
