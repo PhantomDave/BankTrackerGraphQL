@@ -22,6 +22,14 @@
       <app-import-step3-configure></app-import-step3-configure>
       <div>
         <button matButton matStepperPrevious>Back</button>
+        <button matButton matStepperNext>Next</button>
+      </div>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Preview Import</ng-template>
+      <app-import-step4-preview></app-import-step4-preview>
+      <div>
+        <button matButton matStepperPrevious>Back</button>
         <button matButton (click)="stepper.reset()">Reset</button>
       </div>
     </mat-step>

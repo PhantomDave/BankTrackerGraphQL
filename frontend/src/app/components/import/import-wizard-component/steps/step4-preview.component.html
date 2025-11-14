@@ -1,1 +1,135 @@
-<p>Step 4 Preview Placeholder</p>
+<mat-card class="preview-card">
+  <mat-card-header>
+    <mat-card-title>Preview Import Data</mat-card-title>
+    <mat-card-subtitle>Review and validate the records before importing</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="summary-section">
+      <mat-chip-set>
+        <mat-chip
+          (click)="setFilter('all')"
+          [highlighted]="currentFilter() === 'all'"
+          class="filter-chip"
+        >
+          <app-flex justify="center" align="center">
+            <mat-icon>list</mat-icon>
+            Total: {{ summary().total }}
+          </app-flex>
+        </mat-chip>
+        <mat-chip
+          (click)="setFilter('valid')"
+          [highlighted]="currentFilter() === 'valid'"
+          class="filter-chip chip-valid"
+        >
+          <app-flex justify="center" align="center">
+            <mat-icon>check_circle</mat-icon>
+            Valid: {{ summary().valid }}
+          </app-flex>
+        </mat-chip>
+        <mat-chip
+          (click)="setFilter('duplicates')"
+          [highlighted]="currentFilter() === 'duplicates'"
+          class="filter-chip chip-duplicate"
+        >
+          <app-flex justify="center" align="center">
+            <mat-icon>warning</mat-icon>
+            Duplicates: {{ summary().duplicates }}
+          </app-flex>
+        </mat-chip>
+        <mat-chip
+          (click)="setFilter('errors')"
+          [highlighted]="currentFilter() === 'errors'"
+          class="filter-chip chip-error"
+        >
+          <app-flex justify="center" align="center">
+            <mat-icon>error</mat-icon>
+            Errors: {{ summary().errors }}
+          </app-flex>
+        </mat-chip>
+      </mat-chip-set>
+    </div>
+
+    <div class="table-container">
+      @if (filteredRecords().length > 0) {
+        <table mat-table [dataSource]="filteredRecords()" class="preview-table">
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let record" [class]="getStatusColor(record.validationStatus)">
+              <mat-icon
+                [matTooltip]="record.validationMessage || record.validationStatus"
+                class="status-icon"
+              >
+                {{ getStatusIcon(record.validationStatus) }}
+              </mat-icon>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="rowNumber">
+            <th mat-header-cell *matHeaderCellDef>#</th>
+            <td mat-cell *matCellDef="let record">{{ record.rowNumber }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>Date</th>
+            <td
+              mat-cell
+              *matCellDef="let record"
+              [class.invalid-data]="record.validationStatus === 'error'"
+            >
+              {{ formatDate(record.date) }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef>Amount</th>
+            <td
+              mat-cell
+              *matCellDef="let record"
+              [class.invalid-data]="record.validationStatus === 'error'"
+              class="amount-cell"
+            >
+              {{ record.amount | currency: record.currency }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="currency">
+            <th mat-header-cell *matHeaderCellDef>Currency</th>
+            <td mat-cell *matCellDef="let record">{{ record.currency || 'EUR' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef>Description</th>
+            <td mat-cell *matCellDef="let record" class="description-cell">
+              <span [matTooltip]="record.description">{{ record.description }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let record">{{ record.name }}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr
+            mat-row
+            *matRowDef="let row; columns: displayedColumns"
+            [class.duplicate-row]="row.validationStatus === 'duplicate'"
+            [class.error-row]="row.validationStatus === 'error'"
+          ></tr>
+        </table>
+      } @else {
+        <div class="empty-state">
+          <mat-icon>info</mat-icon>
+          <p>
+            @if (currentFilter() === 'all') {
+              No records to preview. Please upload and configure a file first.
+            } @else {
+              No {{ currentFilter() }} records found.
+            }
+          </p>
+        </div>
+      }
+    </div>
+  </mat-card-content>
+</mat-card>

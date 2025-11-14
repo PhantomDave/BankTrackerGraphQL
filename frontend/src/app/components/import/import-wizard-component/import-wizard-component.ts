@@ -9,6 +9,7 @@ import { Step2DetectComponent } from './steps/step2-detect.component';
 import { FlexComponent } from '../../ui-library/flex-component/flex-component';
 import { ImportService } from '../../../models/import/import-service';
 import { Step3ConfigureComponent } from './steps/step3-configure.component';
+import { Step4PreviewComponent } from './steps/step4-preview.component';
 
 @Component({
   selector: 'app-import-wizard-component',
@@ -23,6 +24,7 @@ import { Step3ConfigureComponent } from './steps/step3-configure.component';
     Step2DetectComponent,
     FlexComponent,
     Step3ConfigureComponent,
+    Step4PreviewComponent,
   ],
   templateUrl: './import-wizard-component.html',
   styleUrl: './import-wizard-component.css',

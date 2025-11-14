@@ -1,1 +1,145 @@
-/* Placeholder styles for Step 4 */
+.preview-card {
+  margin: 1rem 0;
+}
+
+.summary-section {
+  margin-bottom: 1.5rem;
+}
+
+.filter-chip {
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+
+.filter-chip mat-icon {
+  margin-right: 0.25rem;
+}
+
+.chip-valid[highlighted] {
+  background-color: var(--mat-sys-tertiary);
+  color: var(--mat-sys-on-tertiary);
+}
+
+.chip-duplicate[highlighted] {
+  background-color: var(--mat-sys-warning);
+  color: var(--mat-sys-on-warning);
+}
+
+.chip-error[highlighted] {
+  background-color: var(--mat-sys-error);
+  color: var(--mat-sys-on-error);
+}
+
+.table-container {
+  overflow-x: auto;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.preview-table {
+  width: 100%;
+  background-color: var(--mat-sys-surface);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px 0 var(--mat-sys-outline-variant);
+  overflow: hidden;
+}
+
+.preview-table th.mat-header-cell {
+  background-color: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-label-large);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.preview-table td.mat-cell {
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.preview-table tr.mat-row:hover td.mat-cell {
+  background-color: var(--mat-sys-surface-container);
+}
+
+.status-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.status-valid .status-icon {
+  color: var(--mat-sys-tertiary);
+}
+
+.status-duplicate .status-icon {
+  color: var(--mat-sys-warning);
+}
+
+.status-error .status-icon {
+  color: var(--mat-sys-error);
+}
+
+.duplicate-row td.mat-cell {
+  background-color: var(--mat-sys-warning-container);
+  color: var(--mat-sys-on-warning-container);
+}
+
+.duplicate-row:hover td.mat-cell {
+  background-color: var(--mat-sys-warning-container);
+  opacity: 0.9;
+}
+
+.error-row td.mat-cell {
+  background-color: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
+}
+
+.error-row:hover td.mat-cell {
+  background-color: var(--mat-sys-error-container);
+  opacity: 0.9;
+}
+
+.invalid-data {
+  color: var(--mat-sys-error);
+  font-weight: 500;
+}
+
+.amount-cell {
+  text-align: right;
+  font-family: monospace;
+}
+
+.description-cell {
+  max-width: 250px;
+}
+
+.description-cell span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.empty-state mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 1rem;
+  color: var(--mat-sys-outline);
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 1rem;
+  font: var(--mat-sys-body-large);
+}
