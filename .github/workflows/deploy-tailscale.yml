@@ -22,7 +22,7 @@ jobs:
       has_app_changes: ${{ steps.filter.outputs.backend == 'true' || steps.filter.outputs.frontend == 'true' || steps.filter.outputs.compose == 'true' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Check for file changes
         uses: dorny/paths-filter@v3
@@ -90,7 +90,7 @@ jobs:
     
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Connect to Tailscale
         uses: tailscale/github-action@v4
