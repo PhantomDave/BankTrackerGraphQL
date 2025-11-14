@@ -1,5 +1,8 @@
 # Dependabot configuration for automated dependency updates
 # See https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+#
+# Auto-merge: PRs created by Dependabot are automatically approved and merged
+# when all required checks pass. See .github/workflows/dependabot-auto-merge.yml
 
 version: 2
 updates:
