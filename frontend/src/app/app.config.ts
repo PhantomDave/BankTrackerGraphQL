@@ -46,7 +46,6 @@ export const appConfig: ApplicationConfig = {
         // See: https://chillicream.com/docs/hotchocolate/v15/server/files#client-usage
         headers['GraphQL-Preflight'] = '1';
 
-        // Keep Apollo preflight to force a CORS preflight in browsers (harmless on non-multipart)
         headers['Apollo-Require-Preflight'] = 'true';
 
         return { headers };
