@@ -16,6 +16,8 @@ jobs:
   detect-changes:
     name: Detect Changed Files
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       backend: ${{ steps.filter.outputs.backend }}
       frontend: ${{ steps.filter.outputs.frontend }}
