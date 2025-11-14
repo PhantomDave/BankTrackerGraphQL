@@ -13,14 +13,14 @@
     <PackageVersion Include="BananaCakePop.Middleware" Version="17.0.0" />
     
     <!-- Entity Framework Core -->
-    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.11" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.11" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="9.6.10" />
-    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0-rc.2" />
     
     <!-- Authentication & Authorization -->
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
     
     <!-- File Processing -->
     <PackageVersion Include="CsvHelper" Version="33.1.0" />
