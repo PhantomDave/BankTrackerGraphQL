@@ -19,6 +19,7 @@ jobs:
     outputs:
       backend: ${{ steps.filter.outputs.backend }}
       frontend: ${{ steps.filter.outputs.frontend }}
+      has_app_changes: ${{ steps.filter.outputs.backend == 'true' || steps.filter.outputs.frontend == 'true' || steps.filter.outputs.compose == 'true' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -37,6 +38,9 @@ jobs:
             frontend:
               - 'frontend/**'
               - '.github/workflows/build-frontend-image.yml'
+            compose:
+              - 'compose.yaml'
+              - 'compose.local.yaml'
 
   wait-for-backend:
     name: Wait for Backend Image
@@ -77,6 +81,7 @@ jobs:
     if: |
       always() && !cancelled() && 
       !contains(needs.*.result, 'failure') &&
+      (needs.detect-changes.outputs.has_app_changes == 'true') &&
       (needs.wait-for-backend.result == 'success' || needs.wait-for-backend.result == 'skipped') &&
       (needs.wait-for-frontend.result == 'success' || needs.wait-for-frontend.result == 'skipped')
     permissions:

@@ -1,0 +1,32 @@
+name: "BankTracker CodeQL Config"
+
+# Disable default queries and use security-extended query suite for comprehensive security scanning
+disable-default-queries: false
+
+queries:
+  - uses: security-extended
+  - uses: security-and-quality
+
+# Paths to exclude from analysis
+paths-ignore:
+  - '**/node_modules/**'
+  - '**/dist/**'
+  - '**/build/**'
+  - '**/bin/**'
+  - '**/obj/**'
+  - '**/*.Designer.cs'
+  - '**/Migrations/**'
+  - '**/wwwroot/lib/**'
+  - 'frontend/src/generated/**'
+  - '**/*.min.js'
+  - '**/*.min.css'
+  - '**/package-lock.json'
+  - '**/yarn.lock'
+  - '**/pnpm-lock.yaml'
+
+# Paths to include for analysis
+paths:
+  - 'PhantomDave.BankTracking.Api/**'
+  - 'PhantomDave.BankTracking.Data/**'
+  - 'PhantomDave.BankTracking.Library/**'
+  - 'frontend/src/**'
