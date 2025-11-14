@@ -32,5 +32,6 @@ mutation UpdateFinanceRecord(
     recurrenceEndDate
     parentRecurringRecordId
     lastProcessedDate
+    imported
   }
 }
