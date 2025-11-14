@@ -37,13 +37,13 @@
 
       <div class="mappings-container">
         <h3 class="section-title">Detected Mappings</h3>
-        <p class="section-description">Review and adjust column mappings as needed. Required fields: Date, Amount</p>
+        <p class="section-description">
+          Review and adjust column mappings as needed. Required fields: Date, Amount
+        </p>
         @if (detectedColumnsArray().length === 0) {
           <div class="empty-state">
             <mat-icon>info</mat-icon>
-            <p>
-              No column mappings detected automatically. You can configure them manually below.
-            </p>
+            <p>No column mappings detected automatically. You can configure them manually below.</p>
           </div>
         } @else {
           <div class="mappings-list">
@@ -95,8 +95,9 @@
           <div class="mapping-warning">
             <mat-icon>warning</mat-icon>
             <span
-              >Warning: Multiple columns are mapped to the same field: {{ getDuplicateMapping().join(', ') }}. 
-              Please ensure each field is mapped uniquely.</span
+              >Warning: Multiple columns are mapped to the same field:
+              {{ getDuplicateMapping().join(', ') }}. Please ensure each field is mapped
+              uniquely.</span
             >
           </div>
         }

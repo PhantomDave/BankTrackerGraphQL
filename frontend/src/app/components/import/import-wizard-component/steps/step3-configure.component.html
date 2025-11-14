@@ -3,7 +3,9 @@
     <mat-card-header>
       <mat-icon mat-card-avatar>tune</mat-icon>
       <mat-card-title>Parsing Configuration</mat-card-title>
-      <mat-card-subtitle>Configure date format, separators, and other import settings</mat-card-subtitle>
+      <mat-card-subtitle
+        >Configure date format, separators, and other import settings</mat-card-subtitle
+      >
     </mat-card-header>
 
     <mat-card-content>
@@ -15,10 +17,7 @@
         </h3>
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Date Format</mat-label>
-          <mat-select
-            [value]="dateFormat()"
-            (selectionChange)="updateDateFormat($event.value)"
-          >
+          <mat-select [value]="dateFormat()" (selectionChange)="updateDateFormat($event.value)">
             @for (preset of dateFormatPresets; track preset.value) {
               <mat-option [value]="preset.value">{{ preset.label }}</mat-option>
             }
