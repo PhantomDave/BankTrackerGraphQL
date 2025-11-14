@@ -50,6 +50,7 @@ export class Step3ConfigureComponent {
           initialMappings[column] = detection.suggestedMapping;
         });
         this.columnMappings.set(initialMappings);
+        this.importService.setColumnMappings(initialMappings);
       }
     });
   }
@@ -62,6 +63,7 @@ export class Step3ConfigureComponent {
       mappings[column] = field;
     }
     this.columnMappings.set(mappings);
+    this.importService.setColumnMappings(mappings);
   }
 
   protected getDuplicateMapping(): string[] {
