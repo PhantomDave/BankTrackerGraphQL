@@ -16,6 +16,7 @@ public record FinanceRecordType
     public DateTime? LastProcessedDate { get; init; }
     public int? ParentRecurringRecordId { get; init; }
     public bool IsRecurringInstance { get; init; }
+    public bool Imported { get; init; }
 
     public static FinanceRecordType FromFinanceRecord(FinanceRecord record) =>
         new()
@@ -31,6 +32,7 @@ public record FinanceRecordType
             RecurrenceEndDate = record.RecurrenceEndDate,
             LastProcessedDate = record.LastProcessedDate,
             ParentRecurringRecordId = record.ParentRecurringRecordId,
-            IsRecurringInstance = record.IsRecurringInstance
+            IsRecurringInstance = record.IsRecurringInstance,
+            Imported = record.Imported
         };
 }

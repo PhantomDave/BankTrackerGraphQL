@@ -17,4 +17,5 @@ public class FinanceRecord
     public DateTime? LastProcessedDate { get; set; }
     public int? ParentRecurringRecordId { get; set; } // Links to the original recurring record
     public bool IsRecurringInstance { get; set; } = false; // True if this was auto-generated from a recurring record
+    public bool Imported { get; set; } = false; // True if this record was imported from a file
 }
