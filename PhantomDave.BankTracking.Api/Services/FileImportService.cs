@@ -279,6 +279,7 @@ public class FileImportService
                 }
 
                 record.AccountId = accountId;
+                record.Imported = true;
 
                 records.Add(record);
             }
