@@ -19,6 +19,10 @@ export class ImportService {
   private readonly _dateFormat = signal<string>('dd/MM/yyyy');
   private readonly _decimalSeparator = signal<string>(',');
   private readonly _thousandsSeparator = signal<string>('.');
+  private readonly _rowsToSkip = signal<number>(0);
+  private readonly _saveAsTemplate = signal<boolean>(false);
+  private readonly _templateName = signal<string>('');
+  private readonly _selectedFile = signal<File | null>(null);
 
   public readonly preview: Signal<ImportPreview | null> = this._preview.asReadonly();
   public readonly result: Signal<ImportResult | null> = this._result.asReadonly();
@@ -29,10 +33,15 @@ export class ImportService {
   public readonly dateFormat: Signal<string> = this._dateFormat.asReadonly();
   public readonly decimalSeparator: Signal<string> = this._decimalSeparator.asReadonly();
   public readonly thousandsSeparator: Signal<string> = this._thousandsSeparator.asReadonly();
+  public readonly rowsToSkip: Signal<number> = this._rowsToSkip.asReadonly();
+  public readonly saveAsTemplate: Signal<boolean> = this._saveAsTemplate.asReadonly();
+  public readonly templateName: Signal<string> = this._templateName.asReadonly();
+  public readonly selectedFile: Signal<File | null> = this._selectedFile.asReadonly();
 
   async previewFile(file: File): Promise<boolean> {
     this._loading.set(true);
     this._error.set(null);
+    this._selectedFile.set(file);
 
     try {
       const result = await firstValueFrom(
@@ -99,10 +108,20 @@ export class ImportService {
     this._error.set(null);
 
     try {
-      const columnMappingsArray = Object.entries(columnMappings).map(([key, value]) => ({
+      const inverted: Record<string, string> = {};
+      for (const [header, field] of Object.entries(columnMappings)) {
+        if (!field || field === 'Skip' || field === 'Unknown') continue;
+        if (!(field in inverted)) {
+          inverted[field] = header;
+        }
+      }
+
+      const columnMappingsArray = Object.entries(inverted).map(([key, value]) => ({
         key,
         value,
       }));
+
+      // Debug logging removed to satisfy lint rules
 
       const result = await firstValueFrom(
         this.confirmImportGQL.mutate({
@@ -185,6 +204,19 @@ export class ImportService {
 
   setThousandsSeparator(separator: string): void {
     this._thousandsSeparator.set(separator);
+  }
+
+  setRowsToSkip(rows: number): void {
+    const value = isNaN(rows) || rows < 0 ? 0 : Math.floor(rows);
+    this._rowsToSkip.set(value);
+  }
+
+  setSaveAsTemplate(save: boolean): void {
+    this._saveAsTemplate.set(!!save);
+  }
+
+  setTemplateName(name: string): void {
+    this._templateName.set(name?.trim() ?? '');
   }
 
   validateFile(file: File): string | null {

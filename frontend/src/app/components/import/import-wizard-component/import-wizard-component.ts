@@ -1,5 +1,5 @@
 import { Component, computed, inject } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -10,6 +10,7 @@ import { FlexComponent } from '../../ui-library/flex-component/flex-component';
 import { ImportService } from '../../../models/import/import-service';
 import { Step3ConfigureComponent } from './steps/step3-configure.component';
 import { Step4PreviewComponent } from './steps/step4-preview.component';
+import { Step5ConfirmComponent } from './steps/step5-confirm.component';
 
 @Component({
   selector: 'app-import-wizard-component',
@@ -25,6 +26,7 @@ import { Step4PreviewComponent } from './steps/step4-preview.component';
     FlexComponent,
     Step3ConfigureComponent,
     Step4PreviewComponent,
+    Step5ConfirmComponent,
   ],
   templateUrl: './import-wizard-component.html',
   styleUrl: './import-wizard-component.css',

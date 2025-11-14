@@ -63,13 +63,16 @@ export class Step3ConfigureComponent {
 
   protected updateRowsToSkip(rows: number): void {
     this.rowsToSkip.set(rows);
+    this.importService.setRowsToSkip(rows);
   }
 
   protected updateSaveAsTemplate(save: boolean): void {
     this.saveAsTemplate.set(save);
+    this.importService.setSaveAsTemplate(save);
   }
 
   protected updateTemplateName(name: string): void {
     this.templateName.set(name);
+    this.importService.setTemplateName(name);
   }
 }

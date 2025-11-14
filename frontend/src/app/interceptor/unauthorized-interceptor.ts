@@ -21,7 +21,6 @@ export const unauthorizedInterceptor: HttpInterceptorFn = (req, next) => {
         );
 
         if (hasUnauthenticatedError) {
-          console.error('Unauthorized request intercepted:', req);
           localStorage.removeItem('sessionData');
           inject(Router).navigate(['/login']);
         }

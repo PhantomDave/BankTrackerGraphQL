@@ -94,7 +94,7 @@ export class FinanceRecordService {
       } else {
         this._error.set('Failed to update finance record');
       }
-    } catch (_error) {
+    } catch {
       this._error.set('Failed to update finance record');
     } finally {
       this._loading.set(false);
@@ -132,7 +132,7 @@ export class FinanceRecordService {
       } else {
         this._error.set('Failed to create finance record');
       }
-    } catch (_error) {
+    } catch {
       this._error.set('Failed to create finance record');
     } finally {
       this._loading.set(false);
@@ -156,7 +156,7 @@ export class FinanceRecordService {
         this._selectedFinanceRecord.set(null);
         this._financeRecords.update((records) => records.filter((record) => record.id !== id));
       }
-    } catch (_error) {
+    } catch {
       this._error.set('Failed to fetch finance records');
     } finally {
       this._loading.set(false);

@@ -34,17 +34,10 @@ public class ImportMutations
         [Service] FinanceRecordService financeService,
         [Service] IHttpContextAccessor httpContextAccessor)
     {
-
-        //TODO: Implement this
-        // Placeholder to not break the build
-        return await Task.FromResult(new ImportResultType()
-        {
-            CreatedRecords = [],
-            DuplicateCount = 0,
-            Errors = [],
-            FailureCount = 0,
-            SuccessCount = 0
-        });
+        var parsedFile = await fileService.ParseFileAsync(input.File);
+        var accountId = httpContextAccessor.GetAccountIdFromContext();
+        var records = fileService.FromParsedData(accountId, parsedFile, input);
+        return await financeService.BulkCreateWithDuplicateCheckAsync(accountId, [.. records]);
     }
 
 

@@ -196,25 +196,70 @@ public class FinanceRecordService
         };
     }
 
+    private sealed record DuplicateKey(DateTime Date, decimal Amount, string Description);
+
+    private static List<DuplicateKey> CreateDuplicateKeys(IEnumerable<FinanceRecord> records)
+    {
+        return records
+            .Select(record => new DuplicateKey(
+                EnsureUtc(record.Date),
+                record.Amount,
+                NormalizeDescription(record.Description)))
+            .Distinct()
+            .ToList();
+    }
+
     public async Task<List<FinanceRecord>> FindDuplicatesAsync(
         int accountId,
         List<FinanceRecord> candidates)
     {
-        var dupes = _unitOfWork.FinanceRecords.Query().Where(r => r.AccountId == accountId &&
-            candidates.Select(c => new { c.Date, c.Amount, Description = NormalizeDescription(c.Description) })
-                .Contains(new { r.Date, r.Amount, Description = NormalizeDescription(r.Description) })
-        );
-        return await dupes.ToListAsync();
+        var candidateKeys = CreateDuplicateKeys(candidates);
+        if (candidateKeys.Count == 0)
+        {
+            return new List<FinanceRecord>();
+        }
+
+        var allRecords = await _unitOfWork.FinanceRecords.Query()
+            .Where(r => r.AccountId == accountId)
+            .ToListAsync();
+
+        var dupes = allRecords
+            .Where(record => candidateKeys.Contains(new DuplicateKey(
+                EnsureUtc(record.Date),
+                record.Amount,
+                NormalizeDescription(record.Description))))
+            .ToList();
+
+        return dupes;
     }
 
     public async Task<ImportResultType> BulkCreateWithDuplicateCheckAsync(
         int accountId,
         List<FinanceRecord> records)
     {
-        var dupes = _unitOfWork.FinanceRecords.Query().Where(r => r.AccountId == accountId &&
-                                                                  records.Select(c => new { c.Date, c.Amount, Description = NormalizeDescription(c.Description) })
-                                                                      .Contains(new { r.Date, r.Amount, Description = NormalizeDescription(r.Description) })
-        );
+        var normalizedCandidates = records
+            .Select(record => new
+            {
+                Record = record,
+                Key = new DuplicateKey(
+                    EnsureUtc(record.Date),
+                    record.Amount,
+                    NormalizeDescription(record.Description))
+            })
+            .ToList();
+
+        var recordKeys = normalizedCandidates.Select(candidate => candidate.Key).ToList();
+
+        var allRecords = await _unitOfWork.FinanceRecords.Query()
+            .Where(r => r.AccountId == accountId)
+            .ToListAsync();
+
+        var dupes = allRecords
+            .Where(record => recordKeys.Contains(new DuplicateKey(
+                EnsureUtc(record.Date),
+                record.Amount,
+                NormalizeDescription(record.Description))))
+            .ToList();
 
         var error = new List<ImportError>();
 
@@ -226,14 +271,22 @@ public class FinanceRecordService
             });
         }
 
-        var addResult = (await _unitOfWork.FinanceRecords.AddRangeAsync(records.Except(dupes).ToList())).ToArray();
+        var existingKeys = CreateDuplicateKeys(dupes);
+        var recordsToAdd = normalizedCandidates
+            .Where(candidate => !existingKeys.Contains(candidate.Key))
+            .Select(candidate => candidate.Record)
+            .ToList();
+
+        var addResult = (await _unitOfWork.FinanceRecords.AddRangeAsync(recordsToAdd)).ToArray();
+        await _unitOfWork.SaveChangesAsync();
+
         return new ImportResultType
         {
             CreatedRecords = addResult.Select(FinanceRecordType.FromFinanceRecord).ToList(),
-            DuplicateCount = dupes.Count(),
+            DuplicateCount = dupes.Count,
             Errors = error,
             FailureCount = error.Count,
-            SuccessCount = addResult.Count()
+            SuccessCount = addResult.Length
         };
     }
 }

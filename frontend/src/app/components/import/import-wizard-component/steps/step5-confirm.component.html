@@ -1,1 +1,105 @@
-<p>Step 5 Confirm Placeholder</p>
+@if (preview(); as previewData) {
+  <mat-card appearance="outlined" class="confirm-card">
+    <mat-card-header>
+      <mat-icon mat-card-avatar>assignment_turned_in</mat-icon>
+      <mat-card-title>Ready to import</mat-card-title>
+      <mat-card-subtitle>
+        Review the summary and click Import to create records.
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="summary">
+        <div class="summary-item">
+          <mat-icon color="primary">table_rows</mat-icon>
+          <span>Total rows detected:</span>
+          <strong>{{ previewData.totalRows }}</strong>
+        </div>
+        <div class="summary-item">
+          <mat-icon color="primary">schema</mat-icon>
+          <span>Mapped columns:</span>
+          <strong>{{ (columnMappings() | keyvalue).length }}</strong>
+        </div>
+        <div class="summary-item">
+          <mat-icon color="primary">calendar_today</mat-icon>
+          <span>Date format:</span>
+          <strong>{{ dateFormat() }}</strong>
+        </div>
+        <div class="summary-item">
+          <mat-icon color="primary">numbers</mat-icon>
+          <span>Separators:</span>
+          <strong
+            >decimal {{ decimalSeparator() }} • thousands
+            {{ thousandsSeparator() || 'none' }}</strong
+          >
+        </div>
+        <div class="summary-item" *ngIf="rowsToSkip() > 0">
+          <mat-icon color="primary">skip_next</mat-icon>
+          <span>Rows to skip:</span>
+          <strong>{{ rowsToSkip() }}</strong>
+        </div>
+        <div class="summary-item" *ngIf="saveAsTemplate()">
+          <mat-icon color="primary">save</mat-icon>
+          <span>Save as template:</span>
+          <strong>{{ templateName() || 'Untitled template' }}</strong>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="onConfirmImport()"
+          [disabled]="loading() || !selectedFile()"
+        >
+          <mat-icon>cloud_upload</mat-icon>
+          Import
+        </button>
+        @if (error()) {
+          <span class="error">{{ error() }}</span>
+        }
+      </div>
+
+      @if (loading()) {
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      }
+
+      @if (result(); as res) {
+        <div class="result">
+          <h3>Result</h3>
+          <div class="result-metrics">
+            <div>
+              <mat-icon color="primary">check_circle</mat-icon> Created:
+              <strong>{{ res.successCount }}</strong>
+            </div>
+            <div>
+              <mat-icon color="warn">warning</mat-icon> Duplicates:
+              <strong>{{ res.duplicateCount }}</strong>
+            </div>
+            <div>
+              <mat-icon color="warn">error</mat-icon> Failed:
+              <strong>{{ res.failureCount }}</strong>
+            </div>
+          </div>
+
+          @if (res.errors.length) {
+            <h4>Errors</h4>
+            <mat-list>
+              @for (err of res.errors; track err.rowNumber) {
+                <mat-list-item>
+                  <mat-icon matListItemIcon color="warn">error</mat-icon>
+                  <div matListItemTitle>Row {{ err.rowNumber }}: {{ err.message }}</div>
+                </mat-list-item>
+              }
+            </mat-list>
+          }
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+} @else {
+  <div class="no-preview">
+    <mat-icon>cloud_upload</mat-icon>
+    <p>No file uploaded yet. Please upload and configure a file in the previous steps.</p>
+  </div>
+}
