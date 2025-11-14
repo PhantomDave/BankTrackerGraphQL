@@ -1,96 +1,130 @@
 @if (preview(); as previewData) {
   <mat-card appearance="outlined" class="configure-card">
     <mat-card-header>
-      <mat-icon mat-card-avatar>settings</mat-icon>
-      <mat-card-title>Configure Import</mat-card-title>
-      <mat-card-subtitle>Map CSV columns to finance record fields</mat-card-subtitle>
+      <mat-icon mat-card-avatar>tune</mat-icon>
+      <mat-card-title>Parsing Configuration</mat-card-title>
+      <mat-card-subtitle>Configure date format, separators, and other import settings</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
-      <!-- Column Mappings -->
-      <div class="mappings-container">
+      <!-- Date Format -->
+      <div class="config-section">
         <h3 class="section-title">
-          <mat-icon>swap_horiz</mat-icon>
-          Column Mappings
+          <mat-icon>calendar_today</mat-icon>
+          Date Format
         </h3>
-        <p class="section-description">Map CSV columns to finance record fields</p>
-
-        <div class="mappings-list">
-          @for (header of previewData.headers; track header; let idx = $index) {
-            @if (previewData.detectedColumns[header]; as detection) {
-              <div class="mapping-item">
-                <div class="mapping-header">
-                  <div class="column-info">
-                    <mat-icon class="column-icon">view_column</mat-icon>
-                    <span class="column-name">{{ header }}</span>
-                  </div>
-                  <mat-icon class="arrow-icon">arrow_forward</mat-icon>
-                  <mat-form-field class="mapping-select" appearance="outline">
-                    <mat-label>Map to field</mat-label>
-                    <mat-select
-                      [value]="getColumnMapping(header)"
-                      (selectionChange)="updateColumnMapping(header, $event.value)"
-                    >
-                      <mat-option value="">None</mat-option>
-                      @for (field of availableFields; track field) {
-                        <mat-option [value]="field">{{ field }}</mat-option>
-                      }
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-                @if (getDetectionConfidence(header); as confidence) {
-                  <div class="mapping-confidence">
-                    <mat-icon [class]="'confidence-icon ' + getConfidenceColor(confidence)">
-                      {{
-                        confidence >= 80 ? 'check_circle' : confidence >= 50 ? 'info' : 'warning'
-                      }}
-                    </mat-icon>
-                    <span class="confidence-label"
-                      >{{ getConfidenceLabel(confidence) }} Confidence</span
-                    >
-                    <span class="confidence-percentage">{{ confidence.toFixed(0) }}%</span>
-                    <div class="confidence-bar">
-                      <div
-                        class="confidence-fill"
-                        [class]="getConfidenceColor(confidence)"
-                        [style.width.%]="confidence"
-                      ></div>
-                    </div>
-                  </div>
-                }
-              </div>
-            } @else {
-              <div class="mapping-item unmapped">
-                <div class="mapping-header">
-                  <div class="column-info">
-                    <mat-icon class="column-icon">view_column</mat-icon>
-                    <span class="column-name">{{ header }}</span>
-                  </div>
-                  <mat-icon class="arrow-icon">arrow_forward</mat-icon>
-                  <mat-form-field class="mapping-select" appearance="outline">
-                    <mat-label>Map to field</mat-label>
-                    <mat-select
-                      [value]="getColumnMapping(header)"
-                      (selectionChange)="updateColumnMapping(header, $event.value)"
-                    >
-                      <mat-option value="">None</mat-option>
-                      @for (field of availableFields; track field) {
-                        <mat-option [value]="field">{{ field }}</mat-option>
-                      }
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-              </div>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Date Format</mat-label>
+          <mat-select
+            [value]="dateFormat()"
+            (selectionChange)="updateDateFormat($event.value)"
+          >
+            @for (preset of dateFormatPresets; track preset.value) {
+              <mat-option [value]="preset.value">{{ preset.label }}</mat-option>
             }
-          }
-          @if (getDuplicateMapping().length > 0) {
-            <div class="mapping-warning">
-              <mat-icon>warning</mat-icon>
-              <span
-                >Warning: Multiple columns are mapped to the same field. Please ensure each field is
-                mapped uniquely. duplicates: {{ getDuplicateMapping().join(', ') }}</span
-              >
-            </div>
+          </mat-select>
+          <mat-hint>Select the date format used in your file</mat-hint>
+        </mat-form-field>
+
+        @if (dateFormat() === 'custom') {
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Custom Date Format</mat-label>
+            <input
+              matInput
+              [value]="dateFormat()"
+              (input)="updateDateFormat($any($event.target).value)"
+              placeholder="e.g., dd/MM/yyyy"
+            />
+            <mat-hint>Use: dd (day), MM (month), yyyy (year)</mat-hint>
+          </mat-form-field>
+        }
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Decimal Separator -->
+      <div class="config-section">
+        <h3 class="section-title">
+          <mat-icon>decimal_increase</mat-icon>
+          Decimal Separator
+        </h3>
+        <mat-radio-group
+          [value]="decimalSeparator()"
+          (change)="updateDecimalSeparator($event.value)"
+          class="radio-group"
+        >
+          <mat-radio-button value=".">Period (.) - US format (1,234.56)</mat-radio-button>
+          <mat-radio-button value=",">Comma (,) - European format (1.234,56)</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Thousands Separator -->
+      <div class="config-section">
+        <h3 class="section-title">
+          <mat-icon>format_list_numbered</mat-icon>
+          Thousands Separator
+        </h3>
+        <mat-radio-group
+          [value]="thousandsSeparator()"
+          (change)="updateThousandsSeparator($event.value)"
+          class="radio-group"
+        >
+          <mat-radio-button value=",">Comma (,) - US format (1,234.56)</mat-radio-button>
+          <mat-radio-button value=".">Period (.) - European format (1.234,56)</mat-radio-button>
+          <mat-radio-button value=" ">Space ( ) - Alternative format (1 234,56)</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Rows to Skip -->
+      <div class="config-section">
+        <h3 class="section-title">
+          <mat-icon>skip_next</mat-icon>
+          Rows to Skip
+        </h3>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Number of rows to skip</mat-label>
+          <input
+            matInput
+            type="number"
+            min="0"
+            [value]="rowsToSkip()"
+            (input)="updateRowsToSkip(+$any($event.target).value)"
+          />
+          <mat-hint>Skip header or empty rows at the beginning of the file</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Save as Template -->
+      <div class="config-section">
+        <h3 class="section-title">
+          <mat-icon>save</mat-icon>
+          Save as Template
+        </h3>
+        <div class="template-options">
+          <mat-checkbox
+            [checked]="saveAsTemplate()"
+            (change)="updateSaveAsTemplate($event.checked)"
+          >
+            Save these settings as a template for future imports
+          </mat-checkbox>
+
+          @if (saveAsTemplate()) {
+            <mat-form-field appearance="outline" class="full-width template-name-field">
+              <mat-label>Template Name</mat-label>
+              <input
+                matInput
+                [value]="templateName()"
+                (input)="updateTemplateName($any($event.target).value)"
+                placeholder="e.g., Intesa Sanpaolo Statement"
+              />
+              <mat-hint>Give this template a descriptive name</mat-hint>
+            </mat-form-field>
           }
         </div>
       </div>
@@ -99,6 +133,6 @@
 } @else {
   <div class="no-preview">
     <mat-icon>cloud_upload</mat-icon>
-    <p>No file uploaded yet. Please upload a file in the previous step.</p>
+    <p>No file uploaded yet. Please upload and configure a file in the previous steps.</p>
   </div>
 }

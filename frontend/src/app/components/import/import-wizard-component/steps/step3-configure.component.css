@@ -18,307 +18,55 @@ mat-icon[mat-card-avatar] {
   height: 40px;
 }
 
-mat-divider {
-  margin: 1.5rem 0;
+.config-section {
+  padding: 1rem 0;
 }
 
-/* Section Titles */
 .section-title {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-size: 1.125rem;
   font-weight: 500;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 1.5rem 0;
   color: var(--mat-sys-on-surface);
 }
 
 .section-title mat-icon {
   color: var(--mat-sys-primary);
+  font-size: 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
-.section-description {
-  font-size: 0.875rem;
-  color: var(--mat-sys-on-surface-variant);
-  margin: 0 0 1.5rem 0;
-}
-
-/* Row Configuration Section */
-.rows-container {
-  padding: 1rem 0;
-}
-
-.table-container {
-  overflow-x: auto;
-  border: 1px solid var(--mat-sys-outline-variant);
-  border-radius: 8px;
-  background-color: var(--mat-sys-surface-container-low);
-  margin-bottom: 1rem;
-}
-
-.rows-table {
+.full-width {
   width: 100%;
-  border-collapse: collapse;
-  font-size: 0.875rem;
-  min-width: 600px;
 }
 
-.rows-table th {
-  background-color: var(--mat-sys-surface-container);
-  padding: 0.75rem 1rem;
-  text-align: left;
-  font-weight: 600;
-  color: var(--mat-sys-on-surface);
-  border-bottom: 2px solid var(--mat-sys-outline-variant);
-  white-space: nowrap;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.rows-table td {
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid var(--mat-sys-outline-variant);
-  color: var(--mat-sys-on-surface-variant);
-}
-
-.rows-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-/* Column widths */
-.row-number-col {
-  width: 80px;
-}
-
-.ignore-col {
-  width: 80px;
-  text-align: center;
-}
-
-.header-col {
-  width: 100px;
-  text-align: center;
-}
-
-.data-col {
-  min-width: 150px;
-}
-
-.row-number {
-  font-weight: 600;
-  color: var(--mat-sys-on-surface);
-}
-
-.ignore-cell,
-.header-cell {
-  text-align: center;
-}
-
-/* Row states */
-.header-row {
-  background-color: var(--mat-sys-primary-container);
-}
-
-.header-row td {
-  color: var(--mat-sys-on-primary-container);
-  font-weight: 500;
-}
-
-.ignored-row {
-  background-color: var(--mat-sys-error-container);
-  opacity: 0.6;
-}
-
-.ignored-row td {
-  color: var(--mat-sys-on-error-container);
-  text-decoration: line-through;
-}
-
-.normal-row:hover {
-  background-color: var(--mat-sys-surface-container);
-}
-
-/* Header button styling */
-button[mat-icon-button].active {
-  color: var(--mat-sys-primary);
-}
-
-button[mat-icon-button]:not(.active) {
-  color: var(--mat-sys-on-surface-variant);
-}
-
-/* Row config summary */
-.row-config-summary {
-  display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
-  padding: 1rem;
-  background-color: var(--mat-sys-surface-container-low);
-  border-radius: 8px;
-}
-
-.summary-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--mat-sys-on-surface);
-}
-
-.summary-item mat-icon {
-  color: var(--mat-sys-primary);
-  font-size: 1.25rem;
-  width: 1.25rem;
-  height: 1.25rem;
-}
-
-.summary-item strong {
-  color: var(--mat-sys-primary);
-  font-weight: 600;
-}
-
-/* Mappings Section */
-.mappings-container {
-  padding: 1rem 0;
-}
-
-.mappings-list {
+.radio-group {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.mapping-item {
-  border: 1px solid var(--mat-sys-outline-variant);
-  border-radius: 8px;
-  padding: 1rem;
-  background-color: var(--mat-sys-surface-container-low);
-  transition: all 0.2s ease;
+.radio-group mat-radio-button {
+  margin: 0;
 }
 
-.mapping-item:hover {
-  background-color: var(--mat-sys-surface-container);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.mapping-item.unmapped {
-  border-left: 4px solid var(--mat-sys-outline);
-  opacity: 0.8;
-}
-
-.mapping-header {
+.template-options {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 1rem;
-  margin-bottom: 0.75rem;
 }
 
-.column-info {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  background-color: var(--mat-sys-surface-container);
-  border-radius: 4px;
-  flex: 1;
-  min-width: 0;
+.template-name-field {
+  margin-top: 1rem;
 }
 
-.column-icon {
-  font-size: 1.25rem;
-  width: 1.25rem;
-  height: 1.25rem;
-  color: var(--mat-sys-primary);
-  flex-shrink: 0;
+mat-divider {
+  margin: 2rem 0;
 }
 
-.column-name {
-  font-weight: 500;
-  color: var(--mat-sys-on-surface);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.arrow-icon {
-  color: var(--mat-sys-on-surface-variant);
-  flex-shrink: 0;
-}
-
-.mapping-select {
-  flex: 1;
-  min-width: 200px;
-}
-
-.mapping-confidence {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 0.75rem;
-  background-color: var(--mat-sys-surface-container-highest);
-  border-radius: 4px;
-  position: relative;
-}
-
-.confidence-icon {
-  font-size: 1.25rem;
-  width: 1.25rem;
-  height: 1.25rem;
-}
-
-.confidence-icon.high {
-  color: var(--mat-sys-tertiary);
-}
-
-.confidence-icon.medium {
-  color: #ff9800;
-}
-
-.confidence-icon.low {
-  color: var(--mat-sys-error);
-}
-
-.confidence-label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--mat-sys-on-surface-variant);
-}
-
-.confidence-percentage {
-  margin-left: auto;
-  font-weight: 600;
-  color: var(--mat-sys-on-surface);
-}
-
-.confidence-bar {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background-color: var(--mat-sys-surface-variant);
-  border-radius: 0 0 4px 4px;
-  overflow: hidden;
-}
-
-.confidence-fill {
-  height: 100%;
-  transition: width 0.3s ease;
-}
-
-.confidence-fill.high {
-  background-color: var(--mat-sys-tertiary);
-}
-
-.confidence-fill.medium {
-  background-color: #ff9800;
-}
-
-.confidence-fill.low {
-  background-color: var(--mat-sys-error);
-}
-
-/* No Preview State */
 .no-preview {
   display: flex;
   flex-direction: column;
@@ -337,29 +85,8 @@ button[mat-icon-button]:not(.active) {
   opacity: 0.3;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
-  .mapping-header {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .arrow-icon {
-    transform: rotate(90deg);
-    align-self: center;
-  }
-
-  .column-info {
-    width: 100%;
-  }
-
-  .mapping-select {
-    width: 100%;
-    min-width: 0;
-  }
-
-  .row-config-summary {
-    flex-direction: column;
-    gap: 0.75rem;
+  .config-section {
+    padding: 0.5rem 0;
   }
 }
