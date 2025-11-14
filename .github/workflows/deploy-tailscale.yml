@@ -74,7 +74,11 @@ jobs:
     name: Deploy to Production
     runs-on: ubuntu-latest
     needs: [detect-changes, wait-for-backend, wait-for-frontend]
-    if: always() && !cancelled() && !contains(needs.*.result, 'failure')
+    if: |
+      always() && !cancelled() && 
+      !contains(needs.*.result, 'failure') &&
+      (needs.wait-for-backend.result == 'success' || needs.wait-for-backend.result == 'skipped') &&
+      (needs.wait-for-frontend.result == 'success' || needs.wait-for-frontend.result == 'skipped')
     permissions:
       contents: read
       packages: read
