@@ -292,7 +292,7 @@ public class FileImportService(ILogger<FileImportService> logger)
                 failedCount++;
                 _logger.LogWarning(ex, "Failed to parse row {RowIndex} during import", records.Count + failedCount);
             }
-            _logger.LogDebug("Processed {ProcessedRows} / {TotalRows}, Failed: {FailedRows}", 
+            _logger.LogDebug("Processed {ProcessedRows} / {TotalRows}, Failed: {FailedRows}",
                 records.Count + failedCount, parsedData.Rows.Count, failedCount);
         }
 
