@@ -49,7 +49,7 @@ jobs:
       - name: Wait for backend image build
         uses: lewagon/wait-on-check-action@v1.3.4
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ github.sha }}
           check-name: 'Build and Push Backend Container'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 10
@@ -65,8 +65,8 @@ jobs:
       - name: Wait for frontend image build
         uses: lewagon/wait-on-check-action@v1.3.4
         with:
-          ref: ${{ github.ref }}
-          check-name: 'Build and Push Frontend Container'
+          ref: ${{ github.sha }}
+          check-name: 'Build and Lint Frontend'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 10
 
