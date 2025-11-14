@@ -123,6 +123,11 @@ jobs:
           tailscale ssh "${{ steps.ssh.outputs.target }}" \
             "echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin"
 
+      - name: Clean up old Docker images
+        run: |
+          tailscale ssh "${{ steps.ssh.outputs.target }}" \
+            "docker system prune -af --filter 'until=24h'"
+
       - name: Pull latest images
         run: |
           tailscale ssh "${{ steps.ssh.outputs.target }}" \
