@@ -4,7 +4,11 @@
 }
 
 .sidenav-container {
-  height: 100dvh;
+  height: 100%;
+}
+
+.mat-list {
+  align-items: center;
 }
 
 .sidenav {
