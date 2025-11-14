@@ -58,7 +58,9 @@ public class Program
             })
             .AddJwtBearer(options =>
             {
-                options.RequireHttpsMetadata = false; // enable HTTPS in production
+                // WARNING: RequireHttpsMetadata should be true in production environments
+                // Set to false only for local development
+                options.RequireHttpsMetadata = builder.Environment.IsDevelopment() == false;
                 options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -79,7 +81,7 @@ public class Program
         {
             options.AddDefaultPolicy(policy =>
                 policy
-                    .WithOrigins("http://localhost:4200", "http://localhost:5095/graphql", "*")
+                    .WithOrigins("http://localhost:4200", "http://localhost:5095")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials());
