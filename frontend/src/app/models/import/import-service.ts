@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, Signal, signal } from '@angular/core';
 import { ConfirmImportGQL, PreviewImportGQL } from '../../../generated/graphql';
 import { SnackbarService } from '../../shared/services/snackbar.service';
 import { ImportPreview } from './import-preview';
@@ -20,14 +20,15 @@ export class ImportService {
   private readonly _decimalSeparator = signal<string>(',');
   private readonly _thousandsSeparator = signal<string>('.');
 
-  public readonly preview = this._preview.asReadonly();
-  public readonly result = this._result.asReadonly();
-  public readonly loading = this._loading.asReadonly();
-  public readonly error = this._error.asReadonly();
-  public readonly columnMappings = this._columnMappings.asReadonly();
-  public readonly dateFormat = this._dateFormat.asReadonly();
-  public readonly decimalSeparator = this._decimalSeparator.asReadonly();
-  public readonly thousandsSeparator = this._thousandsSeparator.asReadonly();
+  public readonly preview: Signal<ImportPreview | null> = this._preview.asReadonly();
+  public readonly result: Signal<ImportResult | null> = this._result.asReadonly();
+  public readonly loading: Signal<boolean> = this._loading.asReadonly();
+  public readonly error: Signal<string | null> = this._error.asReadonly();
+  public readonly columnMappings: Signal<Record<string, string>> =
+    this._columnMappings.asReadonly();
+  public readonly dateFormat: Signal<string> = this._dateFormat.asReadonly();
+  public readonly decimalSeparator: Signal<string> = this._decimalSeparator.asReadonly();
+  public readonly thousandsSeparator: Signal<string> = this._thousandsSeparator.asReadonly();
 
   async previewFile(file: File): Promise<boolean> {
     this._loading.set(true);

@@ -43,7 +43,6 @@ export class Step4PreviewComponent {
   private readonly importService = inject(ImportService);
   protected readonly preview = computed(() => this.importService.preview());
   protected readonly columnMappings = computed(() => this.importService.columnMappings());
-  protected readonly dateFormat = computed(() => this.importService.dateFormat());
   protected readonly decimalSeparator = computed(() => this.importService.decimalSeparator());
 
   protected readonly displayedColumns: string[] = [
@@ -184,24 +183,42 @@ export class Step4PreviewComponent {
   private isValidDate(dateStr: string): boolean {
     if (!dateStr) return false;
 
-    const formats = [
-      /^\d{2}\/\d{2}\/\d{4}$/,
-      /^\d{4}-\d{2}-\d{2}$/,
-      /^\d{2}-\d{2}-\d{4}$/,
-      /^\d{2}\.\d{2}\.\d{4}$/,
-    ];
-
-    if (!formats.some((format) => format.test(dateStr))) {
+    // Match supported formats and extract components
+    let day: number, month: number, year: number;
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
+      // dd/MM/yyyy
+      const [d, m, y] = dateStr.split('/');
+      day = parseInt(d, 10);
+      month = parseInt(m, 10);
+      year = parseInt(y, 10);
+    } else if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      // yyyy-MM-dd
+      const [y, m, d] = dateStr.split('-');
+      day = parseInt(d, 10);
+      month = parseInt(m, 10);
+      year = parseInt(y, 10);
+    } else if (/^\d{2}-\d{2}-\d{4}$/.test(dateStr)) {
+      // dd-MM-yyyy
+      const [d, m, y] = dateStr.split('-');
+      day = parseInt(d, 10);
+      month = parseInt(m, 10);
+      year = parseInt(y, 10);
+    } else if (/^\d{2}\.\d{2}\.\d{4}$/.test(dateStr)) {
+      // dd.MM.yyyy
+      const [d, m, y] = dateStr.split('.');
+      day = parseInt(d, 10);
+      month = parseInt(m, 10);
+      year = parseInt(y, 10);
+    } else {
       return false;
     }
 
-    const date = new Date(dateStr);
-    return !isNaN(date.getTime());
+    // Months in JS Date are 0-based
+    const date = new Date(year, month - 1, day);
+    return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
   }
 
-  private isValidAmount(amountStr: string): boolean {
-    if (!amountStr) return false;
-
+  private normalizeAmount(amountStr: string): string {
     const decimalSep = this.decimalSeparator();
     let normalized = amountStr.replace(/\s/g, '');
 
@@ -211,6 +228,13 @@ export class Step4PreviewComponent {
       normalized = normalized.replace(/,/g, '');
     }
 
+    return normalized;
+  }
+
+  private isValidAmount(amountStr: string): boolean {
+    if (!amountStr) return false;
+
+    const normalized = this.normalizeAmount(amountStr);
     const num = parseFloat(normalized);
     return !isNaN(num) && isFinite(num);
   }
@@ -243,23 +267,6 @@ export class Step4PreviewComponent {
       default:
         return '';
     }
-  }
-
-  protected formatAmount(amount: string): string {
-    if (!amount) return '';
-
-    const decimalSep = this.decimalSeparator();
-    let normalized = amount.replace(/\s/g, '');
-
-    if (decimalSep === ',') {
-      normalized = normalized.replace(/\./g, '').replace(',', '.');
-    } else {
-      normalized = normalized.replace(/,/g, '');
-    }
-
-    const num = parseFloat(normalized);
-    if (isNaN(num)) return amount;
-    return num.toFixed(2);
   }
 
   protected formatDate(dateStr: string): string {

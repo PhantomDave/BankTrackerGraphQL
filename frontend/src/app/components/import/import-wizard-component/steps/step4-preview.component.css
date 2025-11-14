@@ -21,8 +21,8 @@
 }
 
 .chip-duplicate[highlighted] {
-  background-color: #ff9800;
-  color: white;
+  background-color: var(--mat-sys-warning);
+  color: var(--mat-sys-on-warning);
 }
 
 .chip-error[highlighted] {
@@ -73,7 +73,7 @@
 }
 
 .status-duplicate .status-icon {
-  color: #ff9800;
+  color: var(--mat-sys-warning);
 }
 
 .status-error .status-icon {
@@ -81,12 +81,12 @@
 }
 
 .duplicate-row td.mat-cell {
-  background-color: var(--mat-sys-error-container);
-  color: var(--mat-sys-on-error-container);
+  background-color: var(--mat-sys-warning-container);
+  color: var(--mat-sys-on-warning-container);
 }
 
 .duplicate-row:hover td.mat-cell {
-  background-color: var(--mat-sys-error-container);
+  background-color: var(--mat-sys-warning-container);
   opacity: 0.9;
 }
 
