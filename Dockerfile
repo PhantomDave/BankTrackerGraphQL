@@ -15,7 +15,7 @@ WORKDIR /src/PhantomDave.BankTracking.Api
 FROM build AS publish
 RUN dotnet publish "PhantomDave.BankTracking.Api.csproj" -c Release -o /app/publish --no-restore
 
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 
 # Install curl for healthcheck
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
