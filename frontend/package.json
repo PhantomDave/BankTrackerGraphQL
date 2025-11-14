@@ -62,7 +62,7 @@
     "@graphql-codegen/schema-ast": "^5.0.0",
     "@graphql-codegen/typescript": "^5.0.2",
     "@graphql-codegen/typescript-apollo-angular": "^4.0.1",
-    "@graphql-codegen/typescript-operations": "^5.0.2",
+    "@graphql-codegen/typescript-operations": "^5.0.4",
     "@parcel/watcher": "^2.5.1",
     "@types/jasmine": "~5.1.12",
     "@typescript-eslint/eslint-plugin": "^8.46.4",
