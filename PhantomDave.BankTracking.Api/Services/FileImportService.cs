@@ -276,9 +276,9 @@ public class FileImportService(ILogger<FileImportService> logger)
                     record.Amount = amount;
                 }
 
-                if (input.ColumnMappings.TryGetValue("Description", out var descriptionColumn) && row.ContainsKey(descriptionColumn))
+                if (input.ColumnMappings.TryGetValue("Description", out var descriptionColumn) && row.TryGetValue(descriptionColumn, out var description))
                 {
-                    record.Description = row[descriptionColumn];
+                    record.Description = description;
                 }
 
                 record.AccountId = accountId;
