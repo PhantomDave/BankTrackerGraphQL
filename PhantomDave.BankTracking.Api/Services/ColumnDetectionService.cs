@@ -1,3 +1,4 @@
+using System.Linq;
 namespace PhantomDave.BankTracking.Api.Services;
 
 public class ColumnDetectionService
@@ -88,9 +89,8 @@ public class ColumnDetectionService
     {
         var results = new Dictionary<string, ColumnDetectionResult>();
 
-        foreach (var header in headers)
+        foreach (var cleanHeader in headers.Select(header => header.Trim()))
         {
-            var cleanHeader = header.Trim();
             if (string.IsNullOrWhiteSpace(cleanHeader))
                 continue;
 
