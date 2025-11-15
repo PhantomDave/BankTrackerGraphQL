@@ -287,10 +287,20 @@ public class FileImportService(ILogger<FileImportService> logger)
 
                 records.Add(record);
             }
-            catch (Exception ex)
+            catch (FormatException ex)
             {
                 failedCount++;
-                _logger.LogWarning(ex, "Failed to parse row {RowIndex} during import", records.Count + failedCount);
+                _logger.LogWarning(ex, "Failed to parse row {RowIndex} due to format error during import", records.Count + failedCount);
+            }
+            catch (InvalidCastException ex)
+            {
+                failedCount++;
+                _logger.LogWarning(ex, "Failed to parse row {RowIndex} due to invalid cast during import", records.Count + failedCount);
+            }
+            catch (ArgumentException ex)
+            {
+                failedCount++;
+                _logger.LogWarning(ex, "Failed to parse row {RowIndex} due to argument error during import", records.Count + failedCount);
             }
             _logger.LogDebug("Processed {ProcessedRows} / {TotalRows}, Failed: {FailedRows}",
                 records.Count + failedCount, parsedData.Rows.Count, failedCount);
