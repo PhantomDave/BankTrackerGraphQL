@@ -166,13 +166,9 @@ public class FileImportService(ILogger<FileImportService> logger)
 
                     var lowerText = cellText.ToLowerInvariant();
 
-                    foreach (var keyword in headerKeywords)
+                    if (headerKeywords.Any(keyword => lowerText.Contains(keyword)))
                     {
-                        if (lowerText.Contains(keyword))
-                        {
-                            score += 10;
-                            break;
-                        }
+                        score += 10;
                     }
 
                     if (cellText.Length > 3 && cellText.Length < 50 &&
