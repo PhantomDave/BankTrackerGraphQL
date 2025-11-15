@@ -79,10 +79,7 @@ public class RecurringFinanceRecordService : BackgroundService
             {
                 _logger.LogError(dbEx, "Database error processing recurring record ID {RecordId}", record.Id);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error processing recurring record ID {RecordId}", record.Id);
-            }
+            // Removed generic catch. All other exceptions will propagate.
         }
 
         if (recurringRecords.Any())
