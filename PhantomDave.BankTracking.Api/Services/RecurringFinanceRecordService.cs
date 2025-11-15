@@ -59,9 +59,18 @@ public class RecurringFinanceRecordService : BackgroundService
             {
                 await ProcessSingleRecurringRecordAsync(dbContext, record, now, cancellationToken);
             }
+            catch (OperationCanceledException)
+            {
+                // Operation was cancelled—rethrow to respect cancellation request.
+                throw;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                _logger.LogError(dbEx, "Database error processing recurring record ID {RecordId}", record.Id);
+            }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error processing recurring record ID {RecordId}", record.Id);
+                _logger.LogError(ex, "Unexpected error processing recurring record ID {RecordId}", record.Id);
             }
         }
 
