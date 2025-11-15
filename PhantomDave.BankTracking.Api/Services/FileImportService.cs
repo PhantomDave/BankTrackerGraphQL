@@ -256,13 +256,14 @@ public class FileImportService(ILogger<FileImportService> logger)
             {
                 var record = new FinanceRecord();
 
-                if (input.ColumnMappings.TryGetValue("Date", out var dateColumn) && row.TryGetValue(dateColumn, out var dateColumnValue))
+                if (
+                    input.ColumnMappings.TryGetValue("Date", out var dateColumn)
+                    && row.TryGetValue(dateColumn, out var dateColumnValue)
+                    && DateTime.TryParseExact(dateColumnValue, input.DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date)
+                )
                 {
-                    if (DateTime.TryParseExact(dateColumnValue, input.DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
-                    {
-                        // Ensure UTC kind to satisfy Npgsql 'timestamp with time zone' requirement
-                        record.Date = DateTime.SpecifyKind(date, DateTimeKind.Utc);
-                    }
+                    // Ensure UTC kind to satisfy Npgsql 'timestamp with time zone' requirement
+                    record.Date = DateTime.SpecifyKind(date, DateTimeKind.Utc);
                 }
 
                 if (input.ColumnMappings.TryGetValue("Amount", out var amountColumn) &&
