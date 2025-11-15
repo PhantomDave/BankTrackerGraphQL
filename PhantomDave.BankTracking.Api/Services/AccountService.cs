@@ -117,7 +117,11 @@ public class AccountService
             salt = Convert.FromBase64String(parts[2]);
             expectedHash = Convert.FromBase64String(parts[3]);
         }
-        catch
+        catch (FormatException)
+        {
+            return false;
+        }
+        catch (ArgumentNullException)
         {
             return false;
         }

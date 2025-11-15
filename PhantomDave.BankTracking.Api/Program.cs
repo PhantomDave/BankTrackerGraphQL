@@ -60,7 +60,7 @@ public class Program
             {
                 // WARNING: RequireHttpsMetadata should be true in production environments
                 // Set to false only for local development
-                options.RequireHttpsMetadata = builder.Environment.IsDevelopment() == false;
+                options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
                 options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {

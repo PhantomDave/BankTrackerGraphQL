@@ -260,22 +260,26 @@ public class FileImportService(ILogger<FileImportService> logger)
             {
                 var record = new FinanceRecord();
 
-                if (input.ColumnMappings.TryGetValue("Date", out var dateColumn) && row.TryGetValue(dateColumn, out var dateValue) &&
-                    DateTime.TryParseExact(dateValue, input.DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
+                if (input.ColumnMappings.TryGetValue("Date", out var dateColumn) && row.TryGetValue(dateColumn, out var dateColumnValue))
                 {
-                    // Ensure UTC kind to satisfy Npgsql 'timestamp with time zone' requirement
-                    record.Date = DateTime.SpecifyKind(date, DateTimeKind.Utc);
+                    if (DateTime.TryParseExact(dateColumnValue, input.DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
+                    {
+                        // Ensure UTC kind to satisfy Npgsql 'timestamp with time zone' requirement
+                        record.Date = DateTime.SpecifyKind(date, DateTimeKind.Utc);
+                    }
                 }
 
-                if (input.ColumnMappings.TryGetValue("Amount", out var amountColumn) && row.TryGetValue(amountColumn, out var amountValue) &&
-                    decimal.TryParse(amountValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var amount))
+                if (input.ColumnMappings.TryGetValue("Amount", out var amountColumn) && row.TryGetValue(amountColumn, out var amountColumnValue))
                 {
-                    record.Amount = amount;
+                    if (decimal.TryParse(amountColumnValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var amount))
+                    {
+                        record.Amount = amount;
+                    }
                 }
 
-                if (input.ColumnMappings.TryGetValue("Description", out var descriptionColumn) && row.TryGetValue(descriptionColumn, out var descriptionValue))
+                if (input.ColumnMappings.TryGetValue("Description", out var descriptionColumn) && row.TryGetValue(descriptionColumn, out var descriptionColumnValue))
                 {
-                    record.Description = descriptionValue;
+                    record.Description = descriptionColumnValue;
                 }
 
                 record.AccountId = accountId;
@@ -283,10 +287,20 @@ public class FileImportService(ILogger<FileImportService> logger)
 
                 records.Add(record);
             }
-            catch (Exception ex)
+            catch (FormatException ex)
             {
                 failedCount++;
-                _logger.LogWarning(ex, "Failed to parse row {RowIndex} during import", records.Count + failedCount);
+                _logger.LogWarning(ex, "Failed to parse row {RowIndex} due to format error during import", records.Count + failedCount);
+            }
+            catch (InvalidCastException ex)
+            {
+                failedCount++;
+                _logger.LogWarning(ex, "Failed to parse row {RowIndex} due to invalid cast during import", records.Count + failedCount);
+            }
+            catch (ArgumentException ex)
+            {
+                failedCount++;
+                _logger.LogWarning(ex, "Failed to parse row {RowIndex} due to argument error during import", records.Count + failedCount);
             }
             _logger.LogDebug("Processed {ProcessedRows} / {TotalRows}, Failed: {FailedRows}",
                 records.Count + failedCount, parsedData.Rows.Count, failedCount);
