@@ -1,6 +1,6 @@
 {
   "name": "BankTracking Dev",
-  "image": "mcr.microsoft.com/devcontainers/dotnet:9.0",
+  "image": "mcr.microsoft.com/devcontainers/dotnet:10.0",
   "features": {
     "ghcr.io/devcontainers/features/node:1": { "version": "20" },
     "ghcr.io/devcontainers/features/docker-in-docker:2": {}
@@ -16,6 +16,7 @@
     "vscode": {
       "extensions": [
         "ms-dotnettools.csharp",
+        "loiane.angular-extension-pack",
         "ms-dotnettools.csdevkit",
         "ms-azuretools.vscode-docker",
         "graphql.vscode-graphql",

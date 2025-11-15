@@ -1,9 +1,11 @@
 # Bank Statement Import Feature - Implementation Plan
 
 ## Overview
+
 Implement smart auto-detection with override for importing bank statements from CSV/XLSX files with custom column mappings.
 
 ## Architecture
+
 - **Backend**: ASP.NET Core + HotChocolate GraphQL + EF Core
 - **Frontend**: Angular 20 + Apollo Angular + Material UI
 - **File Parsing**: CsvHelper (CSV) + EPPlus (XLSX)
@@ -14,6 +16,7 @@ Implement smart auto-detection with override for importing bank statements from 
 ## Phase 1: Backend Foundation
 
 ### Step 1: Create BankImportTemplate Domain Model
+
 **File**: `PhantomDave.BankTracking.Library/Models/BankImportTemplate.cs`
 
 ```csharp
@@ -37,6 +40,7 @@ public class BankImportTemplate
 ---
 
 ### Step 2: Add EF Core Configuration
+
 **File**: `PhantomDave.BankTracking.Data/BankTrackerDbContext.cs`
 
 - Add `DbSet<BankImportTemplate> BankImportTemplates`
@@ -48,11 +52,13 @@ public class BankImportTemplate
 ---
 
 ### Step 3: Create Column Detection Service
+
 **File**: `PhantomDave.BankTracking.Api/Services/ColumnDetectionService.cs`
 
 **Purpose**: Fuzzy match column headers to known patterns
 
 **Key Features**:
+
 - Multi-language pattern matching (English, Italian, Spanish, German)
 - Confidence scoring (0-100%)
 - Support for common bank column names:
@@ -62,6 +68,7 @@ public class BankImportTemplate
   - Balance: "balance", "saldo", "saldo contabile"
 
 **Methods**:
+
 ```csharp
 public Dictionary<string, ColumnDetectionResult> DetectColumns(string[] headers)
 public int CalculateConfidence(string header, string[] patterns)
@@ -72,11 +79,13 @@ public int CalculateConfidence(string header, string[] patterns)
 ---
 
 ### Step 4: Create File Parsing Service
+
 **File**: `PhantomDave.BankTracking.Api/Services/FileImportService.cs`
 
 **Purpose**: Parse CSV/XLSX files and extract data
 
 **Key Features**:
+
 - Auto-detect CSV delimiter (comma, semicolon, tab, pipe)
 - Auto-detect encoding (UTF-8, Windows-1252, ISO-8859-1)
 - Handle XLSX with multiple sheets (use first data sheet)
@@ -85,6 +94,7 @@ public int CalculateConfidence(string header, string[] patterns)
 - Handle different decimal separators
 
 **Methods**:
+
 ```csharp
 public Task<ParsedFileData> ParseFileAsync(IFile file)
 public Task<List<Dictionary<string, string>>> ParseCsvAsync(Stream stream)
@@ -94,6 +104,7 @@ public Encoding DetectEncoding(Stream stream)
 ```
 
 **Example ParsedFileData class**:
+
 ```csharp
 public class ParsedFileData
 {
@@ -111,6 +122,7 @@ public class ParsedFileData
 ---
 
 ### Step 5: Add NuGet Packages
+
 **File**: `PhantomDave.BankTracking.Api/PhantomDave.BankTracking.Api.csproj`
 
 ```bash
@@ -126,12 +138,15 @@ dotnet add package HotChocolate.AspNetCore.Authorization
 ## Phase 2: GraphQL Layer
 
 ### Step 6: Create GraphQL Input Types
+
 **Files**:
+
 - `PhantomDave.BankTracking.Api/Types/Inputs/PreviewImportInput.cs`
 - `PhantomDave.BankTracking.Api/Types/Inputs/ConfirmImportInput.cs`
 - `PhantomDave.BankTracking.Api/Types/Inputs/ImportTemplateInput.cs`
 
 **PreviewImportInput**:
+
 ```csharp
 public class PreviewImportInput
 {
@@ -141,6 +156,7 @@ public class PreviewImportInput
 ```
 
 **ConfirmImportInput**:
+
 ```csharp
 public class ConfirmImportInput
 {
@@ -158,12 +174,15 @@ public class ConfirmImportInput
 ---
 
 ### Step 7: Create GraphQL Object Types
+
 **Files**:
+
 - `PhantomDave.BankTracking.Api/Types/ObjectTypes/ImportPreviewType.cs`
 - `PhantomDave.BankTracking.Api/Types/ObjectTypes/ImportResultType.cs`
 - `PhantomDave.BankTracking.Api/Types/ObjectTypes/BankImportTemplateType.cs`
 
 **ImportPreviewType**:
+
 ```csharp
 public class ImportPreviewType
 {
@@ -182,6 +201,7 @@ public class ColumnDetectionResult
 ```
 
 **ImportResultType**:
+
 ```csharp
 public class ImportResultType
 {
@@ -203,6 +223,7 @@ public class ImportError
 ---
 
 ### Step 8: Create Import Mutations
+
 **File**: `PhantomDave.BankTracking.Api/Types/Mutations/ImportMutations.cs`
 
 ```csharp
@@ -232,6 +253,7 @@ public class ImportMutations
 ```
 
 **Error Codes**:
+
 - `FILE_UPLOAD_FAILED`
 - `INVALID_FILE_FORMAT`
 - `PARSE_ERROR`
@@ -241,6 +263,7 @@ public class ImportMutations
 ---
 
 ### Step 9: Add Template Management Mutations
+
 **File**: `PhantomDave.BankTracking.Api/Types/Mutations/ImportMutations.cs` (extend)
 
 ```csharp
@@ -263,6 +286,7 @@ public async Task<bool> DeleteImportTemplate(int id, ...)
 ```
 
 **Query**:
+
 ```csharp
 [ExtendObjectType(OperationTypeNames.Query)]
 public class ImportQueries
@@ -277,6 +301,7 @@ public class ImportQueries
 ---
 
 ### Step 10: Implement Duplicate Detection
+
 **File**: `PhantomDave.BankTracking.Api/Services/FinanceRecordService.cs` (extend)
 
 ```csharp
@@ -297,6 +322,7 @@ public async Task<ImportResultType> BulkCreateWithDuplicateCheckAsync(
 ```
 
 **Logic**:
+
 - Normalize descriptions (trim, lowercase)
 - Match on exact Date + exact Amount + similar Description (Levenshtein distance < 3)
 - Option to merge duplicates or skip
@@ -306,9 +332,11 @@ public async Task<ImportResultType> BulkCreateWithDuplicateCheckAsync(
 ## Phase 3: Frontend Structure
 
 ### Step 11: Create Angular Import Wizard Component
+
 **Directory**: `frontend/src/app/components/import-wizard/`
 
 **Files**:
+
 - `import-wizard.component.ts`
 - `import-wizard.component.html`
 - `import-wizard.component.css`
@@ -319,11 +347,12 @@ public async Task<ImportResultType> BulkCreateWithDuplicateCheckAsync(
 - `steps/step5-confirm.component.ts`
 
 **Structure**:
+
 ```typescript
 @Component({
   selector: 'app-import-wizard',
   imports: [MatStepperModule, CommonModule, ...stepComponents],
-  standalone: true
+  standalone: true,
 })
 export class ImportWizardComponent {
   protected readonly importService = inject(ImportService);
@@ -334,9 +363,11 @@ export class ImportWizardComponent {
 ---
 
 ### Step 12: Create GraphQL Operations
+
 **Directory**: `frontend/src/app/models/import/gql/`
 
 **Files**:
+
 - `preview-import.mutation.graphql`
 - `confirm-import.mutation.graphql`
 - `get-import-templates.query.graphql`
@@ -345,6 +376,7 @@ export class ImportWizardComponent {
 - `delete-import-template.mutation.graphql`
 
 **Example** (`preview-import.mutation.graphql`):
+
 ```graphql
 mutation PreviewImport($file: Upload!) {
   previewImport(input: { file: $file }) {
@@ -365,6 +397,7 @@ mutation PreviewImport($file: Upload!) {
 ---
 
 ### Step 13: Create ImportService
+
 **File**: `frontend/src/app/models/import/import-service.ts`
 
 ```typescript
@@ -386,9 +419,15 @@ export class ImportService {
   public readonly loading = this._loading.asReadonly();
   public readonly error = this._error.asReadonly();
 
-  async previewFile(file: File): Promise<boolean> { /* ... */ }
-  async confirmImport(mappings: ColumnMappings): Promise<boolean> { /* ... */ }
-  validateFile(file: File): string | null { /* ... */ }
+  async previewFile(file: File): Promise<boolean> {
+    /* ... */
+  }
+  async confirmImport(mappings: ColumnMappings): Promise<boolean> {
+    /* ... */
+  }
+  validateFile(file: File): string | null {
+    /* ... */
+  }
 }
 ```
 
@@ -397,9 +436,11 @@ export class ImportService {
 ## Phase 4: UI Implementation
 
 ### Step 14: Build File Upload Step
+
 **Component**: `step1-upload.component.ts`
 
 **Features**:
+
 - Drag-drop zone (Material `<input type="file">` with custom styling)
 - File type validation: `.csv`, `.xlsx`, `.xls`
 - Max size validation: 10MB
@@ -411,9 +452,11 @@ export class ImportService {
 ---
 
 ### Step 15: Build Column Mapping Step
+
 **Component**: `step2-detect.component.ts`
 
 **Features**:
+
 - Show detected columns in Material table with:
   - Column name
   - Suggested mapping (dropdown: Date, Amount, Description, Name, Skip)
@@ -422,6 +465,7 @@ export class ImportService {
 - Highlight required fields (Date, Amount)
 
 **UI**:
+
 ```
 | Column Name       | Detected As | Confidence | Action     |
 |-------------------|-------------|------------|------------|
@@ -433,9 +477,11 @@ export class ImportService {
 ---
 
 ### Step 16: Build Parsing Configuration Step
+
 **Component**: `step3-configure.component.ts`
 
 **Features**:
+
 - Date format input with presets:
   - `dd/MM/yyyy` (Italian)
   - `MM/dd/yyyy` (US)
@@ -449,9 +495,11 @@ export class ImportService {
 ---
 
 ### Step 17: Build Preview Step
+
 **Component**: `step4-preview.component.ts`
 
 **Features**:
+
 - Material table showing parsed finance records
 - Inline editing (Material `contenteditable` cells)
 - Validation indicators:
@@ -466,9 +514,11 @@ export class ImportService {
 ---
 
 ### Step 18: Build Confirmation Step
+
 **Component**: `step5-confirm.component.ts`
 
 **Features**:
+
 - Summary card: "Ready to import X records"
 - Progress bar during import (indeterminate)
 - Success result:
@@ -483,9 +533,11 @@ export class ImportService {
 ## Phase 5: Polish & Integration
 
 ### Step 19: Add Template Management UI
+
 **Component**: `template-manager-dialog.component.ts`
 
 **Features**:
+
 - Material dialog with list of saved templates
 - Actions per template:
   - Edit (opens edit dialog)
@@ -497,7 +549,9 @@ export class ImportService {
 ---
 
 ### Step 20: Add Navigation and Integration
+
 **Tasks**:
+
 1. Add "Import" button to finance records page toolbar
 2. Add route: `/home/import` → `ImportWizardComponent`
 3. Update `schema.graphql` by running backend
@@ -520,27 +574,30 @@ export class ImportService {
 ## Testing Checklist
 
 ### Backend
-- [ ] BankImportTemplate CRUD operations
-- [ ] Column detection accuracy (test with real bank files)
-- [ ] CSV parsing with different delimiters
-- [ ] XLSX parsing with multiple sheets
-- [ ] Duplicate detection logic
-- [ ] Bulk insert performance (1000+ records)
-- [ ] Error handling for malformed files
+
+- [x] BankImportTemplate CRUD operations
+- [x] Column detection accuracy (test with real bank files)
+- [x] CSV parsing with different delimiters
+- [x] XLSX parsing with multiple sheets
+- [x] Duplicate detection logic
+- [x] Bulk insert performance (1000+ records)
+- [x] Error handling for malformed files
 
 ### Frontend
-- [ ] File upload validation
-- [ ] Column mapping override
-- [ ] Date format preview
-- [ ] Inline editing in preview
+
+- [x] File upload validation
+- [x] Column mapping override
+- [x] Date format preview
+- [x] Inline editing in preview
 - [ ] Template save/load
-- [ ] Navigation flow (all 5 steps)
-- [ ] Error display (snackbar + inline)
-- [ ] Responsive layout (mobile/desktop)
+- [x] Navigation flow (all 5 steps)
+- [x] Error display (snackbar + inline)
+- [x] Responsive layout (mobile/desktop)
 
 ---
 
 ## Future Enhancements
+
 1. **Background processing**: For large files (>5000 rows), use job queue
 2. **Template sharing**: Share templates across accounts
 3. **AI-powered detection**: Use ML to improve column detection
@@ -554,12 +611,15 @@ export class ImportService {
 ## Dependencies Summary
 
 ### Backend NuGet Packages
+
 - `CsvHelper` - CSV parsing
 - `EPPlus` - XLSX parsing
 - `HotChocolate.AspNetCore` - File upload support
 
 ### Frontend NPM Packages
+
 (Already included in Angular Material)
+
 - `@angular/material/stepper`
 - `@angular/material/table`
 - `@apollo/client` (for file upload)
@@ -567,6 +627,7 @@ export class ImportService {
 ---
 
 ## Estimated Effort
+
 - **Phase 1**: 8-12 hours
 - **Phase 2**: 8-10 hours
 - **Phase 3**: 4-6 hours
@@ -577,6 +638,7 @@ export class ImportService {
 ---
 
 ## Notes
+
 - Keep Italian UI messages (as per existing codebase pattern)
 - Follow existing error code conventions (`BAD_USER_INPUT`, `UNAUTHENTICATED`)
 - Use signals throughout (no RxJS state management)

@@ -41,7 +41,7 @@
                 [routerLinkActiveOptions]="{ exact: true }"
                 [attr.aria-current]="tlaTracking.isActive ? 'page' : null"
               >
-                <mat-icon matListItemIcon>query_stats</mat-icon>
+                <mat-icon matListItemIcon>insights</mat-icon>
                 <span matListItemTitle>Tracking</span>
                 <span matListItemLine>Track your expenses</span>
               </a>
@@ -54,9 +54,22 @@
                 [routerLinkActiveOptions]="{ exact: true }"
                 [attr.aria-current]="rlaBalance.isActive ? 'page' : null"
               >
-                <mat-icon matListItemIcon>query_stats</mat-icon>
+                <mat-icon matListItemIcon>account_balance_wallet</mat-icon>
                 <span matListItemTitle>Balance</span>
                 <span matListItemLine>Balance & Prediction</span>
+              </a>
+              <a
+                mat-list-item
+                routerLink="/import"
+                class="nav-item"
+                routerLinkActive="active"
+                #rlaImport="routerLinkActive"
+                [routerLinkActiveOptions]="{ exact: true }"
+                [attr.aria-current]="rlaImport.isActive ? 'page' : null"
+              >
+                <mat-icon matListItemIcon>upload_file</mat-icon>
+                <span matListItemTitle>Import</span>
+                <span matListItemLine>Import your data</span>
               </a>
             </app-flex>
           </mat-nav-list>

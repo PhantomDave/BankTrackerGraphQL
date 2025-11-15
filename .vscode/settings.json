@@ -14,5 +14,10 @@
     "healthcheck",
     "isready"
   ],
-  "dependi.npm.lockFileEnabled": true
+  "dependi.npm.lockFileEnabled": true,
+  "angular-schematics.schematicsDefaultOptions": {
+    "angular-*": {
+      "externalTemplate": true
+    }
+  }
 }
