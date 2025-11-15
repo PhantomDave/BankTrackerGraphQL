@@ -89,11 +89,10 @@ public class ColumnDetectionService
     {
         var results = new Dictionary<string, ColumnDetectionResult>();
 
-        foreach (var cleanHeader in headers.Select(header => header.Trim()))
+        foreach (var cleanHeader in headers
+            .Select(header => header.Trim())
+            .Where(cleanHeader => !string.IsNullOrWhiteSpace(cleanHeader)))
         {
-            if (string.IsNullOrWhiteSpace(cleanHeader))
-                continue;
-
             var (suggestedMapping, confidence) = FindBestMatch(cleanHeader);
 
             results[cleanHeader] = new ColumnDetectionResult

@@ -265,12 +265,11 @@ public class FileImportService(ILogger<FileImportService> logger)
                     }
                 }
 
-                if (input.ColumnMappings.TryGetValue("Amount", out var amountColumn) && row.TryGetValue(amountColumn, out var amountColumnValue))
+                if (input.ColumnMappings.TryGetValue("Amount", out var amountColumn) &&
+                    row.TryGetValue(amountColumn, out var amountColumnValue) &&
+                    decimal.TryParse(amountColumnValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var amount))
                 {
-                    if (decimal.TryParse(amountColumnValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var amount))
-                    {
-                        record.Amount = amount;
-                    }
+                    record.Amount = amount;
                 }
 
                 if (input.ColumnMappings.TryGetValue("Description", out var descriptionColumn) && row.TryGetValue(descriptionColumn, out var descriptionColumnValue))
