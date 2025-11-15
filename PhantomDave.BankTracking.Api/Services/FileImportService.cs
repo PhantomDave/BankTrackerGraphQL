@@ -269,8 +269,8 @@ public class FileImportService(ILogger<FileImportService> logger)
                     }
                 }
 
-                if (input.ColumnMappings.TryGetValue("Amount", out var amountColumn) 
-                    && row.ContainsKey(amountColumn) 
+                if (input.ColumnMappings.TryGetValue("Amount", out var amountColumn)
+                    && row.ContainsKey(amountColumn)
                     && decimal.TryParse(row[amountColumn], NumberStyles.Any, CultureInfo.InvariantCulture, out var amount))
                 {
                     record.Amount = amount;
