@@ -28,6 +28,11 @@ public class RecurringFinanceRecordService : BackgroundService
             {
                 await ProcessRecurringRecordsAsync(stoppingToken);
             }
+            catch (OperationCanceledException)
+            {
+                // Task cancellation requested, exit the loop gracefully.
+                break;
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while processing recurring records.");
