@@ -260,22 +260,22 @@ public class FileImportService(ILogger<FileImportService> logger)
             {
                 var record = new FinanceRecord();
 
-                if (input.ColumnMappings.TryGetValue("Date", out var dateColumn) && row.ContainsKey(dateColumn) &&
-                    DateTime.TryParseExact(row[dateColumn], input.DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
+                if (input.ColumnMappings.TryGetValue("Date", out var dateColumn) && row.TryGetValue(dateColumn, out var dateValue) &&
+                    DateTime.TryParseExact(dateValue, input.DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
                 {
                     // Ensure UTC kind to satisfy Npgsql 'timestamp with time zone' requirement
                     record.Date = DateTime.SpecifyKind(date, DateTimeKind.Utc);
                 }
 
-                if (input.ColumnMappings.TryGetValue("Amount", out var amountColumn) && row.ContainsKey(amountColumn) &&
-                    decimal.TryParse(row[amountColumn], NumberStyles.Any, CultureInfo.InvariantCulture, out var amount))
+                if (input.ColumnMappings.TryGetValue("Amount", out var amountColumn) && row.TryGetValue(amountColumn, out var amountValue) &&
+                    decimal.TryParse(amountValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var amount))
                 {
                     record.Amount = amount;
                 }
 
-                if (input.ColumnMappings.TryGetValue("Description", out var descriptionColumn) && row.ContainsKey(descriptionColumn))
+                if (input.ColumnMappings.TryGetValue("Description", out var descriptionColumn) && row.TryGetValue(descriptionColumn, out var descriptionValue))
                 {
-                    record.Description = row[descriptionColumn];
+                    record.Description = descriptionValue;
                 }
 
                 record.AccountId = accountId;
