@@ -35,6 +35,12 @@ public class RecurringFinanceRecordService : BackgroundService
             }
             catch (Exception ex)
             {
+                if (ex is OutOfMemoryException ||
+                    ex is StackOverflowException ||
+                    ex is ThreadAbortException)
+                {
+                    throw;
+                }
                 _logger.LogError(ex, "Error occurred while processing recurring records.");
             }
 
