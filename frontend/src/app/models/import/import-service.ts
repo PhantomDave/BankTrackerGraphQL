@@ -121,8 +121,6 @@ export class ImportService {
         value,
       }));
 
-      // Debug logging removed to satisfy lint rules
-
       const result = await firstValueFrom(
         this.confirmImportGQL.mutate({
           variables: {

@@ -259,10 +259,9 @@ public class FileImportService(ILogger<FileImportService> logger)
                 if (
                     input.ColumnMappings.TryGetValue("Date", out var dateColumn)
                     && row.TryGetValue(dateColumn, out var dateColumnValue)
-                    && DateTime.TryParseExact(dateColumnValue, input.DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date)
+                    && DateTime.TryParse(dateColumnValue, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date)
                 )
                 {
-                    // Ensure UTC kind to satisfy Npgsql 'timestamp with time zone' requirement
                     record.Date = DateTime.SpecifyKind(date, DateTimeKind.Utc);
                 }
 
