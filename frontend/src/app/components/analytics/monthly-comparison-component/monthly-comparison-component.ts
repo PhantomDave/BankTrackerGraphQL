@@ -113,14 +113,4 @@ export class MonthlyComparisonComponent implements OnInit {
     const date = new Date(year, month - 1, 1);
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
   }
-
-  getPercentageChange(current: number, previous: number): string {
-    if (previous === 0) return 'N/A';
-    const change = ((current - previous) / Math.abs(previous)) * 100;
-    return `${change > 0 ? '+' : ''}${change.toFixed(1)}%`;
-  }
-
-  getTrendIcon(current: number, previous: number): string {
-    return current > previous ? 'trending_up' : 'trending_down';
-  }
 }

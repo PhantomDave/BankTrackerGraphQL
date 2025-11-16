@@ -130,6 +130,7 @@
         <!-- Recurring Column -->
         <ng-container matColumnDef="recurring">
           <th mat-header-cell *matHeaderCellDef>Recurring Total</th>
+          <!-- recurringExpenseTotal is negative; this sum yields the net recurring amount -->
           <td mat-cell *matCellDef="let row">
             {{ row.recurringIncomeTotal + row.recurringExpenseTotal | currency: 'EUR' }}
           </td>

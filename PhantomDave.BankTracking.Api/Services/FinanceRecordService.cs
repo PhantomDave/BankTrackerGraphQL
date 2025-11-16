@@ -323,10 +323,10 @@ public class FinanceRecordService
                 TotalExpense = expense,
                 NetAmount = income + expense,
                 TransactionCount = transactionCount,
-                AverageTransactionAmount = transactionCount > 0 ? (income + expense) / transactionCount : 0,
+                AverageTransactionAmount = transactionCount > 0 ? group.Average(r => Math.Abs(r.Amount)) : 0,
                 RecurringExpenseTotal = recurringExpense,
                 RecurringIncomeTotal = recurringIncome,
-                MostExpensiveCategory = "General" //TODO: Add Categories
+                MostExpensiveCategory = "General"
             };
         }).ToList();
 
