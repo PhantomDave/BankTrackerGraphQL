@@ -16,7 +16,7 @@
     </mat-card-actions>
 
     <mat-card-content>
-      <table mat-table [dataSource]="data()" class="mat-elevation-z8" style="width: 100%">
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" style="width: 100%">
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef>Name</th>
           <td mat-cell *matCellDef="let element">{{ element.name }}</td>
@@ -25,7 +25,9 @@
 
         <ng-container matColumnDef="description">
           <th mat-header-cell *matHeaderCellDef>Description</th>
-          <td mat-cell *matCellDef="let element">{{ element.description }}</td>
+          <td mat-cell *matCellDef="let element" class="description-cell">
+            {{ element.description }}
+          </td>
           <td mat-footer-cell *matFooterCellDef>{{ recordCount() }} records</td>
         </ng-container>
 
@@ -47,7 +49,7 @@
             {{ element.amount | currency: element.currency }}
           </td>
           <td mat-footer-cell *matFooterCellDef>
-            {{ signedTotalAmount() }}
+            {{ signedTotalAmount().total | currency: signedTotalAmount().currency }}
           </td>
         </ng-container>
 
@@ -77,6 +79,13 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
       </table>
+      <mat-paginator
+        [pageSizeOptions]="[10, 25, 50, 100]"
+        [length]="dataSource.data.length"
+        showFirstLastButtons
+        aria-label="Select page of finance elements"
+      >
+      </mat-paginator>
     </mat-card-content>
   }
 </mat-card>

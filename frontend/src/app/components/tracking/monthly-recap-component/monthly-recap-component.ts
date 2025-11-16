@@ -1,21 +1,24 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   LOCALE_ID,
   OnInit,
+  ViewChild,
   computed,
+  effect,
   inject,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { FinanceRecordService } from '../../../models/finance-record/finance-record-service';
 import { AddEntry } from '../add-entry/add-entry';
 import { FinanceRecord } from '../../../models/finance-record/finance-record';
-
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 @Component({
   selector: 'app-configurator',
   imports: [
@@ -26,32 +29,46 @@ import { FinanceRecord } from '../../../models/finance-record/finance-record';
     MatDialogModule,
     DatePipe,
     CurrencyPipe,
+    MatPaginatorModule,
   ],
   templateUrl: './monthly-recap-component.html',
   styleUrl: './monthly-recap-component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-class MonthlyRecapComponent implements OnInit {
+class MonthlyRecapComponent implements OnInit, AfterViewInit {
   private readonly dialog = inject(MatDialog);
   private readonly financeRecordService = inject(FinanceRecordService);
   private readonly locale = inject(LOCALE_ID);
 
   readonly loading = computed(() => this.financeRecordService.loading());
-  readonly data = computed(() => this.financeRecordService.financeRecords());
-  readonly recordCount = computed(() => this.data().length);
-  readonly recurringCount = computed(() => this.data().filter((record) => record.recurring).length);
-  readonly totalAmount = computed(() =>
-    this.data().reduce((sum, record) => sum + record.amount, 0),
+  readonly dataSource = new MatTableDataSource<FinanceRecord>([]);
+  readonly records = computed(() => this.financeRecordService.financeRecords());
+  readonly recordCount = computed(() => this.records().length);
+  readonly recurringCount = computed(
+    () => this.records().filter((record) => record.recurring).length,
   );
-  readonly primaryCurrency = computed(() => this.data()[0]?.currency ?? 'USD');
+  readonly totalAmount = computed(() =>
+    this.records().reduce((sum, record) => sum + record.amount, 0),
+  );
+  readonly primaryCurrency = computed(() => this.records()[0]?.currency ?? 'USD');
   readonly signedTotalAmount = computed(() => {
     const total = this.totalAmount();
     const currency = this.primaryCurrency();
-    return new Intl.NumberFormat(this.locale, {
-      style: 'currency',
-      currency,
-    }).format(total);
+    return { total, currency };
   });
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  constructor() {
+    effect(() => {
+      this.dataSource.data = [...this.records()];
+    });
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.data = [...this.records()];
+  }
 
   async ngOnInit(): Promise<void> {
     await this.financeRecordService.getFinanceRecords();

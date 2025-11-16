@@ -46,3 +46,10 @@ tr.mat-row:hover td.mat-cell {
 .action-icon.edit {
   color: var(--mat-sys-primary);
 }
+
+.description-cell {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
