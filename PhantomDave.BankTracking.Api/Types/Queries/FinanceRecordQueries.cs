@@ -57,4 +57,25 @@ public class FinanceRecordQueries
 
         return FinanceRecordType.FromFinanceRecord(financeRecord);
     }
+
+    /// <summary>
+    /// Get monthly comparison statistics for an account
+    /// </summary>
+    [Authorize]
+    public async Task<MonthlyComparisonType> GetMonthlyComparison(
+        DateTime? startDate,
+        DateTime? endDate,
+        [Service] FinanceRecordService financeRecordService,
+        [Service] IHttpContextAccessor httpContextAccessor)
+    {
+        var accountId = httpContextAccessor.GetAccountIdFromContext();
+
+        var actualStartDate = startDate ?? DateTime.UtcNow.AddMonths(-12);
+        var actualEndDate = endDate ?? DateTime.UtcNow;
+
+        return await financeRecordService.GetMonthlyComparisonAsync(
+            accountId,
+            actualStartDate,
+            actualEndDate);
+    }
 }

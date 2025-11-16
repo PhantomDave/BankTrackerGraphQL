@@ -1,0 +1,29 @@
+query getMonthlyComparison($startDate: DateTime, $endDate: DateTime) {
+  monthlyComparison(startDate: $startDate, endDate: $endDate) {
+    monthlyData {
+      year
+      month
+      totalIncome
+      totalExpense
+      netAmount
+      transactionCount
+      averageTransactionAmount
+      mostExpensiveCategory
+      recurringExpenseTotal
+      recurringIncomeTotal
+    }
+    totalMonthsAnalyzed
+    overallAverageIncome
+    overallAverageExpense
+    highestSpendingMonth {
+      year
+      month
+      totalExpense
+    }
+    lowestSpendingMonth {
+      year
+      month
+      totalExpense
+    }
+  }
+}
