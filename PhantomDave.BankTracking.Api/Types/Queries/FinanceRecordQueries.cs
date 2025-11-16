@@ -57,4 +57,36 @@ public class FinanceRecordQueries
 
         return FinanceRecordType.FromFinanceRecord(financeRecord);
     }
+
+    /// <summary>
+    /// Get monthly comparison statistics for an account
+    /// </summary>
+    [Authorize]
+    public async Task<MonthlyComparisonType> GetMonthlyComparison(
+        DateTime? startDate,
+        DateTime? endDate,
+        [Service] FinanceRecordService financeRecordService,
+        [Service] IHttpContextAccessor httpContextAccessor)
+    {
+        var accountId = httpContextAccessor.GetAccountIdFromContext();
+
+        var actualStartDate = startDate ?? DateTime.UtcNow.AddMonths(-12);
+        var actualEndDate = endDate ?? DateTime.UtcNow.Date.AddDays(1).AddTicks(-1);
+
+        if (actualStartDate > actualEndDate)
+        {
+            throw new GraphQLException(
+                ErrorBuilder.New()
+                    .SetMessage("Start date must be before or equal to end date.")
+                    .SetCode("BAD_USER_INPUT")
+                    .SetExtension("field", "dateRange")
+                    .SetExtension("reason", "invalid_date_range")
+                    .Build());
+        }
+
+        return await financeRecordService.GetMonthlyComparisonAsync(
+            accountId,
+            actualStartDate,
+            actualEndDate);
+    }
 }

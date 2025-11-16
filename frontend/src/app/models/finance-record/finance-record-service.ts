@@ -4,6 +4,8 @@ import {
   CreateFinanceRecordGQL,
   DeleteFinanceRecordGQL,
   GetFinanceRecordsGQL,
+  GetMonthlyComparisonGQL,
+  GetMonthlyComparisonQuery,
   RecurrenceFrequency,
   UpdateFinanceRecordGQL,
 } from '../../../generated/graphql';
@@ -17,6 +19,13 @@ export class FinanceRecordService {
   private readonly getFinanceRecordsGQL = inject(GetFinanceRecordsGQL);
   private readonly updateFinanceRecordGQL = inject(UpdateFinanceRecordGQL);
   private readonly deleteFinanceRecordGQL = inject(DeleteFinanceRecordGQL);
+  private readonly getMonthlyComparisonGQL = inject(GetMonthlyComparisonGQL);
+
+  private readonly _monthlyComparison = signal<
+    GetMonthlyComparisonQuery['monthlyComparison'] | null
+  >(null);
+  readonly monthlyComparison: Signal<GetMonthlyComparisonQuery['monthlyComparison'] | null> =
+    this._monthlyComparison.asReadonly();
 
   private readonly _selectedFinanceRecord = signal<FinanceRecord | null>(null);
   readonly selectedFinanceRecord: Signal<FinanceRecord | null> =
@@ -96,6 +105,32 @@ export class FinanceRecordService {
       }
     } catch {
       this._error.set('Failed to update finance record');
+    } finally {
+      this._loading.set(false);
+    }
+  }
+
+  async getMonthlyComparison(startDate?: Date, endDate?: Date): Promise<void> {
+    this._loading.set(true);
+    this._error.set(null);
+
+    try {
+      const result = await firstValueFrom(
+        this.getMonthlyComparisonGQL.fetch({
+          variables: {
+            startDate: startDate?.toISOString(),
+            endDate: endDate?.toISOString(),
+          },
+        }),
+      );
+
+      if (result?.data?.monthlyComparison) {
+        this._monthlyComparison.set(result.data.monthlyComparison);
+      } else {
+        this._error.set('Failed to fetch monthly comparison data');
+      }
+    } catch (error) {
+      this._error.set(`Failed to fetch monthly comparison data: ${error}`);
     } finally {
       this._loading.set(false);
     }

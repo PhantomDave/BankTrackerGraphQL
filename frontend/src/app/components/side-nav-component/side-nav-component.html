@@ -60,6 +60,19 @@
               </a>
               <a
                 mat-list-item
+                routerLink="/analytics/monthly-comparison"
+                class="nav-item"
+                routerLinkActive="active"
+                #analyticsLink="routerLinkActive"
+                [routerLinkActiveOptions]="{ exact: true }"
+                [attr.aria-current]="analyticsLink.isActive ? 'page' : null"
+              >
+                <mat-icon matListItemIcon>analytics</mat-icon>
+                <span matListItemTitle>Monthly Comparison</span>
+                <span matListItemLine>Compare monthly trends</span>
+              </a>
+              <a
+                mat-list-item
                 routerLink="/import"
                 class="nav-item"
                 routerLinkActive="active"

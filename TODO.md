@@ -3,18 +3,21 @@
 ## 🎯 High Priority Features
 
 ### Budgeting & Goals
+
 - [ ] **Monthly Budget Tracking** - Set budget limits per category and track spending against them
 - [ ] **Savings Goals** - Define financial goals (e.g., "Save $5000 for vacation") with progress tracking
 - [ ] **Category-based Spending Limits** - Alert when approaching or exceeding category budgets
 - [ ] **Budget vs Actual Reports** - Visual comparison of planned vs actual spending
 
 ### Data Management
-- [ ] **CSV Import/Export** - Import transactions from bank statements, export data for backup or analysis **In Progress**
+
+- [x] **CSV Import/Export** - Import transactions from bank statements, export data for backup or analysis
 - [ ] **Bulk Operations** - Edit/delete multiple finance records at once
 - [ ] **Data Backup/Restore** - Easy backup and restore functionality
 - [ ] **Duplicate Detection** - Automatically flag potential duplicate transactions
 
 ### Analytics & Insights
+
 - [ ] **Spending Trends Dashboard** - Charts showing spending patterns over time
 - [ ] **Category Breakdown** - Pie/donut charts showing expense distribution by category
 - [ ] **Month-over-Month Comparison** - Compare spending across different months
@@ -24,6 +27,7 @@
 ## 💡 Medium Priority Features
 
 ### Smart Features
+
 - [ ] **AI Spending Insights** - Simple AI-generated summaries of spending habits
 - [ ] **Predictive Balance** - Forecast future balance based on recurring transactions
 - [ ] **Smart Categorization** - Auto-suggest categories based on description patterns
@@ -31,6 +35,7 @@
 - [ ] **Bill Reminders** - Notifications for upcoming recurring expenses
 
 ### User Experience
+
 - [ ] **Search & Filters** - Advanced filtering by date range, category, amount, description
 - [ ] **Tags System** - Add custom tags to transactions for flexible organization
 - [ ] **Notes/Attachments** - Add notes or attach receipts to transactions
@@ -38,6 +43,7 @@
 - [ ] **Keyboard Shortcuts** - Power-user shortcuts for common operations
 
 ### Multi-Account
+
 - [ ] **Multiple Bank Accounts** - Track multiple accounts separately
 - [ ] **Account Transfers** - Record transfers between accounts without double-counting
 - [ ] **Account Reconciliation** - Match recorded transactions with actual bank statements
@@ -46,6 +52,7 @@
 ## 🚀 Nice-to-Have Features
 
 ### Mobile & Accessibility
+
 - [ ] **PWA Support** - Install as mobile app with offline capabilities
 - [ ] **Offline Mode** - Cache recent records for offline viewing
 - [ ] **Dark/Light Theme Toggle** - User-selectable themes
@@ -53,12 +60,14 @@
 - [ ] **Mobile-optimized UI** - Better touch interactions and responsive layouts
 
 ### Reporting
+
 - [ ] **PDF Reports** - Generate downloadable monthly/yearly reports
 - [ ] **Tax Category Tagging** - Tag transactions for tax purposes
 - [ ] **Custom Report Builder** - Create and save custom report configurations
 - [ ] **Email Reports** - Scheduled email summaries
 
 ### Advanced Features
+
 - [ ] **Multi-currency Support** - Track accounts in different currencies with conversion
 - [ ] **Investment Tracking** - Basic stock/investment portfolio tracking
 - [ ] **Debt Payoff Calculator** - Track loans and calculate payoff schedules
@@ -66,6 +75,7 @@
 - [ ] **Shared Accounts** - Multiple users accessing the same account (family budgeting)
 
 ### Integrations
+
 - [ ] **Bank API Integration** - Auto-import transactions from banks (if available)
 - [ ] **Calendar Integration** - View recurring expenses on a calendar
 - [ ] **Google Sheets Export** - Push data to Google Sheets for custom analysis
@@ -74,12 +84,14 @@
 ## 🔧 Technical Improvements
 
 ### Performance
+
 - [ ] **Pagination Optimization** - Better handling of large datasets
 - [ ] **Lazy Loading** - Load data on-demand for faster initial page load
 - [ ] **Caching Strategy** - Reduce redundant API calls
 - [ ] **Database Indexing** - Optimize query performance
 
 ### Security & Reliability
+
 - [ ] **Two-Factor Authentication** - Enhanced account security
 - [ ] **Session Management** - Better token refresh and timeout handling
 - [ ] **Audit Log** - Track all changes to financial records
@@ -87,6 +99,7 @@
 - [ ] **Rate Limiting** - Protect API from abuse
 
 ### Developer Experience
+
 - [ ] **Automated Tests** - Unit and integration tests for critical flows
 - [ ] **API Documentation** - Swagger/GraphQL playground improvements
 - [ ] **Error Logging** - Better error tracking and reporting
@@ -124,11 +137,13 @@
 ---
 
 ## Priority Legend
+
 - 🎯 High Priority - Core features that significantly improve daily use
 - 💡 Medium Priority - Nice improvements that add value
 - 🚀 Nice-to-Have - Features for future consideration
 
 ## Implementation Notes
+
 - Focus on features that solve real pain points in your daily financial tracking
 - Keep the UI simple - avoid feature bloat
 - Consider data privacy - all data should remain local/self-hosted

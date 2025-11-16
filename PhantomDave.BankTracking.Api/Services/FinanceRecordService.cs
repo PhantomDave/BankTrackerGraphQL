@@ -290,4 +290,70 @@ public class FinanceRecordService
             SuccessCount = addResult.Length
         };
     }
+
+    /// <summary>
+    /// Gets monthly aggregated statistics for finance records within a date range
+    /// </summary>
+    public async Task<MonthlyComparisonType> GetMonthlyComparisonAsync(
+        int accountId,
+        DateTime? startDate = null,
+        DateTime? endDate = null)
+    {
+        var records = await GetFinanceRecordsForAccountAsync(accountId, startDate, endDate);
+
+        var monthlyGroups = records
+            .GroupBy(r => new { r.Date.Year, r.Date.Month })
+            .OrderBy(g => g.Key.Year)
+            .ThenBy(g => g.Key.Month)
+            .ToList();
+
+        var monthlyData = monthlyGroups.Select(group =>
+        {
+            var income = group.Where(r => r.Amount >= 0).Sum(r => r.Amount);
+            var expense = group.Where(r => r.Amount < 0).Sum(r => r.Amount);
+            var transactionCount = group.Count();
+            var recurringExpense = group.Where(r => r.IsRecurring && r.Amount < 0).Sum(r => r.Amount);
+            var recurringIncome = group.Where(r => r.IsRecurring && r.Amount >= 0).Sum(r => r.Amount);
+
+            return new MonthlyStatisticsType
+            {
+                Year = group.Key.Year,
+                Month = group.Key.Month,
+                TotalIncome = income,
+                TotalExpense = expense,
+                NetAmount = income + expense,
+                TransactionCount = transactionCount,
+                AverageTransactionAmount = transactionCount > 0 ? group.Average(r => Math.Abs(r.Amount)) : 0,
+                RecurringExpenseTotal = recurringExpense,
+                RecurringIncomeTotal = recurringIncome,
+                MostExpensiveCategory = "General"
+            };
+        }).ToList();
+
+        var totalMonths = monthlyData.Count;
+        var overallAvgIncome = totalMonths > 0
+            ? monthlyData.Average(m => m.TotalIncome)
+            : 0;
+        var overallAvgExpense = totalMonths > 0
+            ? monthlyData.Average(m => m.TotalExpense)
+            : 0;
+
+        var highestSpending = monthlyData
+            .OrderByDescending(m => Math.Abs(m.TotalExpense))
+            .FirstOrDefault();
+
+        var lowestSpending = monthlyData
+            .OrderBy(m => Math.Abs(m.TotalExpense))
+            .FirstOrDefault();
+
+        return new MonthlyComparisonType
+        {
+            MonthlyData = monthlyData,
+            TotalMonthsAnalyzed = totalMonths,
+            OverallAverageIncome = overallAvgIncome,
+            OverallAverageExpense = overallAvgExpense,
+            HighestSpendingMonth = highestSpending,
+            LowestSpendingMonth = lowestSpending
+        };
+    }
 }
