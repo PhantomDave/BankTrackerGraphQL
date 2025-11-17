@@ -244,23 +244,28 @@ public class AccountServiceTests
         Assert.Null(result);
     }
 
-    private async Task<Account> CreateTestAccountWithPassword(string email, string password)
+    private static string HashPassword(string password)
     {
-        var tempMockRepo = new Mock<IRepository<Account>>();
-        var tempMockUow = new Mock<IUnitOfWork>();
-        tempMockUow.Setup(u => u.Accounts).Returns(tempMockRepo.Object);
-        
-        tempMockRepo.Setup(r => r.GetSingleOrDefaultAsync(It.IsAny<Expression<Func<Account, bool>>>()))
-            .ReturnsAsync((Account?)null);
-        
-        tempMockRepo.Setup(r => r.AddAsync(It.IsAny<Account>()))
-            .ReturnsAsync((Account a) => a);
-        
-        tempMockUow.Setup(u => u.SaveChangesAsync())
-            .ReturnsAsync(1);
-        
-        var tempService = new AccountService(tempMockUow.Object);
-        var account = await tempService.CreateAccountAsync(email, password);
-        return account!;
+        const int iterations = 100_000;
+        const int saltSize = 16;
+        const int keySize = 32;
+
+        var salt = System.Security.Cryptography.RandomNumberGenerator.GetBytes(saltSize);
+        var hash = System.Security.Cryptography.Rfc2898DeriveBytes.Pbkdf2(
+            password, salt, iterations, System.Security.Cryptography.HashAlgorithmName.SHA256, keySize);
+
+        return $"PBKDF2-SHA256${iterations}${Convert.ToBase64String(salt)}${Convert.ToBase64String(hash)}";
+    }
+
+    private Task<Account> CreateTestAccountWithPassword(string email, string password)
+    {
+        var account = new Account
+        {
+            Id = 1,
+            Email = email,
+            PasswordHash = HashPassword(password),
+            CreatedAt = DateTime.UtcNow
+        };
+        return Task.FromResult(account);
     }
 }

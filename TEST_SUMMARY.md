@@ -30,15 +30,14 @@ After extensive research into current best practices for 2025, the following fra
 
 ### Unit Tests: ✅ 17/17 (100%)
 
-#### JwtTokenService Tests (6/6)
+#### JwtTokenService Tests (5/5)
 - ✅ Token creation with valid inputs
 - ✅ Token creation with roles
 - ✅ Expiration time validation
 - ✅ JTI claim inclusion
 - ✅ Unique token generation
-- ✅ Proper claim structure
 
-#### AccountService Tests (11/11)
+#### AccountService Tests (12/12)
 - ✅ Get account by ID (valid case)
 - ✅ Get account by ID (invalid case)
 - ✅ Get account by email
@@ -48,9 +47,10 @@ After extensive research into current best practices for 2025, the following fra
 - ✅ Create account with duplicate email (validation)
 - ✅ Update account with valid data
 - ✅ Update account with invalid ID
-- ✅ Login with valid credentials
-- ✅ Login with invalid password
-- ✅ Login with non-existent email
+- ✅ Login
+    - with valid credentials
+    - with invalid password
+    - with non-existent email
 
 **Execution Time**: < 1 second  
 **Success Rate**: 100%
