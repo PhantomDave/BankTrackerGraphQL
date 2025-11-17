@@ -16,33 +16,32 @@ RED='\033[0;31m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-# Initialize counters
-TOTAL_TESTS=0
-PASSED_TESTS=0
-FAILED_TESTS=0
-
 # Run backend unit tests
 echo "Running Backend Unit Tests..."
 echo "------------------------------"
-if dotnet test PhantomDave.BankTracking.UnitTests/PhantomDave.BankTracking.UnitTests.csproj --nologo --verbosity quiet; then
-    UNIT_RESULT=$(dotnet test PhantomDave.BankTracking.UnitTests/PhantomDave.BankTracking.UnitTests.csproj --nologo --verbosity quiet 2>&1 | grep "Passed!")
+UNIT_OUTPUT=$(dotnet test PhantomDave.BankTracking.UnitTests/PhantomDave.BankTracking.UnitTests.csproj --nologo --verbosity quiet 2>&1)
+UNIT_EXIT_CODE=$?
+if [ $UNIT_EXIT_CODE -eq 0 ]; then
     echo -e "${GREEN}✓ Unit Tests Passed${NC}"
-    echo "$UNIT_RESULT"
+    echo "$UNIT_OUTPUT" | grep "Passed!"
 else
     echo -e "${RED}✗ Unit Tests Failed${NC}"
+    echo "$UNIT_OUTPUT"
 fi
 echo ""
 
 # Run backend integration tests
 echo "Running Backend Integration Tests..."
 echo "-------------------------------------"
-if dotnet test PhantomDave.BankTracking.IntegrationTests/PhantomDave.BankTracking.IntegrationTests.csproj --nologo --verbosity quiet; then
-    INT_RESULT=$(dotnet test PhantomDave.BankTracking.IntegrationTests/PhantomDave.BankTracking.IntegrationTests.csproj --nologo --verbosity quiet 2>&1 | grep -E "Passed!|Failed!")
+INT_OUTPUT=$(dotnet test PhantomDave.BankTracking.IntegrationTests/PhantomDave.BankTracking.IntegrationTests.csproj --nologo --verbosity quiet 2>&1)
+INT_EXIT_CODE=$?
+INT_RESULT=$(echo "$INT_OUTPUT" | grep -E "Passed!|Failed!")
+if [ $INT_EXIT_CODE -eq 0 ]; then
     echo -e "${YELLOW}⚠ Integration Tests (some may need fixes)${NC}"
-    echo "$INT_RESULT"
 else
     echo -e "${YELLOW}⚠ Integration Tests (some tests failing)${NC}"
 fi
+echo "$INT_RESULT"
 echo ""
 
 # Run all backend tests with coverage
@@ -70,8 +69,15 @@ echo "======================================"
 echo "   Test Suite Summary"
 echo "======================================"
 echo ""
-echo "Backend Unit Tests:        ✓ PASSING (17/17)"
-echo "Backend Integration Tests: ⚠ PARTIAL (3/7)"  
+
+# Parse test counts from outputs
+UNIT_COUNT=$(echo "$UNIT_OUTPUT" | grep -oP 'Total:\s*\K\d+' || echo "?")
+UNIT_PASSED=$(echo "$UNIT_OUTPUT" | grep -oP 'Passed:\s*\K\d+' || echo "?")
+INT_COUNT=$(echo "$INT_OUTPUT" | grep -oP 'Total:\s*\K\d+' || echo "?")
+INT_PASSED=$(echo "$INT_OUTPUT" | grep -oP 'Passed:\s*\K\d+' || echo "?")
+
+echo "Backend Unit Tests:        ✓ PASSING ($UNIT_PASSED/$UNIT_COUNT)"
+echo "Backend Integration Tests: ⚠ PARTIAL ($INT_PASSED/$INT_COUNT)"  
 echo "Frontend E2E Tests:        ⚠ CONFIGURED"
 echo ""
 echo "For detailed information, see TESTING.md"

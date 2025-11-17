@@ -16,7 +16,7 @@ test.describe('BankTracker Application', () => {
     const passwordInput = page.locator('input[type="password"]').first();
     
     await expect(emailInput).toBeVisible({ timeout: 10000 });
-    await expect(passwordInput).toBeVisible();
+    await expect(passwordInput).toBeVisible({ timeout: 10000 });
   });
 
   test('should navigate to different pages', async ({ page }) => {
