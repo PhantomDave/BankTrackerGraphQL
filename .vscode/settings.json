@@ -1,5 +1,18 @@
 {
-  "sqltools.connections": [],
+  "sqltools.connections": [
+    {
+      "ssh": "Disabled",
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "askForPassword": true,
+      "driver": "PostgreSQL",
+      "name": "bankdb",
+      "group": "banktracker",
+      "username": "bankuser",
+      "database": "bankdb"
+    }
+  ],
   "cSpell.words": [
     "appsettings",
     "aspnet",
