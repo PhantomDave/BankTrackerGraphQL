@@ -17,7 +17,6 @@ public class GraphQLTestFactory : WebApplicationFactory<PhantomDave.BankTracking
         {
             config.AddInMemoryCollection(new Dictionary<string, string?>
             {
-                ["ConnectionStrings:DefaultConnection"] = "Host=localhost;Database=banktrackertest;Username=test;Password=test",
                 ["Jwt:Secret"] = "ThisIsASecretKeyForTestingPurposesOnly123456789",
                 ["Jwt:Issuer"] = "BankTrackerTestIssuer",
                 ["Jwt:Audience"] = "BankTrackerTestAudience",
@@ -37,7 +36,7 @@ public class GraphQLTestFactory : WebApplicationFactory<PhantomDave.BankTracking
             
             services.AddDbContext<BankTrackerDbContext>(options =>
             {
-                options.UseInMemoryDatabase("InMemoryTestDb");
+                options.UseInMemoryDatabase($"InMemoryTestDb_{Guid.NewGuid()}");
             });
         });
 
