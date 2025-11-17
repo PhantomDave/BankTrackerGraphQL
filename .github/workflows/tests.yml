@@ -1,0 +1,38 @@
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Setup .NET
+              uses: actions/setup-dotnet@v3
+              with:
+                  dotnet-version: "10.0.x"
+
+            - name: Run Unit Tests
+              run: dotnet test PhantomDave.BankTracking.UnitTests/
+
+            - name: Run Integration Tests
+              run: dotnet test PhantomDave.BankTracking.IntegrationTests/
+
+            - name: Setup Node
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "20"
+
+            - name: Install Dependencies
+              working-directory: frontend
+              run: npm ci
+
+            - name: Install Playwright
+              working-directory: frontend
+              run: npx playwright install --with-deps chromium
+
+            - name: Run E2E Tests
+              working-directory: frontend
+              run: npm run test:e2e
