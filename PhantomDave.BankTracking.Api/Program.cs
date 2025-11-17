@@ -103,10 +103,13 @@ public class Program
 
         var app = builder.Build();
 
-        using (var scope = app.Services.CreateScope())
+        if (!app.Environment.IsEnvironment("Testing"))
         {
-            var dbContext = scope.ServiceProvider.GetRequiredService<BankTrackerDbContext>();
-            dbContext.Database.Migrate();
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<BankTrackerDbContext>();
+                dbContext.Database.Migrate();
+            }
         }
 
         app.UseCors();

@@ -36,23 +36,32 @@ ng build
 
 This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
-## Running unit tests
+## Testing
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+### Unit Tests
+
+To execute unit tests with Jasmine and Karma:
 
 ```bash
 ng test
 ```
 
-## Running end-to-end tests
+### End-to-End Tests
 
-For end-to-end (e2e) testing, run:
+This project uses Playwright for E2E testing:
 
 ```bash
-ng e2e
+# Run E2E tests (headless)
+npm run test:e2e
+
+# Run E2E tests with browser visible
+npm run test:e2e:headed
+
+# Run E2E tests in interactive UI mode
+npm run test:e2e:ui
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+For comprehensive testing documentation including backend unit and integration tests, see [TESTING.md](../TESTING.md) in the repository root.
 
 ## Additional Resources
 

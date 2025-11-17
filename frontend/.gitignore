@@ -42,6 +42,11 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+
 # GraphQL generated files
 /src/generated/
 schema.graphql
