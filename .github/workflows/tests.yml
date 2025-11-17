@@ -19,7 +19,6 @@ jobs:
 
             - name: Run Integration Tests
               run: dotnet test PhantomDave.BankTracking.IntegrationTests/
-              continue-on-error: true
 
             - name: Setup Node
               uses: actions/setup-node@v6

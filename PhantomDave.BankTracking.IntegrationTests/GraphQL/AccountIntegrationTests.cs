@@ -26,7 +26,7 @@ public class AccountIntegrationTests : IClassFixture<GraphQLTestFactory>
 
     private static string LoginAccountMutation(string email, string password) =>
         $@"mutation {{
-            loginAccount(email: ""{email}"", password: ""{password}"") {{
+            login(email: ""{email}"", password: ""{password}"") {{
                 token
                 account {{
                     id
@@ -40,9 +40,9 @@ public class AccountIntegrationTests : IClassFixture<GraphQLTestFactory>
         using var doc = JsonDocument.Parse(jsonContent);
         if (!doc.RootElement.TryGetProperty("data", out var dataElem))
             throw new Xunit.Sdk.XunitException("Response JSON does not contain 'data' property: " + jsonContent);
-        if (!dataElem.TryGetProperty("loginAccount", out var loginAccountElem))
-            throw new Xunit.Sdk.XunitException("Response JSON does not contain 'loginAccount' property: " + jsonContent);
-        if (!loginAccountElem.TryGetProperty("token", out var tokenElem))
+        if (!dataElem.TryGetProperty("login", out var loginElem))
+            throw new Xunit.Sdk.XunitException("Response JSON does not contain 'login' property: " + jsonContent);
+        if (!loginElem.TryGetProperty("token", out var tokenElem))
             throw new Xunit.Sdk.XunitException("Response JSON does not contain 'token' property: " + jsonContent);
         return tokenElem.GetString() ?? throw new Xunit.Sdk.XunitException("Token is null");
     }
@@ -52,9 +52,9 @@ public class AccountIntegrationTests : IClassFixture<GraphQLTestFactory>
         using var doc = JsonDocument.Parse(jsonContent);
         if (!doc.RootElement.TryGetProperty("data", out var dataElem))
             throw new Xunit.Sdk.XunitException("Response JSON does not contain 'data' property: " + jsonContent);
-        if (!dataElem.TryGetProperty("loginAccount", out var loginAccountElem))
-            throw new Xunit.Sdk.XunitException("Response JSON does not contain 'loginAccount' property: " + jsonContent);
-        if (!loginAccountElem.TryGetProperty("account", out var accountElem))
+        if (!dataElem.TryGetProperty("login", out var loginElem))
+            throw new Xunit.Sdk.XunitException("Response JSON does not contain 'login' property: " + jsonContent);
+        if (!loginElem.TryGetProperty("account", out var accountElem))
             throw new Xunit.Sdk.XunitException("Response JSON does not contain 'account' property: " + jsonContent);
         if (!accountElem.TryGetProperty("id", out var idElem))
             throw new Xunit.Sdk.XunitException("Response JSON does not contain 'id' property: " + jsonContent);

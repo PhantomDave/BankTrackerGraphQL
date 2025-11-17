@@ -26,18 +26,43 @@ public class GraphQLTestFactory : WebApplicationFactory<PhantomDave.BankTracking
 
         builder.ConfigureTestServices(services =>
         {
-            var descriptor = services.SingleOrDefault(
-                d => d.ServiceType == typeof(DbContextOptions<BankTrackerDbContext>));
+            // Remove the RecurringFinanceRecordService hosted service to avoid DB provider conflicts
+            var hostedServiceDescriptors = services.Where(d => 
+                d.ServiceType == typeof(Microsoft.Extensions.Hosting.IHostedService))
+                .ToList();
             
-            if (descriptor != null)
+            foreach (var descriptor in hostedServiceDescriptors)
             {
                 services.Remove(descriptor);
             }
+
+            // Remove the existing DbContext registration added by AddDataAccess
+            var dbContextDescriptor = services.SingleOrDefault(
+                d => d.ServiceType == typeof(DbContextOptions<BankTrackerDbContext>));
+            while (dbContextDescriptor != null)
+            {
+                services.Remove(dbContextDescriptor);
+                dbContextDescriptor = services.SingleOrDefault(
+                    d => d.ServiceType == typeof(DbContextOptions<BankTrackerDbContext>));
+            }
+
+            // Also remove the BankTrackerDbContext registration itself
+            var contextDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(BankTrackerDbContext));
+            while (contextDescriptor != null)
+            {
+                services.Remove(contextDescriptor);
+                contextDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(BankTrackerDbContext));
+            }
             
+            // Re-register with InMemory database - this replaces what AddDataAccess did
             services.AddDbContext<BankTrackerDbContext>(options =>
             {
                 options.UseInMemoryDatabase($"InMemoryTestDb_{Guid.NewGuid()}");
             });
+
+            // Configure GraphQL to include exception details in tests
+            services.AddGraphQLServer()
+                .ModifyRequestOptions(opt => opt.IncludeExceptionDetails = true);
         });
 
         builder.UseEnvironment("Testing");
