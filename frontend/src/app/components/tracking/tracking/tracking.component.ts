@@ -1,8 +1,8 @@
-import {FinanceRecordService} from '../../../models/finance-record/finance-record-service';
-import {Component, inject} from '@angular/core';
+import { FinanceRecordService } from '../../../models/finance-record/finance-record-service';
+import { Component, inject } from '@angular/core';
 import MovementsTableComponent from '../monthly-recap-component/movements-component';
 import RecurringMovementsComponent from '../recurring-movements/recurring-movements.component';
-import {FlexComponent} from '../../ui-library/flex-component/flex-component';
+import { FlexComponent } from '../../ui-library/flex-component/flex-component';
 
 @Component({
   selector: 'app-tracking',

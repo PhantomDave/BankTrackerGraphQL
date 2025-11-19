@@ -22,7 +22,6 @@ import FinancialTableComponent from '../financial/financial.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class MovementsTableComponent {
-
   readonly title = input<string>('Movements');
   readonly loading = input<boolean>(false);
   readonly records = input<readonly FinanceRecord[]>([]);

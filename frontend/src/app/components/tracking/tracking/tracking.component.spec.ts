@@ -1,6 +1,6 @@
-import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import {TrackingComponent} from './tracking.component';
+import { TrackingComponent } from './tracking.component';
 
 describe('TrackingComponent', () => {
   let component: TrackingComponent;
@@ -8,9 +8,8 @@ describe('TrackingComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ TrackingComponent ]
-    })
-    .compileComponents();
+      imports: [TrackingComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

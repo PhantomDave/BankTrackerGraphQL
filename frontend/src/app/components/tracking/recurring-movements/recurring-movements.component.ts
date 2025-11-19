@@ -23,7 +23,6 @@ import FinancialTableComponent from '../financial/financial.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class RecurringMovementsComponent {
-
   readonly title = input<string>('Recurring Movements');
   readonly loading = input<boolean>(false);
   readonly records = input<readonly FinanceRecord[]>([]);

@@ -1,17 +1,17 @@
-import {CurrencyPipe} from '@angular/common';
-import {ChangeDetectionStrategy, Component, computed, inject, OnInit} from '@angular/core';
-import {MatButtonModule} from '@angular/material/button';
-import {MatCardModule} from '@angular/material/card';
-import {MatIconModule} from '@angular/material/icon';
-import {MatTableModule} from '@angular/material/table';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatInputModule} from '@angular/material/input';
-import {MatNativeDateModule} from '@angular/material/core';
-import {FormBuilder, ReactiveFormsModule} from '@angular/forms';
-import {FinanceRecordService} from '../../../models/finance-record/finance-record-service';
-import {FlexComponent} from '../../ui-library/flex-component/flex-component';
+import { CurrencyPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule } from '@angular/material/core';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FinanceRecordService } from '../../../models/finance-record/finance-record-service';
+import { FlexComponent } from '../../ui-library/flex-component/flex-component';
 
 @Component({
   selector: 'app-monthly-comparison',
