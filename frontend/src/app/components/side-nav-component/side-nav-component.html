@@ -34,15 +34,15 @@
               </a>
               <a
                 mat-list-item
-                routerLink="/config"
+                routerLink="/movements"
                 class="nav-item"
                 routerLinkActive="active"
-                #tlaTracking="routerLinkActive"
+                #movTracking="routerLinkActive"
                 [routerLinkActiveOptions]="{ exact: true }"
-                [attr.aria-current]="tlaTracking.isActive ? 'page' : null"
+                [attr.aria-current]="movTracking.isActive ? 'page' : null"
               >
                 <mat-icon matListItemIcon>insights</mat-icon>
-                <span matListItemTitle>Tracking</span>
+                <span matListItemTitle>Movements</span>
                 <span matListItemLine>Track your expenses</span>
               </a>
               <a

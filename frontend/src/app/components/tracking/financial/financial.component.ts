@@ -3,12 +3,11 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  LOCALE_ID,
-  OnInit,
   ViewChild,
   computed,
   effect,
   inject,
+  input,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -19,8 +18,9 @@ import { FinanceRecordService } from '../../../models/finance-record/finance-rec
 import { AddEntry } from '../add-entry/add-entry';
 import { FinanceRecord } from '../../../models/finance-record/finance-record';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+
 @Component({
-  selector: 'app-configurator',
+  selector: 'app-financial-table',
   imports: [
     MatTableModule,
     MatCardModule,
@@ -31,18 +31,20 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
     CurrencyPipe,
     MatPaginatorModule,
   ],
-  templateUrl: './monthly-recap-component.html',
-  styleUrl: './monthly-recap-component.css',
+  templateUrl: './financial.component.html',
+  styleUrl: './financial.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-class MonthlyRecapComponent implements OnInit, AfterViewInit {
+class FinancialTableComponent implements AfterViewInit {
   private readonly dialog = inject(MatDialog);
   private readonly financeRecordService = inject(FinanceRecordService);
-  private readonly locale = inject(LOCALE_ID);
 
-  readonly loading = computed(() => this.financeRecordService.loading());
+  readonly title = input<string>('Financial Records');
+  readonly showFooter = input<boolean>(true);
+
+  readonly loading = input<boolean>(false);
+  readonly records = input<readonly FinanceRecord[]>([]);
   readonly dataSource = new MatTableDataSource<FinanceRecord>([]);
-  readonly records = computed(() => this.financeRecordService.financeRecords());
   readonly recordCount = computed(() => this.records().length);
   readonly recurringCount = computed(
     () => this.records().filter((record) => record.recurring).length,
@@ -61,17 +63,12 @@ class MonthlyRecapComponent implements OnInit, AfterViewInit {
 
   constructor() {
     effect(() => {
-      this.dataSource.data = [...this.records()];
+      this.dataSource.data = this.records() as FinanceRecord[];
     });
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
-    this.dataSource.data = [...this.records()];
-  }
-
-  async ngOnInit(): Promise<void> {
-    await this.financeRecordService.getFinanceRecords();
   }
 
   readonly displayedColumns: string[] = [
@@ -117,4 +114,4 @@ class MonthlyRecapComponent implements OnInit, AfterViewInit {
   }
 }
 
-export default MonthlyRecapComponent;
+export default FinancialTableComponent;
