@@ -1,0 +1,14 @@
+<app-flex [vertical]="true" gap="24px" justify="center" align="center">
+  <app-movements-table
+    style="width: 100%"
+    [title]="'Movements'"
+    [loading]="loading()"
+    [records]="records()"
+  />
+  <app-recurring-movements-table
+    style="width: 100%"
+    [title]="'Recurring Movements'"
+    [loading]="loading()"
+    [records]="records()"
+  />
+</app-flex>

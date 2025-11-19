@@ -221,6 +221,15 @@ export class FinanceRecordService {
   }
 
   async getFinanceRecords(): Promise<void> {
-    await firstValueFrom(this.getFinanceRecordsGQL.fetch());
+    this._loading.set(true);
+    this._error.set(null);
+
+    try {
+      await firstValueFrom(this.getFinanceRecordsGQL.fetch());
+    } catch (error) {
+      this._error.set(`Failed to fetch finance records: ${error}`);
+    } finally {
+      this._loading.set(false);
+    }
   }
 }

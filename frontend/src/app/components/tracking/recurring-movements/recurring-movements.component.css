@@ -1,0 +1,55 @@
+:host {
+  background-color: var(--mat-sys-surface-container);
+  color: var(--mat-sys-on-surface);
+}
+
+table[mat-table] {
+  background-color: var(--mat-sys-surface);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px 0 var(--mat-sys-outline-variant);
+  overflow: hidden;
+}
+
+th.mat-header-cell {
+  background-color: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-label-large);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+td.mat-cell,
+td.mat-footer-cell {
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+tr.mat-row:hover td.mat-cell {
+  background-color: var(--mat-sys-surface-container);
+}
+
+.footer-cell-label {
+  font-weight: 600;
+  color: var(--mat-sys-primary);
+}
+
+.action-icon {
+  cursor: pointer;
+  color: var(--mat-sys-on-surface);
+}
+
+.action-icon.delete {
+  color: var(--mat-sys-error);
+}
+
+.action-icon.edit {
+  color: var(--mat-sys-primary);
+}
+
+.description-cell {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
