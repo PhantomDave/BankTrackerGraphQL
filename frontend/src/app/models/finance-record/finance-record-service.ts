@@ -1,15 +1,16 @@
-import { inject, Injectable, Signal, signal } from '@angular/core';
-import { firstValueFrom, tap } from 'rxjs';
 import {
   CreateFinanceRecordGQL,
   DeleteFinanceRecordGQL,
+  DeleteImportedFinanceRecordGQL,
   GetFinanceRecordsGQL,
   GetMonthlyComparisonGQL,
   GetMonthlyComparisonQuery,
   RecurrenceFrequency,
-  UpdateFinanceRecordGQL,
+  UpdateFinanceRecordGQL
 } from '../../../generated/graphql';
-import { FinanceRecord } from './finance-record';
+import {inject, Injectable, Signal, signal} from '@angular/core';
+import {firstValueFrom, tap} from 'rxjs';
+import {FinanceRecord} from './finance-record';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +21,7 @@ export class FinanceRecordService {
   private readonly updateFinanceRecordGQL = inject(UpdateFinanceRecordGQL);
   private readonly deleteFinanceRecordGQL = inject(DeleteFinanceRecordGQL);
   private readonly getMonthlyComparisonGQL = inject(GetMonthlyComparisonGQL);
+  private readonly deleteImportedFinanceRecordGQL = inject(DeleteImportedFinanceRecordGQL);
 
   private readonly _monthlyComparison = signal<
     GetMonthlyComparisonQuery['monthlyComparison'] | null
@@ -218,6 +220,21 @@ export class FinanceRecordService {
       lastProcessedDate: data.lastProcessedDate ? new Date(data.lastProcessedDate) : undefined,
       recurring: data.isRecurring,
     };
+  }
+
+  async deleteAllImportedData(): Promise<void> {
+    this._loading.set(true);
+    this._error.set(null);
+
+    try {
+      await firstValueFrom(
+        this.deleteImportedFinanceRecordGQL.mutate({ refetchQueries: ['getFinanceRecords'] }),
+      );
+    } catch (error) {
+      this._error.set(`Failed to delete imported finance records: ${error}`);
+    } finally {
+      this._loading.set(false);
+    }
   }
 
   async getFinanceRecords(): Promise<void> {

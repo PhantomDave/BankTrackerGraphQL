@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>{{ dataModel().title }}</h2>
+<mat-dialog-content>
+  <div [innerHTML]="dataModel().content"></div>
+  @if (dataModel().field) {
+    <div [innerHTML]="dataModel().field"></div>
+  }
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-flat-button color="primary" mat-dialog-close cdkFocusInitial>{{dataModel().defaultButtonText ?? 'Ok'}}</button>
+  @if (dataModel().action) {
+    @for (action of dataModel().action; track $index) {
+      <button mat-flat-button color="primary" (click)="action.action()">{{ action.text }}</button>
+    }
+  }
+</mat-dialog-actions>

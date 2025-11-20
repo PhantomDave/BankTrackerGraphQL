@@ -2,11 +2,16 @@ import { ChangeDetectionStrategy, Component, effect, inject, OnInit } from '@ang
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AccountService } from '../../models/account/account-service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponentComponent } from '../ui-library/confirmation-dialog-component/confirmation-dialog-component.component';
+import { FinanceRecordService } from '../../models/finance-record/finance-record-service';
 
 @Component({
   selector: 'app-settings-component',
@@ -17,6 +22,8 @@ import { AccountService } from '../../models/account/account-service';
     MatInputModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    MatDividerModule,
+    MatIconModule,
   ],
   templateUrl: './settings-component.html',
   styleUrl: './settings-component.css',
@@ -24,7 +31,9 @@ import { AccountService } from '../../models/account/account-service';
 })
 export class SettingsComponent implements OnInit {
   private readonly accountService = inject(AccountService);
+  private readonly financeRecordService = inject(FinanceRecordService);
   private readonly formBuilder = inject(FormBuilder);
+  private readonly dialog = inject(MatDialog);
 
   protected readonly account = this.accountService.selectedAccount;
   protected readonly loading = this.accountService.loading;
@@ -87,5 +96,23 @@ export class SettingsComponent implements OnInit {
     }
 
     await this.accountService.updateAccount(email!, balance ?? 0);
+  }
+
+  protected async onDeleteAllImportedData() {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponentComponent, {
+      data: {
+        title: 'Delete all imported data',
+        content: 'Are you sure you want to delete all imported data? This action cannot be undone.',
+        action: [
+          {
+            text: 'Delete',
+            action: async () => {
+              await this.financeRecordService.deleteAllImportedData();
+              dialogRef.close();
+            },
+          },
+        ],
+      },
+    });
   }
 }

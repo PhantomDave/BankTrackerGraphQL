@@ -99,4 +99,21 @@ public class FinanceRecordMutations
         }
         return deletedRecord;
     }
+
+    [Authorize]
+    public async Task<bool> DeleteImportedFinanceRecord(
+    [Service] FinanceRecordService financeRecordService,
+    [Service] IHttpContextAccessor httpContextAccessor)
+    {
+        var deletedRecord = await financeRecordService.DeleteAllImportedFinanceRecordForAccountAsync(httpContextAccessor.GetAccountIdFromContext());
+        if (deletedRecord == 0)
+        {
+            throw new GraphQLException(
+            ErrorBuilder.New()
+                .SetMessage("Failed to delete finance record. Please check the provided data.")
+                .SetCode("BAD_USER_INPUT")
+                .Build());
+        }
+        return deletedRecord > 0;
+    }
 }

@@ -75,6 +75,13 @@
             </button>
           </div>
         </form>
+
+        <mat-divider></mat-divider>
+
+        <button mat-flat-button color="warn" (click)="onDeleteAllImportedData()" class="danger-button">
+          <mat-icon>warning</mat-icon>
+          Delete all imported data
+        </button>
       } @else {
         <p class="empty-state" role="status">We could not load your account information.</p>
       }

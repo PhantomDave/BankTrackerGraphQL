@@ -44,3 +44,11 @@
   color: var(--mat-sys-on-surface-variant, rgba(0, 0, 0, 0.6));
   margin: 16px 0 0;
 }
+
+.danger-button {
+  margin-top: 16px;
+}
+
+.danger-button mat-icon {
+  margin-right: 8px;
+}

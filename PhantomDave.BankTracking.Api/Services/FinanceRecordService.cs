@@ -356,4 +356,20 @@ public class FinanceRecordService
             LowestSpendingMonth = lowestSpending
         };
     }
+
+    public async Task<int> DeleteAllImportedFinanceRecordForAccountAsync(int accountId)
+    {
+        var records = await _unitOfWork.FinanceRecords.Query()
+            .Where(r => r.AccountId == accountId && r.Imported)
+            .ToListAsync();
+
+        var count = records.Count;
+        if (count == 0)
+        {
+            return 0;
+        }
+
+        await _unitOfWork.FinanceRecords.DeleteRangeAsync(records);
+        return await _unitOfWork.SaveChangesAsync();
+    }
 }

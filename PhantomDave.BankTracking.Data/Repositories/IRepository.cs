@@ -11,6 +11,7 @@ public interface IRepository<T> where T : class
     Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entity);
     Task<T> UpdateAsync(T entity);
     Task<bool> DeleteAsync(object id);
+    Task<int> DeleteRangeAsync(IEnumerable<T> entities);
     Task<T?> GetSingleOrDefaultAsync(Expression<Func<T, bool>> predicate);
     Task SaveAsync();
     IQueryable<T> Query();
@@ -68,6 +69,12 @@ public class Repository<T> : IRepository<T> where T : class
 
         _dbSet.Remove(entity);
         return true;
+    }
+
+    public async Task<int> DeleteRangeAsync(IEnumerable<T> entities)
+    {
+        _dbSet.RemoveRange(entities);
+        return entities.Count();
     }
 
     public async Task SaveAsync()
