@@ -1,5 +1,5 @@
-query getFinanceRecords {
-  financeRecordsForAccount {
+query getFinanceRecords($startDate: DateTime, $endDate: DateTime) {
+  financeRecordsForAccount(startDate: $startDate, endDate: $endDate) {
     id
     name
     description

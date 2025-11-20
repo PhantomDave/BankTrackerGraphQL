@@ -3,10 +3,27 @@
   color: var(--mat-sys-on-surface);
 }
 
+mat-card {
+  margin-bottom: 24px;
+}
+
+mat-card-header {
+  margin-bottom: 0;
+}
+
+mat-card-actions {
+  padding: 0 16px 16px;
+  margin: 0;
+}
+
+mat-card-content {
+  padding-top: 0;
+}
+
 table[mat-table] {
   background-color: var(--mat-sys-surface);
   border-radius: 12px;
-  box-shadow: 0 2px 8px 0 var(--mat-sys-outline-variant);
+  border: 1px solid var(--mat-sys-outline-variant);
   overflow: hidden;
 }
 
@@ -52,4 +69,18 @@ tr.mat-row:hover td.mat-cell {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+mat-card-header {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+}
+
+mat-card-title {
+  margin: 0;
 }

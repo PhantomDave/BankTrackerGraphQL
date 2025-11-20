@@ -1,14 +1,25 @@
-<app-flex [vertical]="true" gap="24px" justify="center" align="center">
-  <app-movements-table
-    style="width: 100%"
-    [title]="'Movements'"
-    [loading]="loading()"
-    [records]="records()"
+<mat-card class="movements-card">
+  <app-date-range-picker
+    class="date-range-picker"
+    [(startDate)]="startDate"
+    [(endDate)]="endDate"
   />
-  <app-recurring-movements-table
-    style="width: 100%"
-    [title]="'Recurring Movements'"
-    [loading]="loading()"
-    [records]="records()"
-  />
-</app-flex>
+  @if (loading()) {
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  } @else {
+    <app-flex [vertical]="true" gap="24px" justify="center" align="center">
+      <app-movements-table
+        style="width: 100%"
+        [title]="'Movements'"
+        [loading]="loading()"
+        [records]="records()"
+      />
+      <app-recurring-movements-table
+        style="width: 100%"
+        [title]="'Recurring Movements'"
+        [loading]="loading()"
+        [records]="records()"
+      />
+    </app-flex>
+  }
+</mat-card>

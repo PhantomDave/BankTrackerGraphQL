@@ -1,0 +1,9 @@
+<mat-form-field class="date-range-picker">
+  <mat-label>{{ label() }}</mat-label>
+  <mat-date-range-input [rangePicker]="picker">
+    <input matStartDate [placeholder]="startPlaceholder()" [(ngModel)]="startDate" />
+    <input matEndDate [placeholder]="endPlaceholder()" [(ngModel)]="endDate" />
+  </mat-date-range-input>
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-date-range-picker #picker></mat-date-range-picker>
+</mat-form-field>

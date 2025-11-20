@@ -115,8 +115,11 @@ export class BalanceComponent implements OnInit {
     return this.balance() + projectedDailyNet * remainingDays;
   });
 
+  readonly startDate = signal(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
+  readonly endDate = signal(new Date());
+
   async ngOnInit(): Promise<void> {
-    await this.financeRecordService.getFinanceRecords();
+    await this.financeRecordService.getFinanceRecords(this.startDate(), this.endDate());
     await this.accountService.getUserAccount();
   }
 }

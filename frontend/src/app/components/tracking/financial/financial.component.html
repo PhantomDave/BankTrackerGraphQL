@@ -1,4 +1,4 @@
-<mat-card appearance="outlined" style="width: 100%">
+<mat-card appearance="outlined" class="finance-elements-table-card">
   @if (loading()) {
     <mat-card-header>
       <mat-card-title>Loading {{ title() }}...</mat-card-title>
@@ -6,14 +6,12 @@
   } @else {
     <mat-card-header>
       <mat-card-title>{{ title() }}</mat-card-title>
-    </mat-card-header>
-
-    <mat-card-actions align="end">
+      <div class="spacer"></div>
       <button mat-flat-button color="primary" (click)="onCreateClicked()">
         <mat-icon aria-hidden="true">add</mat-icon>
         Create New
       </button>
-    </mat-card-actions>
+    </mat-card-header>
 
     <mat-card-content>
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" style="width: 100%">

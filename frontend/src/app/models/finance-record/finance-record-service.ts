@@ -42,39 +42,6 @@ export class FinanceRecordService {
   private readonly _error = signal<string | null>(null);
   readonly error: Signal<string | null> = this._error.asReadonly();
 
-  constructor() {
-    this.getFinanceRecordsGQL
-      .watch()
-      .valueChanges.pipe(
-        tap((result) => {
-          if (result.data?.financeRecordsForAccount) {
-            const records = result.data.financeRecordsForAccount
-              .filter((record) => record != null)
-              .map<FinanceRecord>((record) => ({
-                id: record!.id ?? 0,
-                name: record!.name ?? '',
-                description: record!.description ?? '',
-                amount: record!.amount ?? 0,
-                currency: record!.currency ?? '',
-                date: new Date(record!.date ?? new Date()),
-                recurring: record!.isRecurring ?? false,
-                recurrenceFrequency: record!.recurrenceFrequency,
-                recurrenceEndDate: record!.recurrenceEndDate
-                  ? new Date(record!.recurrenceEndDate)
-                  : null,
-                lastProcessedDate: record!.lastProcessedDate
-                  ? new Date(record!.lastProcessedDate)
-                  : null,
-                parentRecurringRecordId: record!.parentRecurringRecordId ?? null,
-                isRecurringInstance: record!.isRecurringInstance ?? false,
-              }));
-            this._financeRecords.set(records);
-          }
-        }),
-      )
-      .subscribe();
-  }
-
   async updateFinanceRecord(record: FinanceRecord): Promise<void> {
     this._loading.set(true);
     this._error.set(null);
@@ -237,12 +204,28 @@ export class FinanceRecordService {
     }
   }
 
-  async getFinanceRecords(): Promise<void> {
+  async getFinanceRecords(startDate: Date, endDate: Date): Promise<void> {
     this._loading.set(true);
     this._error.set(null);
 
     try {
-      await firstValueFrom(this.getFinanceRecordsGQL.fetch());
+      const result = await firstValueFrom(
+        this.getFinanceRecordsGQL.fetch({
+          variables: {
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString(),
+          },
+        }),
+      );
+
+      if (result?.data?.financeRecordsForAccount) {
+        const records = result.data.financeRecordsForAccount.map((record) =>
+          this.mapToFinanceRecord(record),
+        );
+        this._financeRecords.set(records);
+      } else {
+        this._error.set('Failed to fetch finance records');
+      }
     } catch (error) {
       this._error.set(`Failed to fetch finance records: ${error}`);
     } finally {
