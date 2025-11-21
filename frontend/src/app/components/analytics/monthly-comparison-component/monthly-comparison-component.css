@@ -66,13 +66,14 @@
   margin-top: 1rem;
 }
 
+
 .comparison-table .positive {
-  color: #059669;
+  color: var(--bt-positive);
   font-weight: 500;
 }
 
 .comparison-table .negative {
-  color: #dc2626;
+  color: var(--bt-negative);
   font-weight: 500;
 }
 

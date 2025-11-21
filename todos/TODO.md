@@ -134,6 +134,17 @@
 - [ ] Review and optimize database migrations
 - [ ] Improve GraphQL error codes consistency
 
+## 📊 Dashboard System
+
+See **[DASHBOARD_PLAN.md](DASHBOARD_PLAN.md)** for full implementation roadmap with frontend-first approach.
+
+**Quick Summary**:
+- Phase 0: Research & library selection ([angular-gridster2](../docs/DASHBOARD_LIBRARY_RESEARCH.md) ✅ recommended)
+- Phase 1: Frontend core (widget registry, layout engine, state management)
+- Phase 2: Backend foundation (data model, GraphQL API)
+- Phase 3: Widget collection (balance, transactions, charts, budgets)
+- Phase 4: Customization (drag-drop, config dialogs, multiple dashboards)
+
 ---
 
 ## Priority Legend

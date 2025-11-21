@@ -53,11 +53,13 @@ export class MonthlyComparisonComponent implements OnInit {
   readonly chartOptions = computed<ChartOptions>(() => {
     const data = this.comparisonData()?.monthlyData || [];
     const netValues = data.map((month) => month.netAmount);
+    const positiveColor = this.getCssVar('--bt-positive');
+    const negativeColor = this.getCssVar('--bt-negative');
 
     return {
       series: [
         {
-          name: 'Net Income',
+          name: 'Net Balance',
           data: netValues,
         },
       ],
@@ -66,7 +68,7 @@ export class MonthlyComparisonComponent implements OnInit {
         type: 'line',
       },
       title: {
-        text: 'Net Income Over Time',
+        text: 'Net Balance Over Time',
       },
       xaxis: {
         categories: data.map((month) => this.formatMonthLabel(month.year, month.month)),
@@ -101,7 +103,7 @@ export class MonthlyComparisonComponent implements OnInit {
         yaxis: [
           {
             y: 0,
-            borderColor: 'green',
+            borderColor: positiveColor,
             strokeDashArray: 8,
             label: {
               text: 'Break Even',
@@ -118,7 +120,7 @@ export class MonthlyComparisonComponent implements OnInit {
         discrete: netValues.map((value, index) => ({
           seriesIndex: 0,
           dataPointIndex: index,
-          fillColor: value >= 0 ? 'green' : 'red',
+          fillColor: value >= 0 ? positiveColor : negativeColor,
           size: 5,
         })),
         strokeColors: 'var(--mat-sys-surface)',
@@ -188,6 +190,10 @@ export class MonthlyComparisonComponent implements OnInit {
       startDate ?? this.getDefaultStartDate(),
       endDate ?? new Date(),
     );
+  }
+
+  private getCssVar(name: string): string {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || '';
   }
 
   private getDefaultStartDate(): Date {

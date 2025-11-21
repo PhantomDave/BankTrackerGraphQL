@@ -42,6 +42,7 @@
     "@angular/platform-browser": "^20.3.12",
     "@angular/router": "^20.3.12",
     "@apollo/client": "^4.0.9",
+    "angular-gridster2": "^20.2.3",
     "apexcharts": "^5.3.6",
     "apollo-angular": "^12.1.0",
     "apollo-upload-client": "^19.0.0",
