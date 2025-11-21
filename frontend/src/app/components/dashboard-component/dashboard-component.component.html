@@ -1,5 +1,20 @@
 <gridster [options]="options">
-  @for (widget of widgets; track widget) {
-    <gridster-item [item]="widget"> </gridster-item>
+  @for (widget of widgets(); track widget) {
+    <gridster-item [item]="widget">
+      @switch (widget['component']) {
+        @case ('widget-remaining') {
+          <app-widget-remaining
+            [record]="widget['data']"
+            [loading]="loading()"
+          ></app-widget-remaining>
+        }
+        @default {
+          <div class="placeholder-widget">
+            <p>Widget: {{ widget['component'] || 'Empty' }}</p>
+            <p>{{ widget.cols }}x{{ widget.rows }}</p>
+          </div>
+        }
+      }
+    </gridster-item>
   }
 </gridster>

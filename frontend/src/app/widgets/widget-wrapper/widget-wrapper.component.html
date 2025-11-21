@@ -1,0 +1,36 @@
+<mat-card appearance="outlined" class="widget-card">
+  @if (loading()) {
+    <div class="loading-overlay" aria-live="polite">
+      <mat-progress-spinner
+        mode="indeterminate"
+        diameter="48"
+        strokeWidth="4"
+        [attr.aria-label]="'Loading ' + title()"
+      ></mat-progress-spinner>
+    </div>
+  }
+
+  @if ((title() || subtitle() || icon()) && !loading()) {
+    <mat-card-header>
+      @if (icon()) {
+        <app-flex align="center" justify="center">
+          <mat-icon mat-card-avatar aria-hidden="true">{{ icon() }}</mat-icon>
+        </app-flex>
+      }
+      <app-flex justify="space-around" align="center" style="width: 100%">
+        <app-flex gap="4px" [vertical]="true">
+          @if (title()) {
+            <mat-card-title>{{ title() }}</mat-card-title>
+          }
+          @if (subtitle()) {
+            <mat-card-subtitle>{{ subtitle() }}</mat-card-subtitle>
+          }
+        </app-flex>
+      </app-flex>
+    </mat-card-header>
+
+    <mat-card-content>
+      <ng-content></ng-content>
+    </mat-card-content>
+  }
+</mat-card>

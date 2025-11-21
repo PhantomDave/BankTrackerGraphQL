@@ -1,0 +1,34 @@
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+  MatCard,
+  MatCardContent,
+  MatCardHeader,
+  MatCardSubtitle,
+  MatCardTitle,
+} from '@angular/material/card';
+import { MatIcon } from '@angular/material/icon';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { FlexComponent } from '../../components/ui-library/flex-component/flex-component';
+
+@Component({
+  selector: 'app-widget-wrapper',
+  imports: [
+    MatCard,
+    MatCardHeader,
+    MatCardTitle,
+    MatCardSubtitle,
+    MatIcon,
+    MatCardContent,
+    MatProgressSpinner,
+    FlexComponent,
+  ],
+  templateUrl: './widget-wrapper.component.html',
+  styleUrl: './widget-wrapper.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class WidgetWrapperComponent {
+  readonly title = input<string>('');
+  readonly subtitle = input<string>('');
+  readonly icon = input<string>('');
+  readonly loading = input<boolean>(false);
+}

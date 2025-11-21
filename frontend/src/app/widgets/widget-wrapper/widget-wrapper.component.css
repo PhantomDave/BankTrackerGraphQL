@@ -1,0 +1,47 @@
+.widget-card {
+  display: block;
+  position: relative;
+  height: 100%;
+}
+
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.05);
+  z-index: 1;
+  pointer-events: all;
+  border-radius: inherit;
+}
+
+mat-card-header {
+  margin-bottom: 1rem;
+}
+
+[mat-card-avatar] {
+  background-color: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+}
+
+mat-card-title {
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-title-large);
+  margin: 0;
+}
+
+mat-card-subtitle {
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-body-medium);
+}
+
+mat-card-content {
+  padding: 0 16px 16px;
+}

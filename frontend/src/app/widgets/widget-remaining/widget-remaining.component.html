@@ -1,0 +1,11 @@
+<app-widget-wrapper
+  [title]="'Budget Overview'"
+  [subtitle]="'Remaining balance'"
+  [icon]="'account_balance_wallet'"
+  [loading]="loading()"
+>
+  <div class="widget-content">
+    <div class="amount">{{ remainingBudget() | currency: currency() }}</div>
+    <div class="label">Remaining Budget</div>
+  </div>
+</app-widget-wrapper>

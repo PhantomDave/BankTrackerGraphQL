@@ -1,0 +1,15 @@
+.widget-content {
+  padding: 16px;
+  text-align: center;
+}
+
+.amount {
+  font: var(--mat-sys-headline-large);
+  color: var(--mat-sys-primary);
+  margin-bottom: 8px;
+}
+
+.label {
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-on-surface-variant);
+}
