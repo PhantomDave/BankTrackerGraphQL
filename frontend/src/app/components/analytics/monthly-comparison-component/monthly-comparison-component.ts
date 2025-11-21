@@ -1,4 +1,4 @@
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -35,7 +35,7 @@ import {
     FlexComponent,
     ChartWrapperComponent,
   ],
-  providers: [CurrencyPipe],
+  providers: [CurrencyPipe, DatePipe],
   templateUrl: './monthly-comparison-component.html',
   styleUrl: './monthly-comparison-component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -44,6 +44,7 @@ export class MonthlyComparisonComponent implements OnInit {
   private readonly financeRecordService = inject(FinanceRecordService);
   private readonly formBuilder = inject(FormBuilder);
   private readonly currencyPipe = inject(CurrencyPipe);
+  private readonly datePipe = inject(DatePipe);
 
   readonly loading = computed(() => this.financeRecordService.loading());
   readonly error = computed(() => this.financeRecordService.error());
@@ -53,7 +54,6 @@ export class MonthlyComparisonComponent implements OnInit {
     const data = this.comparisonData()?.monthlyData || [];
     const netValues = data.map((month) => month.netAmount);
 
-    console.log(netValues.map((value) => (value >= 0 ? 'green' : 'red')));
     return {
       series: [
         {
@@ -164,10 +164,16 @@ export class MonthlyComparisonComponent implements OnInit {
       avgIncome: data.overallAverageIncome,
       avgExpense: data.overallAverageExpense,
       highestMonth: data.highestSpendingMonth
-        ? this.formatMonthLabel(data.highestSpendingMonth.year, data.highestSpendingMonth.month)
+        ? this.datePipe.transform(
+            new Date(data.highestSpendingMonth.year, data.highestSpendingMonth.month - 1, 1),
+            'MMM yyyy',
+          )
         : 'N/A',
       lowestMonth: data.lowestSpendingMonth
-        ? this.formatMonthLabel(data.lowestSpendingMonth.year, data.lowestSpendingMonth.month)
+        ? this.datePipe.transform(
+            new Date(data.lowestSpendingMonth.year, data.lowestSpendingMonth.month - 1, 1),
+            'MMM yyyy',
+          )
         : 'N/A',
     };
   });
@@ -187,11 +193,12 @@ export class MonthlyComparisonComponent implements OnInit {
   private getDefaultStartDate(): Date {
     const date = new Date();
     date.setMonth(date.getMonth() - 12);
+    date.setDate(1);
     return date;
   }
 
   private formatMonthLabel(year: number, month: number): string {
     const date = new Date(year, month - 1, 1);
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+    return this.datePipe.transform(date, 'MMM yyyy') ?? '';
   }
 }
