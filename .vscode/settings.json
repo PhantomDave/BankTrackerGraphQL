@@ -25,7 +25,9 @@
     "bankuser",
     "codegen",
     "healthcheck",
-    "isready"
+    "isready",
+    "xaxis",
+    "yaxis"
   ],
   "dependi.npm.lockFileEnabled": true,
   "angular-schematics.schematicsDefaultOptions": {

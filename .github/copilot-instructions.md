@@ -4,6 +4,11 @@ Keep in mind the basics of programming like
 
 YAGNI, DRY2, NEVER RESORT TO USE SOLID
 
+## Documentation & Libraries
+- ALWAYS use context7 MCP tools when you need documentation or code examples for any library, framework, or package (HotChocolate, Apollo Angular, Entity Framework Core, Angular Material, etc.).
+- First call `resolve-library-id` with the library name to get the Context7-compatible library ID, then call `get-library-docs` with that ID to retrieve up-to-date documentation.
+- This ensures you have the most current information rather than relying solely on training data, which may be outdated.
+
 ## Architecture
 - GraphQL backend (`PhantomDave.BankTracking.Api`) exposes accounts and finance records via HotChocolate; schema is composed from `Types/Queries|Mutations|Inputs|ObjectTypes` with `ExtendObjectType` partials.
 - Data layer (`PhantomDave.BankTracking.Data`) wraps EF Core against PostgreSQL with a repository + unit-of-work abstraction registered through `AddDataAccess`.

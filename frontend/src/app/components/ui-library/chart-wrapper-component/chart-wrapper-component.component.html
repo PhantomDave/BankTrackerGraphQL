@@ -1,0 +1,24 @@
+@if (themedOptions(); as options) {
+  <apx-chart
+    [series]="options.series"
+    [chart]="options.chart"
+    [xaxis]="options.xaxis!"
+    [yaxis]="options.yaxis!"
+    [title]="options.title!"
+    [subtitle]="options.subtitle!"
+    [stroke]="options.stroke!"
+    [dataLabels]="options.dataLabels!"
+    [legend]="options.legend!"
+    [colors]="options.colors!"
+    [tooltip]="options.tooltip!"
+    [fill]="options.fill!"
+    [plotOptions]="options.plotOptions!"
+    [grid]="options.grid!"
+    [theme]="options.theme!"
+    [markers]="options.markers!"
+    [annotations]="options.annotations!"
+    [autoUpdateSeries]="autoUpdateSeries()"
+    [style.width]="width()"
+    [style.height]="height() || options.chart.height"
+  ></apx-chart>
+}

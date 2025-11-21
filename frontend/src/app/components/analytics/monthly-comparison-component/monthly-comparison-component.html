@@ -141,6 +141,8 @@
       </table>
     }
 
+    <app-chart [chartOptions]="chartOptions()" />
+
     <!-- Empty State -->
     @if (!loading() && !error() && monthlyDataRows().length === 0) {
       <div class="empty-state">

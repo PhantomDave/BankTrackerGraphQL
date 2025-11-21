@@ -12,6 +12,10 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { FinanceRecordService } from '../../../models/finance-record/finance-record-service';
 import { FlexComponent } from '../../ui-library/flex-component/flex-component';
+import {
+  ChartOptions,
+  ChartWrapperComponent,
+} from '../../ui-library/chart-wrapper-component/chart-wrapper-component.component';
 
 @Component({
   selector: 'app-monthly-comparison',
@@ -29,7 +33,9 @@ import { FlexComponent } from '../../ui-library/flex-component/flex-component';
     MatNativeDateModule,
     ReactiveFormsModule,
     FlexComponent,
+    ChartWrapperComponent,
   ],
+  providers: [CurrencyPipe],
   templateUrl: './monthly-comparison-component.html',
   styleUrl: './monthly-comparison-component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,10 +43,92 @@ import { FlexComponent } from '../../ui-library/flex-component/flex-component';
 export class MonthlyComparisonComponent implements OnInit {
   private readonly financeRecordService = inject(FinanceRecordService);
   private readonly formBuilder = inject(FormBuilder);
+  private readonly currencyPipe = inject(CurrencyPipe);
 
   readonly loading = computed(() => this.financeRecordService.loading());
   readonly error = computed(() => this.financeRecordService.error());
   readonly comparisonData = computed(() => this.financeRecordService.monthlyComparison());
+
+  readonly chartOptions = computed<ChartOptions>(() => {
+    const data = this.comparisonData()?.monthlyData || [];
+    const netValues = data.map((month) => month.netAmount);
+
+    console.log(netValues.map((value) => (value >= 0 ? 'green' : 'red')));
+    return {
+      series: [
+        {
+          name: 'Net Income',
+          data: netValues,
+        },
+      ],
+      chart: {
+        height: 350,
+        type: 'line',
+      },
+      title: {
+        text: 'Net Income Over Time',
+      },
+      xaxis: {
+        categories: data.map((month) => this.formatMonthLabel(month.year, month.month)),
+      },
+      yaxis: {
+        labels: {
+          formatter: (value) => this.currencyPipe.transform(value, 'EUR', 'symbol', '1.0-0') ?? '',
+        },
+      },
+      stroke: {
+        curve: 'monotoneCubic',
+        width: 3,
+      },
+
+      dataLabels: {
+        enabled: false,
+      },
+      grid: {
+        strokeDashArray: 4,
+        yaxis: {
+          lines: {
+            show: true,
+          },
+        },
+      },
+      tooltip: {
+        y: {
+          formatter: (value) => this.currencyPipe.transform(value, 'EUR', 'symbol', '1.0-2') ?? '',
+        },
+      },
+      annotations: {
+        yaxis: [
+          {
+            y: 0,
+            borderColor: 'green',
+            strokeDashArray: 8,
+            label: {
+              text: 'Break Even',
+              style: {
+                color: 'var(--mat-sys-on-surface)',
+                background: 'var(--mat-sys-surface-variant)',
+              },
+            },
+          },
+        ],
+      },
+      markers: {
+        size: 5,
+        discrete: netValues.map((value, index) => ({
+          seriesIndex: 0,
+          dataPointIndex: index,
+          fillColor: value >= 0 ? 'green' : 'red',
+          size: 5,
+        })),
+        strokeColors: 'var(--mat-sys-surface)',
+        strokeWidth: 2,
+        hover: {
+          size: 7,
+        },
+      },
+    };
+  });
 
   readonly displayedColumns = [
     'month',

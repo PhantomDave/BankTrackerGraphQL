@@ -14,7 +14,7 @@
 - [x] **CSV Import/Export** - Import transactions from bank statements, export data for backup or analysis
 - [ ] **Bulk Operations** - Edit/delete multiple finance records at once
 - [ ] **Data Backup/Restore** - Easy backup and restore functionality
-- [ ] **Duplicate Detection** - Automatically flag potential duplicate transactions
+- [ ] **Duplicate Detection** - Automatically flag potential duplicate transactions //This is done for imports
 
 ### Analytics & Insights
 
