@@ -14,5 +14,4 @@ export interface Widget extends GridsterItem {
 export enum WidgetType {
   CurrentBalance,
   NetGraph,
-  Placeholder,
 }

@@ -19,19 +19,10 @@ public class DashboardQueries
 
         var dashboards = await unitOfWork.Dashboards
             .Query()
+            .Include(d => d.Widgets)
             .Where(d => d.AccountId == accountId)
             .OrderBy(d => d.Id)
             .ToListAsync();
-
-        foreach (var dashboard in dashboards)
-        {
-            var widgets = await unitOfWork.DashboardWidgets
-                .Query()
-                .Where(w => w.DashboardId == dashboard.Id)
-                .OrderBy(w => w.Id)
-                .ToListAsync();
-            dashboard.Widgets = widgets.ToList();
-        }
 
         return dashboards.Select(DashboardType.FromDashboard);
     }
@@ -44,18 +35,15 @@ public class DashboardQueries
     {
         var accountId = httpContextAccessor.GetAccountIdFromContext();
 
-        var dashboard = await unitOfWork.Dashboards.GetByIdAsync(id);
+        var dashboard = await unitOfWork.Dashboards
+            .Query()
+            .Include(d => d.Widgets)
+            .FirstOrDefaultAsync(d => d.Id == id);
+
         if (dashboard is null || dashboard.AccountId != accountId)
         {
             return null;
         }
-
-        var widgets = await unitOfWork.DashboardWidgets
-            .Query()
-            .Where(w => w.DashboardId == dashboard.Id)
-            .OrderBy(w => w.Id)
-            .ToListAsync();
-        dashboard.Widgets = widgets.ToList();
 
         return DashboardType.FromDashboard(dashboard);
     }

@@ -20,19 +20,10 @@ public class DashboardService
     {
         var dashboards = await _unitOfWork.Dashboards
             .Query()
+            .Include(d => d.Widgets)
             .AsNoTracking()
             .OrderBy(d => d.Id)
             .ToListAsync();
-
-        foreach (var dashboard in dashboards)
-        {
-            var widgets = await _unitOfWork.DashboardWidgets
-                .Query()
-                .Where(w => w.DashboardId == dashboard.Id)
-                .OrderBy(w => w.Id)
-                .ToListAsync();
-            dashboard.Widgets = widgets.ToList();
-        }
 
         return dashboards;
     }
