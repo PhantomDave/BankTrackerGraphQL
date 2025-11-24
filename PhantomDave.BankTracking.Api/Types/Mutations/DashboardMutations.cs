@@ -17,10 +17,16 @@ public class DashboardMutations
     {
         var accountId = httpContextAccessor.GetAccountIdFromContext();
 
+        var name = input.Name?.Trim() ?? string.Empty;
+        if (name.Length > 100)
+        {
+            name = name[..100];
+        }
+
         var dashboard = new Dashboard
         {
             AccountId = accountId,
-            Name = input.Name?.Trim() ?? string.Empty
+            Name = name
         };
 
         await unitOfWork.Dashboards.AddAsync(dashboard);
@@ -48,7 +54,12 @@ public class DashboardMutations
 
         if (input.Name != null)
         {
-            dashboard.Name = input.Name.Trim();
+            var name = input.Name.Trim();
+            if (name.Length > 100)
+            {
+                name = name[..100];
+            }
+            dashboard.Name = name;
         }
 
         await unitOfWork.SaveChangesAsync();
