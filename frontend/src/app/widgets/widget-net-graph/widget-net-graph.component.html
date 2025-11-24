@@ -1,0 +1,11 @@
+<app-widget-wrapper
+  [title]="'Yearly Net Graph'"
+  [subtitle]="'Net income and expenses over the past year'"
+  [icon]="'show_chart'"
+  [loading]="loading()"
+  [isEditMode]="isEditMode()"
+>
+  <div class="widget-content">
+    <app-chart [chartOptions]="chartOptions()" />
+  </div>
+</app-widget-wrapper>

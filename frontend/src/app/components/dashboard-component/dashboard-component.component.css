@@ -2,6 +2,8 @@
   display: block;
   width: 100%;
   height: 100%;
+  overflow: hidden;
+  position: relative;
 }
 
 gridster {
@@ -29,4 +31,29 @@ gridster-item {
 .placeholder-widget p {
   margin: 4px 0;
   font: var(--mat-sys-body-medium);
+}
+
+.floating-button {
+  width: 100%;
+  height: 100%;
+}
+
+.gridster-container {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  box-sizing: border-box;
+  transition: background-color 0.3s;
+}
+
+.gridster-container.edit-mode {
+  background-color: var(--mat-sys-surface-container-low);
+}
+
+.gridster-container.edit-mode gridster-item {
+  transition: transform 0.2s;
+}
+
+.gridster-container.edit-mode gridster-item:hover {
+  transform: scale(1.02);
 }

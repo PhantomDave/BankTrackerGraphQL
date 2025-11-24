@@ -3,6 +3,7 @@
   [subtitle]="'Remaining balance'"
   [icon]="'account_balance_wallet'"
   [loading]="loading()"
+  [isEditMode]="isEditMode()"
 >
   <div class="widget-content">
     <div class="amount">{{ remainingBudget() | currency: currency() }}</div>

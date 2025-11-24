@@ -24,6 +24,7 @@
     "banktrackingfrontend",
     "bankuser",
     "codegen",
+    "Gridster",
     "healthcheck",
     "isready",
     "xaxis",

@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  OnInit,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import {
   CompactType,
   DisplayGrid,
@@ -17,33 +10,40 @@ import {
   GridType,
 } from 'angular-gridster2';
 import { WidgetRemainingComponent } from '../../widgets/widget-remaining/widget-remaining.component';
-import { FinanceRecordService } from '../../models/finance-record/finance-record-service';
+import { WidgetNetGraphComponent } from '../../widgets/widget-net-graph/widget-net-graph.component';
+import { Widget, WidgetType } from '../../models/dashboards/gridster-item';
+import { MatIcon } from '@angular/material/icon';
+import { FlexComponent } from '../ui-library/flex-component/flex-component';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   standalone: true,
-  imports: [GridsterComponent, GridsterItemComponent, WidgetRemainingComponent],
+  imports: [
+    GridsterComponent,
+    GridsterItemComponent,
+    WidgetRemainingComponent,
+    WidgetNetGraphComponent,
+    MatIcon,
+    MatButtonModule,
+    FlexComponent,
+  ],
   selector: 'app-dashboard',
   templateUrl: './dashboard-component.component.html',
   styleUrls: ['./dashboard-component.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent implements OnInit {
-  readonly financeRecords = inject(FinanceRecordService);
+  readonly WidgetType = WidgetType;
 
   options!: GridsterConfig;
-  widgets = signal<GridsterItem[]>([]);
-  readonly financeRecordsComputed = computed(() => this.financeRecords.financeRecords());
-  readonly loading = computed(() => this.financeRecords.loading());
+  readonly widgets = signal<Widget[]>([]);
+  readonly isEditMode = signal<boolean>(false);
 
   ngOnInit() {
-    const startDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-    const endDate = new Date();
-    this.financeRecords.getFinanceRecords(startDate, endDate);
-
     this.options = {
       gridType: GridType.Fit,
       compactType: CompactType.None,
-      margin: 8,
+      margin: 10,
       outerMargin: true,
       outerMarginTop: null,
       outerMarginRight: null,
@@ -53,18 +53,18 @@ export class DashboardComponent implements OnInit {
       mobileBreakpoint: 768,
       minCols: 12,
       maxCols: 12,
-      minRows: 20,
+      minRows: 12,
       maxRows: 100,
       maxItemCols: 12,
-      minItemCols: 1,
-      maxItemRows: 10,
-      minItemRows: 1,
+      minItemCols: 2,
+      maxItemRows: 8,
+      minItemRows: 2,
       maxItemArea: 2500,
-      minItemArea: 1,
+      minItemArea: 4,
       defaultItemCols: 4,
-      defaultItemRows: 2,
+      defaultItemRows: 3,
       fixedColWidth: undefined,
-      fixedRowHeight: 100,
+      fixedRowHeight: 80,
       keepFixedHeightInMobile: false,
       keepFixedWidthInMobile: false,
       scrollSensitivity: 10,
@@ -78,12 +78,12 @@ export class DashboardComponent implements OnInit {
       emptyCellDragMaxRows: 50,
       ignoreMarginInRow: false,
       draggable: {
-        enabled: true,
+        enabled: false,
         ignoreContent: true,
         dragHandleClass: 'drag-handle',
       },
       resizable: {
-        enabled: true,
+        enabled: false,
       },
       swap: false,
       pushItems: true,
@@ -101,31 +101,28 @@ export class DashboardComponent implements OnInit {
 
     this.widgets.set([
       {
-        cols: 2,
-        rows: 1,
+        cols: 4,
+        rows: 4,
         y: 0,
         x: 0,
-        component: 'widget-remaining',
-        data: this.financeRecordsComputed(),
-        dragEnabled: true,
-        resizeEnabled: true,
+        type: WidgetType.CurrentBalance,
       },
       {
-        cols: 4,
-        rows: 2,
+        cols: 8,
+        rows: 6,
         y: 0,
         x: 4,
-        component: 'widget-placeholder',
+        type: WidgetType.NetGraph,
       },
     ]);
   }
 
-  itemChange(item: GridsterItem, itemComponent: GridsterItemComponentInterface) {
-    console.info('itemChanged', item, itemComponent);
+  itemChange(_item: GridsterItem, _itemComponent: GridsterItemComponentInterface) {
+    // Item changed callback
   }
 
-  itemResize(item: GridsterItem, itemComponent: GridsterItemComponentInterface) {
-    console.info('itemResized', item, itemComponent);
+  itemResize(_item: GridsterItem, _itemComponent: GridsterItemComponentInterface) {
+    // Item resized callback
   }
 
   changedOptions() {
@@ -143,5 +140,19 @@ export class DashboardComponent implements OnInit {
       rows: 0,
       cols: 0,
     });
+  }
+
+  editDashboard() {
+    const newEditMode = !this.isEditMode();
+    this.isEditMode.set(newEditMode);
+
+    if (this.options.draggable) {
+      this.options.draggable.enabled = newEditMode;
+    }
+    if (this.options.resizable) {
+      this.options.resizable.enabled = newEditMode;
+    }
+
+    this.options.api?.optionsChanged?.();
   }
 }

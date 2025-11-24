@@ -45,3 +45,20 @@ mat-card-subtitle {
 mat-card-content {
   padding: 0 16px 16px;
 }
+
+.drag-handle {
+  cursor: move;
+  cursor: grab;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.drag-handle:hover {
+  opacity: 1;
+  color: var(--mat-sys-on-surface);
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}

@@ -7,6 +7,7 @@ import {
   MatCardTitle,
 } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { FlexComponent } from '../../components/ui-library/flex-component/flex-component';
 
@@ -18,6 +19,7 @@ import { FlexComponent } from '../../components/ui-library/flex-component/flex-c
     MatCardTitle,
     MatCardSubtitle,
     MatIcon,
+    MatIconButton,
     MatCardContent,
     MatProgressSpinner,
     FlexComponent,
@@ -31,4 +33,5 @@ export class WidgetWrapperComponent {
   readonly subtitle = input<string>('');
   readonly icon = input<string>('');
   readonly loading = input<boolean>(false);
+  readonly isEditMode = input<boolean>(false);
 }

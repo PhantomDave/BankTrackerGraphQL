@@ -62,6 +62,9 @@
 
 .content {
   padding: 16px;
+  height: 100%;
+  overflow: auto;
+  box-sizing: border-box;
 }
 
 .mat-mdc-list-base {

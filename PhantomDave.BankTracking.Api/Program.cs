@@ -33,6 +33,7 @@ public class Program
         builder.Services.AddScoped<FinanceRecordService>();
         builder.Services.AddScoped<FileImportService>();
         builder.Services.AddScoped<ColumnDetectionService>();
+        builder.Services.AddScoped<DashboardService>();
         builder.Services.AddHttpContextAccessor();
         builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
         builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
@@ -94,6 +95,7 @@ public class Program
             .AddMutationType()
             .AddType<UploadType>()
             .BindRuntimeType<RecurrenceFrequency, EnumType<RecurrenceFrequency>>()
+            .BindRuntimeType<WidgetType, EnumType<WidgetType>>()
             .ModifyRequestOptions(options =>
             {
                 options.IncludeExceptionDetails = builder.Environment.IsDevelopment();
