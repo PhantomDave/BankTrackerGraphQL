@@ -4,20 +4,23 @@ on:
   push:
     branches: [main]
     paths:
-      - 'PhantomDave.BankTracking.Api/**'
-      - 'PhantomDave.BankTracking.Data/**'
-      - 'PhantomDave.BankTracking.Library/**'
-      - 'Dockerfile'
-      - '.github/workflows/build-backend-image.yml'
+      - "PhantomDave.BankTracking.Api/**"
+      - "PhantomDave.BankTracking.Data/**"
+      - "PhantomDave.BankTracking.Library/**"
+      - "Dockerfile"
+      - ".github/workflows/build-backend-image.yml"
   pull_request:
     branches: [main]
     paths:
-      - 'PhantomDave.BankTracking.Api/**'
-      - 'PhantomDave.BankTracking.Data/**'
-      - 'PhantomDave.BankTracking.Library/**'
-      - 'Dockerfile'
-      - '.github/workflows/build-backend-image.yml'
+      - "PhantomDave.BankTracking.Api/**"
+      - "PhantomDave.BankTracking.Data/**"
+      - "PhantomDave.BankTracking.Library/**"
+      - "Dockerfile"
+      - ".github/workflows/build-backend-image.yml"
   workflow_dispatch:
+  workflow_run:
+    workflows: ["Run Project Tests"]
+    types: [completed]
 
 env:
   REGISTRY: ghcr.io
