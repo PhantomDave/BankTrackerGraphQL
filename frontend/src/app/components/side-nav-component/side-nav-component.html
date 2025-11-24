@@ -103,7 +103,7 @@
       <mat-divider></mat-divider>
 
       <mat-nav-list aria-label="Account actions" class="account-actions">
-        <a mat-list-item (click)="onToggleTheme()" (keydown.enter)="onToggleTheme()" (keydown.space)="onToggleTheme(); $event.preventDefault()" tabindex="0" role="button">
+        <a mat-list-item (click)="onToggleTheme()" (keydown.enter)="onToggleTheme(); $event.preventDefault()" (keydown.space)="onToggleTheme(); $event.preventDefault()" tabindex="0" role="button">
           <mat-icon matListItemIcon>
             @if (themeService.isDarkMode()) {
               light_mode
@@ -129,7 +129,7 @@
           <mat-icon matListItemIcon>settings</mat-icon>
           <span matListItemTitle>Settings</span>
         </a>
-        <a mat-list-item (click)="onLogout()" (keydown.enter)="onLogout()" (keydown.space)="onLogout(); $event.preventDefault()" tabindex="0" role="button">
+        <a mat-list-item (click)="onLogout()" (keydown.enter)="onLogout(); $event.preventDefault()" (keydown.space)="onLogout(); $event.preventDefault()" tabindex="0" role="button">
           <mat-icon matListItemIcon>logout</mat-icon>
           <span matListItemTitle>Logout</span>
         </a>
