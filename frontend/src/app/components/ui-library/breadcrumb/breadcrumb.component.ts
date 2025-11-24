@@ -27,7 +27,7 @@ export class BreadcrumbComponent {
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
-        takeUntilDestroyed()
+        takeUntilDestroyed(),
       )
       .subscribe(() => {
         this.breadcrumbs.set(this.createBreadcrumbs(this.activatedRoute.root));

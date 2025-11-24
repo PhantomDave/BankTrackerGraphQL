@@ -63,7 +63,7 @@ export class SideNavComponent {
     this.router.events
       .pipe(
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-        takeUntilDestroyed()
+        takeUntilDestroyed(),
       )
       .subscribe((event: NavigationEnd) => {
         this.updateExpandedPanels(event.urlAfterRedirects);
