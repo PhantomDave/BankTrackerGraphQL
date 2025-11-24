@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatChipsModule } from '@angular/material/chips';
 import { FlexComponent } from '../flex-component/flex-component';
 import { Router, ActivatedRoute, NavigationEnd, RouterModule } from '@angular/router';
@@ -23,9 +24,14 @@ export class BreadcrumbComponent {
 
   constructor() {
     // Update breadcrumbs on navigation
-    this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
-      this.breadcrumbs.set(this.createBreadcrumbs(this.activatedRoute.root));
-    });
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntilDestroyed()
+      )
+      .subscribe(() => {
+        this.breadcrumbs.set(this.createBreadcrumbs(this.activatedRoute.root));
+      });
 
     // Initial load
     this.breadcrumbs.set(this.createBreadcrumbs(this.activatedRoute.root));

@@ -9,9 +9,6 @@ import { ImportWizardComponent } from './components/import/import-wizard-compone
 import { MonthlyComparisonComponent } from './components/analytics/monthly-comparison-component/monthly-comparison-component';
 import { TrackingComponent } from './components/tracking/tracking/tracking.component';
 import { DashboardComponent } from './components/dashboard-component/dashboard-component.component';
-import { HomeLayoutComponent } from './layouts/home-layout/home-layout.component';
-import { MovementsLayoutComponent } from './layouts/movements-layout/movements-layout.component';
-import { AnalyticsLayoutComponent } from './layouts/analytics-layout/analytics-layout.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -19,7 +16,6 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent, data: { breadcrumb: 'Register' } },
   {
     path: 'home',
-    component: HomeLayoutComponent,
     canActivate: [authenticateGuard],
     data: { breadcrumb: 'Home' },
     children: [
@@ -30,7 +26,6 @@ export const routes: Routes = [
   },
   {
     path: 'movements',
-    component: MovementsLayoutComponent,
     canActivate: [authenticateGuard],
     data: { breadcrumb: 'Movements' },
     children: [
@@ -41,7 +36,6 @@ export const routes: Routes = [
   },
   {
     path: 'analytics',
-    component: AnalyticsLayoutComponent,
     canActivate: [authenticateGuard],
     data: { breadcrumb: 'Analytics' },
     children: [
