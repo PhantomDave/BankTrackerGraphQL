@@ -10,6 +10,8 @@ namespace PhantomDave.BankTracking.Api.Types.Mutations;
 [ExtendObjectType(OperationTypeNames.Mutation)]
 public class DashboardMutations
 {
+    private const int MaxDashboardNameLength = 100;
+
     public async Task<DashboardType> CreateDashboard(
         [Service] IUnitOfWork unitOfWork,
         [Service] IHttpContextAccessor httpContextAccessor,
@@ -18,9 +20,9 @@ public class DashboardMutations
         var accountId = httpContextAccessor.GetAccountIdFromContext();
 
         var name = input.Name?.Trim() ?? string.Empty;
-        if (name.Length > 100)
+        if (name.Length > MaxDashboardNameLength)
         {
-            name = name[..100];
+            name = name[..MaxDashboardNameLength];
         }
 
         var dashboard = new Dashboard
@@ -55,9 +57,9 @@ public class DashboardMutations
         if (input.Name != null)
         {
             var name = input.Name.Trim();
-            if (name.Length > 100)
+            if (name.Length > MaxDashboardNameLength)
             {
-                name = name[..100];
+                name = name[..MaxDashboardNameLength];
             }
             dashboard.Name = name;
         }
