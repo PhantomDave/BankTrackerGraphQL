@@ -8,9 +8,8 @@ describe('WidgetNetGraphComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ WidgetNetGraphComponent ]
-    })
-    .compileComponents();
+      imports: [WidgetNetGraphComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
