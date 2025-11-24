@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatListItem, MatListItemIcon, MatListItemTitle, MatNavList } from '@angular/material/list';
@@ -44,7 +45,7 @@ import { BreadcrumbComponent } from '../ui-library/breadcrumb/breadcrumb.compone
   styleUrl: './side-nav-component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SideNavComponent implements OnInit {
+export class SideNavComponent {
   private readonly accountService = inject(AccountService);
   private readonly router = inject(Router);
   protected readonly themeService = inject(ThemeService);
@@ -54,13 +55,16 @@ export class SideNavComponent implements OnInit {
   protected readonly movementsExpanded = signal(false);
   protected readonly analyticsExpanded = signal(false);
 
-  ngOnInit(): void {
+  constructor() {
     // Set initial state based on current route
     this.updateExpandedPanels(this.router.url);
 
     // Listen to route changes and update expanded panels
     this.router.events
-      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed()
+      )
       .subscribe((event: NavigationEnd) => {
         this.updateExpandedPanels(event.urlAfterRedirects);
       });
