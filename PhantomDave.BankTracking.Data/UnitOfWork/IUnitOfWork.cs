@@ -8,6 +8,8 @@ public interface IUnitOfWork : IAsyncDisposable
 {
     IRepository<Account> Accounts { get; }
     IRepository<FinanceRecord> FinanceRecords { get; }
+    IRepository<Dashboard> Dashboards { get; }
+    IRepository<DashboardWidget> DashboardWidgets { get; }
     Task<int> SaveChangesAsync();
     Task BeginTransactionAsync();
     Task CommitTransactionAsync();
@@ -19,6 +21,8 @@ public class UnitOfWork : IUnitOfWork
     private readonly BankTrackerDbContext _context;
     private IRepository<Account>? _accounts;
     private IRepository<FinanceRecord>? _financeRecords;
+    private IRepository<Dashboard>? _dashboards;
+    private IRepository<DashboardWidget>? _dashboardWidgets;
 
     public UnitOfWork(BankTrackerDbContext context)
     {
@@ -30,6 +34,12 @@ public class UnitOfWork : IUnitOfWork
 
     public IRepository<FinanceRecord> FinanceRecords =>
         _financeRecords ??= new Repository<FinanceRecord>(_context);
+
+    public IRepository<Dashboard> Dashboards =>
+        _dashboards ??= new Repository<Dashboard>(_context);
+
+    public IRepository<DashboardWidget> DashboardWidgets =>
+        _dashboardWidgets ??= new Repository<DashboardWidget>(_context);
 
     public async Task<int> SaveChangesAsync()
     {

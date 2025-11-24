@@ -13,6 +13,8 @@ public class BankTrackerDbContext : DbContext
     public DbSet<Account> Accounts => Set<Account>();
     public DbSet<FinanceRecord> FinanceRecords => Set<FinanceRecord>();
     public DbSet<BankImportTemplate> BankImportTemplates => Set<BankImportTemplate>();
+    public DbSet<Dashboard> Dashboards => Set<Dashboard>();
+    public DbSet<DashboardWidget> DashboardWidgets => Set<DashboardWidget>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -22,6 +24,8 @@ public class BankTrackerDbContext : DbContext
         ConfigureAccount(modelBuilder);
         ConfigureFinanceRecord(modelBuilder);
         ConfigureBankImportTemplate(modelBuilder);
+        ConfigureDashboard(modelBuilder);
+        ConfigureDashboardWidget(modelBuilder);
     }
 
     private static void ConfigureAccount(ModelBuilder modelBuilder)
@@ -98,6 +102,37 @@ public class BankTrackerDbContext : DbContext
 
             entity.HasIndex(t => new { t.AccountId, t.BankName });
             entity.HasIndex(t => new { t.AccountId, t.IsDefault });
+        });
+    }
+
+    private static void ConfigureDashboard(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Dashboard>(entity =>
+        {
+            entity.HasKey(d => d.Id);
+            entity.Property(d => d.Id).ValueGeneratedOnAdd();
+            entity.Property(d => d.Name)
+                .IsRequired()
+                .HasMaxLength(200);
+            entity.HasOne<Account>()
+                .WithMany()
+                .HasForeignKey(d => d.AccountId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+    }
+
+    private static void ConfigureDashboardWidget(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<DashboardWidget>(entity =>
+        {
+            entity.HasKey(dw => dw.Id);
+            entity.Property(dw => dw.Id).ValueGeneratedOnAdd();
+            entity.Property(dw => dw.Type)
+                .IsRequired();
+            entity.HasOne<Dashboard>()
+                .WithMany(d => d.Widgets)
+                .HasForeignKey(dw => dw.DashboardId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

@@ -14,6 +14,6 @@ public class ImportError
 {
     public int RowNumber { get; set; }
     public string Message { get; set; } = string.Empty;
-    public Dictionary<string, string> RowData { get; set; } = new();
+    public Dictionary<string, string> RowData { get; set; } = [];
 }
 

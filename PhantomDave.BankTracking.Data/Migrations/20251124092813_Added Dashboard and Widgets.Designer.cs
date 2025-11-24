@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PhantomDave.BankTracking.Data.Context;
@@ -11,9 +12,11 @@ using PhantomDave.BankTracking.Data.Context;
 namespace PhantomDave.BankTracking.Data.Migrations
 {
     [DbContext(typeof(BankTrackerDbContext))]
-    partial class BankTrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251124092813_Added Dashboard and Widgets")]
+    partial class AddedDashboardandWidgets
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,17 +116,12 @@ namespace PhantomDave.BankTracking.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AccountId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AccountId");
 
                     b.ToTable("Dashboards");
                 });
@@ -221,15 +219,6 @@ namespace PhantomDave.BankTracking.Data.Migrations
                 });
 
             modelBuilder.Entity("PhantomDave.BankTracking.Library.Models.BankImportTemplate", b =>
-                {
-                    b.HasOne("PhantomDave.BankTracking.Library.Models.Account", null)
-                        .WithMany()
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("PhantomDave.BankTracking.Library.Models.Dashboard", b =>
                 {
                     b.HasOne("PhantomDave.BankTracking.Library.Models.Account", null)
                         .WithMany()

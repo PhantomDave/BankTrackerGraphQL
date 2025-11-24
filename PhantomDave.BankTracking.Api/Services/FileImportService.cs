@@ -102,7 +102,7 @@ public class FileImportService(ILogger<FileImportService> logger)
     {
         var parsedData = new ParsedFileData();
 
-        parsedData.Rows = new List<Dictionary<string, string>>();
+        parsedData.Rows = [];
 
         using var package = new ExcelPackage(stream);
         var worksheet = package.Workbook.Worksheets.FirstOrDefault();
@@ -114,7 +114,7 @@ public class FileImportService(ILogger<FileImportService> logger)
 
         var headerRowIndex = DetectHeaderRow(worksheet);
 
-        parsedData.Headers = new List<string>();
+        parsedData.Headers = [];
         for (var col = 1; col <= worksheet.Dimension.End.Column; col++)
         {
             var headerValue = worksheet.Cells[headerRowIndex, col].Text ?? $"Column{col}";
