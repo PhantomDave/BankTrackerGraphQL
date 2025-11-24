@@ -12,6 +12,12 @@ public class DashboardMutations
 {
     private const int MaxDashboardNameLength = 100;
 
+    private static string TruncateName(string? name)
+    {
+        var trimmed = name?.Trim() ?? string.Empty;
+        return trimmed.Length > MaxDashboardNameLength ? trimmed[..MaxDashboardNameLength] : trimmed;
+    }
+
     public async Task<DashboardType> CreateDashboard(
         [Service] IUnitOfWork unitOfWork,
         [Service] IHttpContextAccessor httpContextAccessor,
@@ -19,16 +25,10 @@ public class DashboardMutations
     {
         var accountId = httpContextAccessor.GetAccountIdFromContext();
 
-        var name = input.Name?.Trim() ?? string.Empty;
-        if (name.Length > MaxDashboardNameLength)
-        {
-            name = name[..MaxDashboardNameLength];
-        }
-
         var dashboard = new Dashboard
         {
             AccountId = accountId,
-            Name = name
+            Name = TruncateName(input.Name)
         };
 
         await unitOfWork.Dashboards.AddAsync(dashboard);
@@ -56,12 +56,7 @@ public class DashboardMutations
 
         if (input.Name != null)
         {
-            var name = input.Name.Trim();
-            if (name.Length > MaxDashboardNameLength)
-            {
-                name = name[..MaxDashboardNameLength];
-            }
-            dashboard.Name = name;
+            dashboard.Name = TruncateName(input.Name);
         }
 
         await unitOfWork.SaveChangesAsync();
