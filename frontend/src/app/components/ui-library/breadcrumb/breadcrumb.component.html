@@ -1,0 +1,16 @@
+<app-flex align="center" justify="flex-start" gap="8px">
+  @for (crumb of breadcrumbs(); track crumb.url; let isLast = $last) {
+    @if (!isLast) {
+      <mat-chip-listbox>
+        <mat-chip-option selectable="false" [routerLink]="crumb.url">{{
+          crumb.label
+        }}</mat-chip-option>
+      </mat-chip-listbox>
+      <span class="separator">/</span>
+    } @else {
+      <mat-chip-listbox>
+        <mat-chip disabled>{{ crumb.label }}</mat-chip>
+      </mat-chip-listbox>
+    }
+  }
+</app-flex>

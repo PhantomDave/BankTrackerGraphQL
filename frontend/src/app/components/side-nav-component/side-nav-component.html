@@ -1,96 +1,109 @@
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #drawer id="app-sidenav" class="sidenav" mode="side" opened position="start">
-    <app-flex [vertical]="true" justify="space-between" gap="0" style="height: 100%">
-      <div>
-        <div class="sidenav-header">
-          <button
-            mat-icon-button
-            type="button"
-            aria-label="Toggle menu"
-            (click)="drawer.toggle()"
-            [attr.aria-controls]="'app-sidenav'"
-            [attr.aria-expanded]="drawer.opened"
-          >
-            <mat-icon>menu_open</mat-icon>
-          </button>
-          <span class="app-title">Bank Tracker</span>
-        </div>
+  <mat-sidenav #drawer id="app-sidenav" mode="side" opened position="start" class="sidenav">
+    <mat-toolbar class="sidenav-header">
+      <button
+        mat-icon-button
+        type="button"
+        aria-label="Toggle menu"
+        (click)="drawer.toggle()"
+        [attr.aria-controls]="'app-sidenav'"
+        [attr.aria-expanded]="drawer.opened"
+      >
+        <mat-icon>menu_open</mat-icon>
+      </button>
+      <span class="app-title">Bank Tracker</span>
+    </mat-toolbar>
 
-        <nav aria-label="Main navigation">
-          <mat-nav-list class="mat-list">
-            <app-flex [vertical]="true" gap="8px" justify="center">
+    <div class="sidenav-content">
+      <nav aria-label="Main navigation">
+        <mat-accordion class="nav-accordion" multi>
+          <!-- Home Section -->
+          <mat-expansion-panel [(expanded)]="homeExpanded" class="nav-panel">
+            <mat-expansion-panel-header>
+              <mat-panel-title class="panel-title">
+                <mat-icon class="panel-icon">home</mat-icon>
+                <span>Home</span>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-nav-list dense>
               <a
                 mat-list-item
-                routerLink="/home"
-                class="nav-item"
-                routerLinkActive="active"
-                #rlaHome="routerLinkActive"
+                routerLink="/home/dashboard"
+                routerLinkActive="active-link"
                 [routerLinkActiveOptions]="{ exact: true }"
-                [attr.aria-current]="rlaHome.isActive ? 'page' : null"
               >
-                <mat-icon matListItemIcon>home</mat-icon>
-                <span matListItemTitle>Home</span>
-                <span matListItemLine>-</span>
+                <mat-icon matListItemIcon>dashboard</mat-icon>
+                <span matListItemTitle>Dashboard</span>
               </a>
               <a
                 mat-list-item
-                routerLink="/movements"
-                class="nav-item"
-                routerLinkActive="active"
-                #movTracking="routerLinkActive"
+                routerLink="/home/balance"
+                routerLinkActive="active-link"
                 [routerLinkActiveOptions]="{ exact: true }"
-                [attr.aria-current]="movTracking.isActive ? 'page' : null"
-              >
-                <mat-icon matListItemIcon>insights</mat-icon>
-                <span matListItemTitle>Movements</span>
-                <span matListItemLine>Track your expenses</span>
-              </a>
-              <a
-                mat-list-item
-                routerLink="/balance"
-                class="nav-item"
-                routerLinkActive="active"
-                #rlaBalance="routerLinkActive"
-                [routerLinkActiveOptions]="{ exact: true }"
-                [attr.aria-current]="rlaBalance.isActive ? 'page' : null"
               >
                 <mat-icon matListItemIcon>account_balance_wallet</mat-icon>
                 <span matListItemTitle>Balance</span>
-                <span matListItemLine>Balance & Prediction</span>
               </a>
+            </mat-nav-list>
+          </mat-expansion-panel>
+
+          <!-- Movements Section -->
+          <mat-expansion-panel [(expanded)]="movementsExpanded" class="nav-panel">
+            <mat-expansion-panel-header>
+              <mat-panel-title class="panel-title">
+                <mat-icon class="panel-icon">insights</mat-icon>
+                <span>Movements</span>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-nav-list dense>
               <a
                 mat-list-item
-                routerLink="/analytics/monthly-comparison"
-                class="nav-item"
-                routerLinkActive="active"
-                #analyticsLink="routerLinkActive"
+                routerLink="/movements/tracking"
+                routerLinkActive="active-link"
                 [routerLinkActiveOptions]="{ exact: true }"
-                [attr.aria-current]="analyticsLink.isActive ? 'page' : null"
               >
-                <mat-icon matListItemIcon>analytics</mat-icon>
-                <span matListItemTitle>Month by Month</span>
-                <span matListItemLine>Compare monthly trends</span>
+                <mat-icon matListItemIcon>receipt_long</mat-icon>
+                <span matListItemTitle>Tracking</span>
               </a>
               <a
                 mat-list-item
-                routerLink="/import"
-                class="nav-item"
-                routerLinkActive="active"
-                #rlaImport="routerLinkActive"
+                routerLink="/movements/import"
+                routerLinkActive="active-link"
                 [routerLinkActiveOptions]="{ exact: true }"
-                [attr.aria-current]="rlaImport.isActive ? 'page' : null"
               >
                 <mat-icon matListItemIcon>upload_file</mat-icon>
                 <span matListItemTitle>Import</span>
-                <span matListItemLine>Import your data</span>
               </a>
-            </app-flex>
-          </mat-nav-list>
-        </nav>
-      </div>
+            </mat-nav-list>
+          </mat-expansion-panel>
 
-      <mat-nav-list aria-label="Account actions">
-        <a mat-list-item class="nav-item" (click)="onToggleTheme()" style="cursor: pointer">
+          <!-- Analytics Section -->
+          <mat-expansion-panel [(expanded)]="analyticsExpanded" class="nav-panel">
+            <mat-expansion-panel-header>
+              <mat-panel-title class="panel-title">
+                <mat-icon class="panel-icon">analytics</mat-icon>
+                <span>Analytics</span>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-nav-list dense>
+              <a
+                mat-list-item
+                routerLink="/analytics/monthly-comparison"
+                routerLinkActive="active-link"
+                [routerLinkActiveOptions]="{ exact: true }"
+              >
+                <mat-icon matListItemIcon>calendar_month</mat-icon>
+                <span matListItemTitle>Month by Month</span>
+              </a>
+            </mat-nav-list>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </nav>
+
+      <mat-divider></mat-divider>
+
+      <mat-nav-list aria-label="Account actions" class="account-actions">
+        <a mat-list-item (click)="onToggleTheme()" tabindex="0" role="button">
           <mat-icon matListItemIcon>
             @if (themeService.isDarkMode()) {
               light_mode
@@ -109,25 +122,24 @@
         <a
           mat-list-item
           #rlaSettings="routerLinkActive"
-          class="nav-item"
           routerLink="/settings"
-          routerLinkActive="active"
+          routerLinkActive="active-link"
           [attr.aria-current]="rlaSettings.isActive ? 'page' : null"
         >
           <mat-icon matListItemIcon>settings</mat-icon>
           <span matListItemTitle>Settings</span>
         </a>
-        <a mat-list-item class="nav-item" (click)="onLogout()" style="cursor: pointer">
+        <a mat-list-item (click)="onLogout()" tabindex="0" role="button">
           <mat-icon matListItemIcon>logout</mat-icon>
           <span matListItemTitle>Logout</span>
         </a>
       </mat-nav-list>
-    </app-flex>
+    </div>
   </mat-sidenav>
 
-  <mat-sidenav-content class="content">
+  <mat-sidenav-content class="sidenav-main-content">
     @if (!drawer.opened) {
-      <div class="content-header">
+      <mat-toolbar class="mobile-toolbar">
         <button
           mat-icon-button
           type="button"
@@ -138,9 +150,14 @@
         >
           <mat-icon>menu</mat-icon>
         </button>
-      </div>
+        <app-breadcrumb class="breadcrumb closed"></app-breadcrumb>
+      </mat-toolbar>
     }
-
-    <ng-content></ng-content>
+    <div class="content-wrapper">
+      @if (drawer.opened) {
+        <app-breadcrumb class="breadcrumb open"></app-breadcrumb>
+      }
+      <ng-content></ng-content>
+    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
