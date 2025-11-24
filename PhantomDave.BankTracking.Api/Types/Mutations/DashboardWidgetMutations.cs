@@ -1,4 +1,5 @@
 using HotChocolate;
+using HotChocolate.Authorization;
 using HotChocolate.Types;
 using PhantomDave.BankTracking.Api.Types.Inputs;
 using PhantomDave.BankTracking.Api.Types.ObjectTypes;
@@ -10,6 +11,7 @@ namespace PhantomDave.BankTracking.Api.Types.Mutations;
 [ExtendObjectType(OperationTypeNames.Mutation)]
 public class DashboardWidgetMutations
 {
+    [Authorize]
     public async Task<DashboardWidgetType> AddWidget(
         [Service] IUnitOfWork unitOfWork,
         [Service] IHttpContextAccessor httpContextAccessor,
@@ -52,6 +54,7 @@ public class DashboardWidgetMutations
         return DashboardWidgetType.FromDashboardWidget(widget);
     }
 
+    [Authorize]
     public async Task<DashboardWidgetType> UpdateWidget(
         [Service] IUnitOfWork unitOfWork,
         [Service] IHttpContextAccessor httpContextAccessor,
@@ -128,6 +131,7 @@ public class DashboardWidgetMutations
         return DashboardWidgetType.FromDashboardWidget(widget);
     }
 
+    [Authorize]
     public async Task<bool> RemoveWidget(
         [Service] IUnitOfWork unitOfWork,
         [Service] IHttpContextAccessor httpContextAccessor,

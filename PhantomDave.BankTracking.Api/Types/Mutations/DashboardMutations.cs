@@ -1,4 +1,5 @@
 using HotChocolate;
+using HotChocolate.Authorization;
 using HotChocolate.Types;
 using PhantomDave.BankTracking.Api.Types.Inputs;
 using PhantomDave.BankTracking.Api.Types.ObjectTypes;
@@ -18,6 +19,7 @@ public class DashboardMutations
         return trimmed.Length > MaxDashboardNameLength ? trimmed[..MaxDashboardNameLength] : trimmed;
     }
 
+    [Authorize]
     public async Task<DashboardType> CreateDashboard(
         [Service] IUnitOfWork unitOfWork,
         [Service] IHttpContextAccessor httpContextAccessor,
@@ -25,10 +27,20 @@ public class DashboardMutations
     {
         var accountId = httpContextAccessor.GetAccountIdFromContext();
 
+        var trimmedName = TruncateName(input.Name);
+        if (string.IsNullOrEmpty(trimmedName))
+        {
+            throw new GraphQLException(
+                ErrorBuilder.New()
+                    .SetMessage("Dashboard name cannot be empty.")
+                    .SetCode("BAD_USER_INPUT")
+                    .Build());
+        }
+
         var dashboard = new Dashboard
         {
             AccountId = accountId,
-            Name = TruncateName(input.Name)
+            Name = trimmedName
         };
 
         await unitOfWork.Dashboards.AddAsync(dashboard);
@@ -37,6 +49,7 @@ public class DashboardMutations
         return DashboardType.FromDashboard(dashboard);
     }
 
+    [Authorize]
     public async Task<DashboardType> UpdateDashboard(
         [Service] IUnitOfWork unitOfWork,
         [Service] IHttpContextAccessor httpContextAccessor,
@@ -59,11 +72,13 @@ public class DashboardMutations
             dashboard.Name = TruncateName(input.Name);
         }
 
+        await unitOfWork.Dashboards.UpdateAsync(dashboard);
         await unitOfWork.SaveChangesAsync();
 
         return DashboardType.FromDashboard(dashboard);
     }
 
+    [Authorize]
     public async Task<bool> DeleteDashboard(
         [Service] IUnitOfWork unitOfWork,
         [Service] IHttpContextAccessor httpContextAccessor,

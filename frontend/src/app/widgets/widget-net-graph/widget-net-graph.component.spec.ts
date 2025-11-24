@@ -1,6 +1,4 @@
-/* tslint:disable:no-unused-variable */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { DebugElement } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { WidgetNetGraphComponent } from './widget-net-graph.component';
 
@@ -8,9 +6,9 @@ describe('WidgetNetGraphComponent', () => {
   let component: WidgetNetGraphComponent;
   let fixture: ComponentFixture<WidgetNetGraphComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ WidgetNetGraphComponent ]
+      imports: [ WidgetNetGraphComponent ]
     })
     .compileComponents();
   }));
