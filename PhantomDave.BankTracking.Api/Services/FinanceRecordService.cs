@@ -216,7 +216,7 @@ public class FinanceRecordService
         var candidateKeys = CreateDuplicateKeys(candidates);
         if (candidateKeys.Count == 0)
         {
-            return new List<FinanceRecord>();
+            return [];
         }
 
         var allRecords = await _unitOfWork.FinanceRecords.Query()

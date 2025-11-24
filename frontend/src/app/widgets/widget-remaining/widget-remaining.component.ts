@@ -1,6 +1,6 @@
-import { Component, computed, input } from '@angular/core';
-import { FinanceRecord } from '../../models/finance-record/finance-record';
 import { CurrencyPipe } from '@angular/common';
+import { Component, computed, inject, input, OnInit } from '@angular/core';
+import { FinanceRecordService } from '../../models/finance-record/finance-record-service';
 import { WidgetWrapperComponent } from '../widget-wrapper/widget-wrapper.component';
 
 @Component({
@@ -9,11 +9,29 @@ import { WidgetWrapperComponent } from '../widget-wrapper/widget-wrapper.compone
   styleUrls: ['./widget-remaining.component.css'],
   imports: [CurrencyPipe, WidgetWrapperComponent],
 })
-export class WidgetRemainingComponent {
-  readonly record = input<FinanceRecord[]>([]);
+export class WidgetRemainingComponent implements OnInit {
+  private readonly financeRecords = inject(FinanceRecordService);
+
+  startDate = input(this.getDefaultStartDate());
+  endDate = input(new Date());
+  isEditMode = input<boolean>(false);
+
+  readonly loading = computed(() => this.financeRecords.loading());
+  readonly error = computed(() => this.financeRecords.error());
+  readonly record = computed(() => this.financeRecords.financeRecords());
   readonly currency = computed(() => this.record()[0]?.currency || 'USD');
   readonly remainingBudget = computed(() =>
     this.record().reduce((sum, record) => sum + record.amount, 0),
   );
-  readonly loading = input<boolean>(false);
+
+  ngOnInit() {
+    this.financeRecords.getFinanceRecords(this.startDate(), this.endDate());
+  }
+
+  private getDefaultStartDate(): Date {
+    const date = new Date();
+    date.setMonth(date.getMonth() - 1);
+    date.setDate(1);
+    return date;
+  }
 }
