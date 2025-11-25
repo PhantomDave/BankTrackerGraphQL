@@ -4,7 +4,7 @@ name: Build and Push Frontend Image
 # - contents: read
 # - packages: write
 # Note: The calling workflow MUST provide these permissions.
-# Job-level permissions are omitted to rely on caller-provided permissions.
+# Without them, the workflow will fail at the docker login or push steps.
 
 on:
   workflow_call:
