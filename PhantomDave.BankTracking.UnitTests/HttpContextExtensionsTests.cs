@@ -62,7 +62,7 @@ public class HttpContextExtensionsTests
     public void GetAccountIdFromContext_WithNullHttpContext_ThrowsGraphQLException()
     {
         // Arrange
-        _mockHttpContextAccessor.Setup(a => a.HttpContext).Returns((HttpContext?)null);
+        _mockHttpContextAccessor.Setup(a => a.HttpContext).Returns(null);
 
         // Act & Assert
         var exception = Assert.Throws<GraphQLException>(() => 
@@ -75,7 +75,7 @@ public class HttpContextExtensionsTests
     public void GetAccountIdFromContext_WithNullUser_ThrowsGraphQLException()
     {
         // Arrange
-        _mockHttpContext.Setup(c => c.User).Returns((ClaimsPrincipal)null!);
+        _mockHttpContext.Setup(c => c.User).Returns(null);
         _mockHttpContextAccessor.Setup(a => a.HttpContext).Returns(_mockHttpContext.Object);
 
         // Act & Assert
