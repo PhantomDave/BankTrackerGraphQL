@@ -1,0 +1,202 @@
+name: Required Pull Request Checks
+
+on:
+    pull_request:
+
+concurrency:
+    group: "pull-request-checks-${{ github.event.pull_request.number }}"
+    cancel-in-progress: true
+
+jobs:
+    changes:
+        runs-on: ubuntu-latest
+        permissions:
+            actions: read
+            contents: read
+            pull-requests: read
+        steps:
+            - uses: actions/checkout@v5
+              with:
+                  sparse-checkout: |
+                      .github/pr-filter.yaml
+                      .github/actions
+                      terraform/environments.json
+
+            - uses: dorny/paths-filter@v3
+              id: filter
+              with:
+                  filters: |
+                      .github/pr-filter.yaml
+
+        outputs:
+            frontend: ${{ steps.filter.outputs.frontend }}
+            backend: ${{ steps.filter.outputs.backend }}
+            backendLibrary: ${{ steps.filter.outputs.backendLibrary }}
+            backendData: ${{ steps.filter.outputs.backendData }}
+            tests: ${{ steps.filter.outputs.tests }}
+
+    tests:
+        permissions:
+            contents: read
+            packages: write # needed for some integration test cross-branch-docker-caching
+        needs: changes
+        if: ${{ needs.changes.outputs.tests == 'true' && github.event.pull_request.draft == false }}
+        secrets: inherit
+        uses: ./.github/workflows/tests.yml
+
+    frontend:
+        if: ${{ needs.changes.outputs.frontend == 'true' }}
+        needs: changes
+        secrets: inherit
+        uses: ./.github/workflows/frontend.yml
+
+    backend:
+        if: ${{  needs.changes.outputs.backend == 'true'}}
+        needs: changes
+        secrets: inherit
+        uses: ./.github/workflows/backend-api.yml
+
+    backend-library:
+        if: ${{ needs.changes.outputs.backendLibrary == 'true' }}
+        needs: changes
+        secrets: inherit
+        uses: ./.github/workflows/backend-library.yml
+
+    backend-data:
+        if: ${{ needs.changes.outputs.backendData == 'true' }}
+        needs: changes
+        secrets: inherit
+        uses: ./.github/workflows/backend-data.yml
+
+    codeql:
+        needs: changes
+        secrets: inherit
+        uses: ./.github/workflows/codeql-analysis.yml
+
+    # this job is the required branch protection rule
+    completed:
+        runs-on: ubuntu-latest
+        if: always()
+        needs: # list all the required jobs here!
+            - changes
+            - frontend
+            - backend
+            - backend-library
+            - backend-data
+            - codeql
+
+        steps:
+            - name: Fail
+              run: echo "::error::A required PR check failed" && exit 1
+              if: ${{ contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'failure') || contains(needs.*.result, 'error') }}
+
+    dependabot-metadata:
+        runs-on: ubuntu-latest
+        if: github.actor == 'dependabot[bot]'
+        permissions:
+            issues: read
+            contents: read
+            pull-requests: write
+        steps:
+            - name: Dependabot metadata
+              id: metadata
+              uses: dependabot/fetch-metadata@v2.4.0
+              with:
+                  github-token: "${{ secrets.GITHUB_TOKEN }}"
+                  skip-commit-verification: true
+            - name: Verify automerge conditions
+              shell: sh
+              id: verify
+              continue-on-error: true
+              run: |
+                  if [ -z "${{ steps.metadata.outputs.update-type }}" ] || [ "${{ steps.metadata.outputs.update-type }}" = "null" ] || [ "${{ steps.metadata.outputs.update-type }}" = "undefined" ] || [ "${{ steps.metadata.outputs.update-type }}" = "''" ]; then
+                      message="update-type is null, undefined, empty, or invalid, cannot automerge."
+                      echo "message=$message" >> $GITHUB_OUTPUT
+                      exit 1
+                  fi
+
+                  if ! echo '${{ vars.AUTOMERGE_LEVEL }}' | jq -e --arg type "${{ steps.metadata.outputs.update-type }}" 'contains([$type])' > /dev/null; then
+                      message="'${{ steps.metadata.outputs.update-type }}' is not an approved AUTOMERGE_LEVEL."
+                      echo "message=$message" >> $GITHUB_OUTPUT
+                      exit 1
+                  fi
+
+                  DEPS=$(echo "${{ steps.metadata.outputs.dependency-names }}" | jq -R -c 'split(",") | map(gsub(" "; ""))')
+                  BLACKLIST=$(echo "${{ vars.AUTOMERGE_BLACKLIST }}" | jq -R -c 'split(",") | map(gsub(" "; ""))')
+
+                  if echo "$DEPS" "$BLACKLIST" | jq -e -s '.[0] - (.[0] - .[1]) | length > 0' > /dev/null; then
+                      message="One of '${{ steps.metadata.outputs.dependency-names }}' found in our BLACKLIST."
+                      echo "message=$message" >> $GITHUB_OUTPUT
+                      exit 1
+                  fi
+                  exit 0
+
+            - name: Add Change Request Comment
+              if: |
+                  steps.verify.outcome == 'failure' &&
+                  steps.verify.outputs.message != ''
+              uses: thollander/actions-comment-pull-request@v3
+              with:
+                  comment-tag: Baximusprime alert
+                  message: |
+                      ${{ steps.verify.outputs.message }}
+                  reactions: robot
+                  mode: recreate
+
+            - name: Check failure
+              if: |
+                  steps.verify.outcome == 'failure' &&
+                  steps.verify.outputs.message != ''
+              run: exit 1
+
+    dependabot-automerge:
+        runs-on: ubuntu-latest
+        needs:
+            - dependabot-metadata
+            - completed
+        if: |
+            always() &&
+            needs.completed.result == 'success' &&
+            needs.dependabot-metadata.result == 'success'
+        env:
+            PR_URL: ${{github.event.pull_request.html_url}}
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        steps:
+            - name: Generate Token
+              id: generate-token
+              uses: actions/create-github-app-token@v2
+              with:
+                  app-id: ${{ vars.BOT_APP_ID }}
+                  private-key: ${{ secrets.BOT_PRIVATE_KEY }}
+
+            - name: Approve And Merge
+              env:
+                  PR_URL: ${{github.event.pull_request.html_url}}
+                  GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+              run: gh pr merge $PR_URL --squash --admin
+
+    crowdin-automerge:
+        runs-on: ubuntu-latest
+        # extra needs for frontend so we can make sure there were actual changes to the frontend (.po) files
+        needs:
+            - frontend
+            - completed
+        if: |
+            always() &&
+            needs.completed.result == 'success' &&
+            needs.frontend.result == 'success' &&
+            github.event.pull_request.head.ref == 'crowdin_l10n' &&
+            github.actor == 'baximusprime[bot]'
+        steps:
+            - name: Generate Token
+              id: generate-token
+              uses: actions/create-github-app-token@v2
+              with:
+                  app-id: ${{ vars.BOT_APP_ID }}
+                  private-key: ${{ secrets.BOT_PRIVATE_KEY }}
+
+            - name: Approve And Merge
+              env:
+                  PR_URL: ${{github.event.pull_request.html_url}}
+                  GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+              run: gh pr merge $PR_URL --squash --admin
