@@ -45,24 +45,32 @@ jobs:
         uses: ./.github/workflows/tests.yml
 
     frontend:
+        permissions:
+            contents: write
         if: ${{ needs.changes.outputs.frontend == 'true' }}
         needs: changes
         secrets: inherit
         uses: ./.github/workflows/frontend.yml
 
     backend:
+        permissions:
+            contents: write
         if: ${{  needs.changes.outputs.backend == 'true'}}
         needs: changes
         secrets: inherit
         uses: ./.github/workflows/backend-api.yml
 
     backend-library:
+        permissions:
+            contents: write
         if: ${{ needs.changes.outputs.backendLibrary == 'true' }}
         needs: changes
         secrets: inherit
         uses: ./.github/workflows/backend-library.yml
 
     backend-data:
+        permissions:
+            contents: write
         if: ${{ needs.changes.outputs.backendData == 'true' }}
         needs: changes
         secrets: inherit
