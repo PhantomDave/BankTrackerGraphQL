@@ -37,7 +37,7 @@ jobs:
 
     tests:
         permissions:
-            contents: read
+            contents: write
             packages: write # needed for some integration test cross-branch-docker-caching
         needs: changes
         if: ${{ needs.changes.outputs.tests == 'true' && github.event.pull_request.draft == false }}
