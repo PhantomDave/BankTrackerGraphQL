@@ -1,5 +1,5 @@
 import { inject, Injectable, Signal, signal } from '@angular/core';
-import { firstValueFrom, tap } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import {
   CreateFinanceRecordGQL,
   DeleteFinanceRecordGQL,
