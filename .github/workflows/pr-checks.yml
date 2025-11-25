@@ -96,6 +96,7 @@ jobs:
             - backend-library
             - backend-data
             - codeql
+            - tests
 
         steps:
             - name: Fail
