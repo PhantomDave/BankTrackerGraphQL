@@ -19,14 +19,11 @@ jobs:
               with:
                   sparse-checkout: |
                       .github/pr-filter.yml
-                      .github/actions
-                      terraform/environments.json
 
             - uses: dorny/paths-filter@v3
               id: filter
               with:
-                  filters: |
-                      .github/pr-filter.yml
+                  filters: .github/pr-filter.yml
 
         outputs:
             frontend: ${{ steps.filter.outputs.frontend }}
@@ -97,8 +94,13 @@ jobs:
             - backend-library
             - backend-data
             - codeql
+            - tests
 
         steps:
             - name: Fail
               run: echo "::error::A required PR check failed" && exit 1
               if: ${{ contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'failure') || contains(needs.*.result, 'error') }}
+
+            - name: Success
+              if: success()
+              run: echo "All required PR checks passed!"
