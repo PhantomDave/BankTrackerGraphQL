@@ -26,7 +26,7 @@ jobs:
               id: filter
               with:
                   filters: |
-                      .github/pr-filter.yaml
+                      .github/pr-filter.yml
 
         outputs:
             frontend: ${{ steps.filter.outputs.frontend }}
