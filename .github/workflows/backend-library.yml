@@ -2,17 +2,12 @@ name: Backend Library - Build and Lint
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
     paths:
-      - 'PhantomDave.BankTracking.Library/**'
-      - 'PhantomDave.BankTracking.sln'
-      - '.github/workflows/backend-library.yml'
-  pull_request:
-    branches: [ main, develop ]
-    paths:
-      - 'PhantomDave.BankTracking.Library/**'
-      - 'PhantomDave.BankTracking.sln'
-      - '.github/workflows/backend-library.yml'
+      - "PhantomDave.BankTracking.Library/**"
+      - "PhantomDave.BankTracking.sln"
+      - ".github/workflows/backend-library.yml"
+  workflow_call:
 
 jobs:
   build-and-lint:
@@ -22,28 +17,28 @@ jobs:
       contents: write
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v5
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v5
-      with:
-        dotnet-version: '9.0.x'
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "9.0.x"
 
-    - name: Restore dependencies
-      run: dotnet restore PhantomDave.BankTracking.Library/PhantomDave.BankTracking.Library.csproj
+      - name: Restore dependencies
+        run: dotnet restore PhantomDave.BankTracking.Library/PhantomDave.BankTracking.Library.csproj
 
-    - name: Format code
-      run: dotnet format PhantomDave.BankTracking.Library/PhantomDave.BankTracking.Library.csproj --verbosity diagnostic
+      - name: Format code
+        run: dotnet format PhantomDave.BankTracking.Library/PhantomDave.BankTracking.Library.csproj --verbosity diagnostic
 
-    - name: Commit formatted code
-      uses: stefanzweifel/git-auto-commit-action@v7
-      if: github.event_name == 'push'
-      with:
-        commit_message: 'chore: auto-format Backend Library code'
-        file_pattern: 'PhantomDave.BankTracking.Library/**'
+      - name: Commit formatted code
+        uses: stefanzweifel/git-auto-commit-action@v7
+        if: github.event_name == 'push'
+        with:
+          commit_message: "chore: auto-format Backend Library code"
+          file_pattern: "PhantomDave.BankTracking.Library/**"
 
-    - name: Build
-      run: dotnet build PhantomDave.BankTracking.Library/PhantomDave.BankTracking.Library.csproj --configuration Release --no-restore
+      - name: Build
+        run: dotnet build PhantomDave.BankTracking.Library/PhantomDave.BankTracking.Library.csproj --configuration Release --no-restore
