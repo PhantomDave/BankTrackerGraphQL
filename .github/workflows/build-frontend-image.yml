@@ -1,15 +1,7 @@
 name: Build and Push Frontend Image
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "frontend/**"
-      - ".github/workflows/build-frontend-image.yml"
-  workflow_dispatch:
-  workflow_run:
-    workflows: ["Run Project Tests"]
-    types: [completed]
+  workflow_call:
 
 env:
   REGISTRY: ghcr.io
@@ -55,33 +47,7 @@ jobs:
       - name: Download GraphQL schema
         run: curl -f http://localhost:5095/graphql?sdl -o frontend/schema.graphql
 
-      - name: Upload schema artifact
-        uses: actions/upload-artifact@v5
-        with:
-          name: graphql-schema
-          path: frontend/schema.graphql
-          retention-days: 1
-
-  build-and-push:
-    name: Build and Push Frontend Container
-    runs-on: ubuntu-latest
-    needs: build-schema
-    permissions:
-      contents: read
-      packages: write
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-
-      - name: Download schema artifact
-        uses: actions/download-artifact@v6
-        with:
-          name: graphql-schema
-          path: frontend
-
       - name: Log in to GitHub Container Registry
-        if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
@@ -94,16 +60,15 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=sha,prefix={{branch}}-,enable=${{ github.event_name != 'pull_request' }}
+            type=sha,prefix={{branch}}-
             type=ref,event=branch
-            type=ref,event=pr
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=latest
 
       - name: Build and push frontend image
         uses: docker/build-push-action@v6
         with:
           context: ./frontend
           file: ./frontend/Dockerfile
-          push: ${{ github.event_name != 'pull_request' }}
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
