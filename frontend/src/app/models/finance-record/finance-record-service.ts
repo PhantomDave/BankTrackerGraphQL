@@ -1,5 +1,5 @@
-import {inject, Injectable, Signal, signal} from '@angular/core';
-import {firstValueFrom} from 'rxjs';
+import { inject, Injectable, Signal, signal } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import {
   CreateFinanceRecordGQL,
   DeleteFinanceRecordGQL,
@@ -10,7 +10,7 @@ import {
   RecurrenceFrequency,
   UpdateFinanceRecordGQL,
 } from '../../../generated/graphql';
-import {FinanceRecord} from './finance-record';
+import { FinanceRecord } from './finance-record';
 
 @Injectable({
   providedIn: 'root',
