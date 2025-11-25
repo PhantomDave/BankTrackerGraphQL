@@ -1,0 +1,104 @@
+name: Required Pull Request Checks
+
+on:
+    pull_request:
+
+concurrency:
+    group: "pull-request-checks-${{ github.event.pull_request.number }}"
+    cancel-in-progress: true
+
+jobs:
+    changes:
+        runs-on: ubuntu-latest
+        permissions:
+            actions: read
+            contents: read
+            pull-requests: read
+        steps:
+            - uses: actions/checkout@v5
+              with:
+                  sparse-checkout: |
+                      .github/pr-filter.yml
+                      .github/actions
+                      terraform/environments.json
+
+            - uses: dorny/paths-filter@v3
+              id: filter
+              with:
+                  filters: |
+                      .github/pr-filter.yml
+
+        outputs:
+            frontend: ${{ steps.filter.outputs.frontend }}
+            backend: ${{ steps.filter.outputs.backend }}
+            backendLibrary: ${{ steps.filter.outputs.backendLibrary }}
+            backendData: ${{ steps.filter.outputs.backendData }}
+            tests: ${{ steps.filter.outputs.tests }}
+
+    tests:
+        permissions:
+            contents: write
+            packages: write # needed for some integration test cross-branch-docker-caching
+        needs: changes
+        if: ${{ needs.changes.outputs.tests == 'true' && github.event.pull_request.draft == false }}
+        secrets: inherit
+        uses: ./.github/workflows/tests.yml
+
+    frontend:
+        permissions:
+            contents: write
+        if: ${{ needs.changes.outputs.frontend == 'true' }}
+        needs: changes
+        secrets: inherit
+        uses: ./.github/workflows/frontend.yml
+
+    backend:
+        permissions:
+            contents: write
+        if: ${{  needs.changes.outputs.backend == 'true'}}
+        needs: changes
+        secrets: inherit
+        uses: ./.github/workflows/backend-api.yml
+
+    backend-library:
+        permissions:
+            contents: write
+        if: ${{ needs.changes.outputs.backendLibrary == 'true' }}
+        needs: changes
+        secrets: inherit
+        uses: ./.github/workflows/backend-library.yml
+
+    backend-data:
+        permissions:
+            contents: write
+        if: ${{ needs.changes.outputs.backendData == 'true' }}
+        needs: changes
+        secrets: inherit
+        uses: ./.github/workflows/backend-data.yml
+
+    codeql:
+        permissions:
+            actions: read
+            contents: read
+            packages: read
+            security-events: write
+        needs: changes
+        secrets: inherit
+        uses: ./.github/workflows/codeql-analysis.yml
+
+    # this job is the required branch protection rule
+    completed:
+        runs-on: ubuntu-latest
+        if: always()
+        needs: # list all the required jobs here!
+            - changes
+            - frontend
+            - backend
+            - backend-library
+            - backend-data
+            - codeql
+
+        steps:
+            - name: Fail
+              run: echo "::error::A required PR check failed" && exit 1
+              if: ${{ contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'failure') || contains(needs.*.result, 'error') }}

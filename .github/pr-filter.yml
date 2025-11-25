@@ -1,0 +1,21 @@
+tests:
+    - "PhantomDave.BankTracking.*/**"
+
+frontend:
+    - "frontend/**"
+
+backend:
+    - "PhantomDave.BankTracking.Api/**"
+    - "PhantomDave.BankTracking.sln"
+    - ".github/workflows/backend-api.yml"
+
+backendLibrary:
+    - "PhantomDave.BankTracking.Library/**"
+    - "PhantomDave.BankTracking.sln"
+    - ".github/workflows/backend-library.yml"
+
+backendData:
+    - "PhantomDave.BankTracking.Data/**"
+    - "PhantomDave.BankTracking.Library/**"
+    - "PhantomDave.BankTracking.sln"
+    - ".github/workflows/backend-data.yml"

@@ -2,19 +2,14 @@ name: Backend API - Build and Lint
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
     paths:
-      - 'PhantomDave.BankTracking.Api/**'
-      - 'PhantomDave.BankTracking.Library/**'
-      - 'PhantomDave.BankTracking.sln'
-      - '.github/workflows/backend-api.yml'
-  pull_request:
-    branches: [ main, develop ]
-    paths:
-      - 'PhantomDave.BankTracking.Api/**'
-      - 'PhantomDave.BankTracking.Library/**'
-      - 'PhantomDave.BankTracking.sln'
-      - '.github/workflows/backend-api.yml'
+      - "PhantomDave.BankTracking.Api/**"
+      - "PhantomDave.BankTracking.Library/**"
+      - "PhantomDave.BankTracking.sln"
+      - ".github/workflows/backend-api.yml"
+  workflow_dispatch:
+  workflow_call:
 
 jobs:
   build-and-lint:
@@ -24,28 +19,28 @@ jobs:
       contents: write
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v5
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v5
-      with:
-        dotnet-version: '9.0.x'
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "9.0.x"
 
-    - name: Restore dependencies
-      run: dotnet restore PhantomDave.BankTracking.Api/PhantomDave.BankTracking.Api.csproj
+      - name: Restore dependencies
+        run: dotnet restore PhantomDave.BankTracking.Api/PhantomDave.BankTracking.Api.csproj
 
-    - name: Format code
-      run: dotnet format PhantomDave.BankTracking.Api/PhantomDave.BankTracking.Api.csproj --verbosity diagnostic
+      - name: Format code
+        run: dotnet format PhantomDave.BankTracking.Api/PhantomDave.BankTracking.Api.csproj --verbosity diagnostic
 
-    - name: Commit formatted code
-      uses: stefanzweifel/git-auto-commit-action@v7
-      if: github.event_name == 'push'
-      with:
-        commit_message: 'chore: auto-format Backend API code'
-        file_pattern: 'PhantomDave.BankTracking.Api/**'
+      - name: Commit formatted code
+        uses: stefanzweifel/git-auto-commit-action@v7
+        if: github.event_name == 'push'
+        with:
+          commit_message: "chore: auto-format Backend API code"
+          file_pattern: "PhantomDave.BankTracking.Api/**"
 
-    - name: Build
-      run: dotnet build PhantomDave.BankTracking.Api/PhantomDave.BankTracking.Api.csproj --configuration Release --no-restore
+      - name: Build
+        run: dotnet build PhantomDave.BankTracking.Api/PhantomDave.BankTracking.Api.csproj --configuration Release --no-restore

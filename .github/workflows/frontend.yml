@@ -6,14 +6,11 @@ on:
     paths:
       - "frontend/**"
       - ".github/workflows/frontend.yml"
-  pull_request:
-    branches: [main, develop]
-    paths:
-      - "frontend/**"
-      - ".github/workflows/frontend.yml"
   workflow_run:
     workflows: ["Build and Push Backend Image", "Build and Push Frontend Image"]
     types: [completed]
+  workflow_dispatch:
+  workflow_call:
 
 jobs:
   build-and-lint:
