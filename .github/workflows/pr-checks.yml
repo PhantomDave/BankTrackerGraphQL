@@ -25,8 +25,7 @@ jobs:
             - uses: dorny/paths-filter@v3
               id: filter
               with:
-                  filters: |
-                      .github/pr-filter.yml
+                  filters: .github/pr-filter.yml
 
         outputs:
             frontend: ${{ steps.filter.outputs.frontend }}
