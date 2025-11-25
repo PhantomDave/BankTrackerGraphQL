@@ -19,6 +19,8 @@ jobs:
               with:
                   sparse-checkout: |
                       .github/pr-filter.yml
+                      .github/actions
+                      terraform/environments.json
 
             - uses: dorny/paths-filter@v3
               id: filter
@@ -52,7 +54,7 @@ jobs:
     backend:
         permissions:
             contents: write
-        if: ${{ needs.changes.outputs.backend == 'true' }}
+        if: ${{  needs.changes.outputs.backend == 'true'}}
         needs: changes
         secrets: inherit
         uses: ./.github/workflows/backend-api.yml
