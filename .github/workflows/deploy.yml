@@ -10,8 +10,6 @@ concurrency:
 
 env:
     REGISTRY: ghcr.io
-    BACKEND_IMAGE_NAME: ${{ github.repository }}/backend
-    FRONTEND_IMAGE_NAME: ${{ github.repository }}/frontend
     DEPLOY_DIR: /opt/banktracker/BankTrackerGraphQL
 
 jobs:
@@ -109,7 +107,7 @@ jobs:
             - name: Deploy all services
               run: |
                   tailscale ssh "${{ steps.ssh.outputs.target }}" \
-                    "cd $DEPLOY_DIR && docker compose down && docker compose up -d --wait"
+                    "cd $DEPLOY_DIR && docker compose up -d --wait"
 
             - name: Verify deployment
               if: success()

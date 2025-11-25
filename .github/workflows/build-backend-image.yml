@@ -3,6 +3,8 @@ name: Build and Push Backend Image
 # Required permissions when calling this workflow:
 # - contents: read
 # - packages: write
+# Note: The calling workflow MUST provide these permissions.
+# Without them, the workflow will fail at the docker login or push steps.
 
 on:
   workflow_call:
@@ -15,9 +17,6 @@ jobs:
   build-and-push:
     name: Build and Push Backend Container
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
 
     steps:
       - name: Checkout code
@@ -36,7 +35,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=sha,prefix={{branch}}-
+            type=sha
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push backend image
