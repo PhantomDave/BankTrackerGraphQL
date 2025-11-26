@@ -3,6 +3,12 @@ name: Deploy to Production
 on:
     push:
         branches: [main]
+    workflow_dispatch:
+        inputs:
+            force_deploy:
+                description: "Force deploy backend + frontend"
+                type: boolean
+                default: false
 
 concurrency:
     group: deploy-main
@@ -40,7 +46,7 @@ jobs:
         name: Build and Push Backend Image
         uses: ./.github/workflows/build-backend-image.yml
         needs: changes
-        if: ${{ needs.changes.outputs.backend == 'true' || needs.changes.outputs.backendLibrary == 'true' || needs.changes.outputs.backendData == 'true' }}
+        if: ${{ inputs.force_deploy == true || needs.changes.outputs.backend == 'true' || needs.changes.outputs.backendLibrary == 'true' || needs.changes.outputs.backendData == 'true' }}
         permissions:
             contents: read
             packages: write
@@ -49,7 +55,7 @@ jobs:
         name: Build and Push Frontend Image
         uses: ./.github/workflows/build-frontend-image.yml
         needs: changes
-        if: ${{ needs.changes.outputs.frontend == 'true' }}
+        if: ${{ inputs.force_deploy == true || needs.changes.outputs.frontend == 'true' }}
         permissions:
             contents: read
             packages: write
