@@ -17,7 +17,6 @@ mat-drawer-content {
 
 .drawer-header {
   padding: 8px;
-
   border-bottom: 1px solid var(--mat-sys-outline-variant);
 }
 
