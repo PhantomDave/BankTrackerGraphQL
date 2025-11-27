@@ -15,7 +15,7 @@ import { Widget, WidgetType } from '../../../models/dashboards/gridster-item';
 import { WidgetNetGraphComponent } from '../../../widgets/widget-net-graph/widget-net-graph.component';
 import { WidgetRemainingComponent } from '../../../widgets/widget-remaining/widget-remaining.component';
 import { FlexComponent } from '../../ui-library/flex-component/flex-component';
-import { DashboardDrawerComponentComponent } from '../dashboard-drawer-component/dashboard-drawer-component.component';
+import { DashboardDrawerComponent } from '../dashboard-drawer-component/dashboard-drawer-component.component';
 
 @Component({
   standalone: true,
@@ -27,7 +27,7 @@ import { DashboardDrawerComponentComponent } from '../dashboard-drawer-component
     MatIcon,
     MatButtonModule,
     FlexComponent,
-    DashboardDrawerComponentComponent,
+    DashboardDrawerComponent,
   ],
   selector: 'app-dashboard',
   templateUrl: './dashboard-component.component.html',
