@@ -1,0 +1,22 @@
+<mat-drawer-container hasBackdrop>
+  <mat-drawer
+    #drawer
+    [opened]="opened()"
+    mode="side"
+    position="end"
+    (closedStart)="onDrawerClosed()"
+  >
+    <app-flex justify="space-between" align="center" gap="8px" class="drawer-header">
+      <h3>Dashboards</h3>
+      <button mat-icon-button type="button" aria-label="Close drawer" (click)="drawer.close()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </app-flex>
+    <div class="drawer-content">
+      @for (widget of availableWidgets; track widget) {
+        <p>{{ widget.name }}</p>
+      }
+    </div>
+  </mat-drawer>
+  <mat-drawer-content><ng-content></ng-content></mat-drawer-content>
+</mat-drawer-container>

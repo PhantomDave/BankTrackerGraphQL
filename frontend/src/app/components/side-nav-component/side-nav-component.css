@@ -116,7 +116,7 @@ mat-divider {
 .content-wrapper {
   padding: 16px;
   flex: 1;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .breadcrumb {

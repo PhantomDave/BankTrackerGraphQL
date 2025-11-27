@@ -56,7 +56,8 @@ export class WidgetNetGraphComponent implements OnInit {
       },
       yaxis: {
         labels: {
-          formatter: (value) => this.currencyPipe.transform(value, 'EUR', 'symbol', '1.0-0') ?? '',
+          formatter: (value: number) =>
+            this.currencyPipe.transform(value, 'EUR', 'symbol', '1.0-0') ?? '',
         },
       },
       stroke: {
@@ -77,7 +78,8 @@ export class WidgetNetGraphComponent implements OnInit {
       },
       tooltip: {
         y: {
-          formatter: (value) => this.currencyPipe.transform(value, 'EUR', 'symbol', '1.0-2') ?? '',
+          formatter: (value: number) =>
+            this.currencyPipe.transform(value, 'EUR', 'symbol', '1.0-2') ?? '',
         },
       },
       annotations: {
