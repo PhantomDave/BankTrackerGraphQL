@@ -26,7 +26,7 @@ jobs:
             contents: read
             pull-requests: read
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@v6
               with:
                   sparse-checkout: |
                       .github/pr-filter.yml
@@ -71,7 +71,7 @@ jobs:
 
         steps:
             - name: Checkout
-              uses: actions/checkout@v5
+              uses: actions/checkout@v6
 
             - name: Connect to Tailscale
               uses: tailscale/github-action@v4
