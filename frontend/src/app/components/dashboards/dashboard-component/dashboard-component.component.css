@@ -41,7 +41,7 @@ gridster-item {
 .gridster-container {
   height: 100%;
   width: 100%;
-  overflow: auto;
+  overflow: hidden;
   box-sizing: border-box;
   transition: background-color 0.3s;
 }

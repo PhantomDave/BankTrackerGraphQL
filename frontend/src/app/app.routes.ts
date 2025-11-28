@@ -8,7 +8,7 @@ import { SettingsComponent } from './components/settings-component/settings-comp
 import { ImportWizardComponent } from './components/import/import-wizard-component/import-wizard-component';
 import { MonthlyComparisonComponent } from './components/analytics/monthly-comparison-component/monthly-comparison-component';
 import { TrackingComponent } from './components/tracking/tracking/tracking.component';
-import { DashboardComponent } from './components/dashboard-component/dashboard-component.component';
+import { DashboardComponent } from './components/dashboards/dashboard-component/dashboard-component.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },

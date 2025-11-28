@@ -9,12 +9,13 @@ import {
   GridsterItemComponentInterface,
   GridType,
 } from 'angular-gridster2';
-import { WidgetRemainingComponent } from '../../widgets/widget-remaining/widget-remaining.component';
-import { WidgetNetGraphComponent } from '../../widgets/widget-net-graph/widget-net-graph.component';
-import { Widget, WidgetType } from '../../models/dashboards/gridster-item';
 import { MatIcon } from '@angular/material/icon';
-import { FlexComponent } from '../ui-library/flex-component/flex-component';
 import { MatButtonModule } from '@angular/material/button';
+import { Widget, WidgetType } from '../../../models/dashboards/gridster-item';
+import { WidgetNetGraphComponent } from '../../../widgets/widget-net-graph/widget-net-graph.component';
+import { WidgetRemainingComponent } from '../../../widgets/widget-remaining/widget-remaining.component';
+import { FlexComponent } from '../../ui-library/flex-component/flex-component';
+import { DashboardDrawerComponent } from '../dashboard-drawer-component/dashboard-drawer-component.component';
 
 @Component({
   standalone: true,
@@ -26,6 +27,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatIcon,
     MatButtonModule,
     FlexComponent,
+    DashboardDrawerComponent,
   ],
   selector: 'app-dashboard',
   templateUrl: './dashboard-component.component.html',
@@ -151,6 +153,19 @@ export class DashboardComponent implements OnInit {
     }
     if (this.options.resizable) {
       this.options.resizable.enabled = newEditMode;
+    }
+
+    this.options.api?.optionsChanged?.();
+  }
+
+  onDrawerClosed() {
+    this.isEditMode.set(false);
+
+    if (this.options.draggable) {
+      this.options.draggable.enabled = false;
+    }
+    if (this.options.resizable) {
+      this.options.resizable.enabled = false;
     }
 
     this.options.api?.optionsChanged?.();
