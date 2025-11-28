@@ -12,19 +12,22 @@ import { WidgetType } from '../../../models/dashboards/gridster-item';
   imports: [MatDrawer, MatDrawerContainer, MatDrawerContent, MatIconButton, MatIcon, FlexComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DashboardDrawerComponentComponent {
+export class DashboardDrawerComponent {
   opened = input<boolean>(true);
   closed = output<void>();
-  readonly availableWidgets = [
-    {
-      type: WidgetType.NetGraph,
-      name: 'Net Graph',
-    },
-    {
-      type: WidgetType.CurrentBalance,
-      name: 'Remaining Budget',
-    },
-  ];
+
+  // Map WidgetType enum values to display names
+  private static readonly WIDGET_DISPLAY_NAMES: Record<WidgetType, string> = {
+    [WidgetType.NetGraph]: 'Net Graph',
+    [WidgetType.CurrentBalance]: 'Remaining Budget',
+  };
+
+  readonly availableWidgets = Object.values(WidgetType)
+    .filter((value): value is WidgetType => typeof value === 'number')
+    .map((type) => ({
+      type,
+      name: DashboardDrawerComponent.WIDGET_DISPLAY_NAMES[type] ?? String(type),
+    }));
 
   onDrawerClosed() {
     this.closed.emit();
