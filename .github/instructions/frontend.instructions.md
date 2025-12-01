@@ -43,4 +43,4 @@ applyTo:
 
 ## Testing
 - Run `npm test` for unit tests
-- Use Jest with Angular Testing Library patterns
+- Use Jasmine and Karma for unit tests (the default Angular setup)
