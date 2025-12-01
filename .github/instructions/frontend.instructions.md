@@ -10,8 +10,8 @@ applyTo:
 
 ## Angular Best Practices
 - App uses `provideZonelessChangeDetection()` - signals are the primary state mechanism
-- Components are standalone by default - do NOT add `standalone: true` manually
-- Always list dependencies in the `imports` array
+- Angular 20+ makes components standalone by default (no need to explicitly set `standalone: true`)
+- Always list dependencies in the `imports` array of `@Component` decorator
 - Prefer Angular Material components before creating custom UI
 
 ## Signals & State Management
@@ -34,7 +34,7 @@ applyTo:
 ## UI & Styling
 - UI feedback goes through `SnackbarService.success/error`
 - Avoid `@HostBinding`/`@HostListener` - use `host` object instead
-- Use English for all user-facing messages (translate any Italian copy)
+- Use English for all user-facing messages
 
 ## GraphQL Operations
 - Keep operation names unique and PascalCase/camelCase matching existing usage

@@ -10,7 +10,7 @@
   "servers": {
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp@latest"]
+      "args": ["-y", "@upstash/context7-mcp@^1.0.31"]
     },
     "github": {
       "command": "docker",
@@ -30,7 +30,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "@modelcontextprotocol/server-filesystem",
+        "@modelcontextprotocol/server-filesystem@^2025.11.25",
         "${workspaceFolder}"
       ]
     }
