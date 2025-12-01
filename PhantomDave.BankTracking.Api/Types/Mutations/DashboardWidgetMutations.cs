@@ -38,6 +38,9 @@ public class DashboardWidgetMutations
                     .Build());
         }
 
+        var title = ValidateAndTrimString(input.Title, "title");
+        var subtitle = ValidateAndTrimString(input.Subtitle, "subtitle");
+
         var widget = new DashboardWidget
         {
             DashboardId = input.DashboardId,
@@ -46,8 +49,8 @@ public class DashboardWidgetMutations
             Y = Math.Max(0, input.Y),
             Rows = input.Rows,
             Cols = input.Cols,
-            Title = input.Title?.Trim(),
-            Subtitle = input.Subtitle?.Trim(),
+            Title = title,
+            Subtitle = subtitle,
             Config = input.Config
         };
 
@@ -130,12 +133,12 @@ public class DashboardWidgetMutations
 
         if (input.Title is not null)
         {
-            widget.Title = input.Title.Trim();
+            widget.Title = ValidateAndTrimString(input.Title, "title");
         }
 
         if (input.Subtitle is not null)
         {
-            widget.Subtitle = input.Subtitle.Trim();
+            widget.Subtitle = ValidateAndTrimString(input.Subtitle, "subtitle");
         }
 
         if (input.Config is not null)
@@ -181,5 +184,21 @@ public class DashboardWidgetMutations
         await unitOfWork.SaveChangesAsync();
 
         return true;
+    }
+
+    private static string? ValidateAndTrimString(string? value, string fieldName)
+    {
+        if (value is null) return null;
+
+        var trimmed = value.Trim();
+        if (string.IsNullOrEmpty(trimmed))
+        {
+            throw new GraphQLException(
+                ErrorBuilder.New()
+                    .SetMessage($"Widget {fieldName} cannot be empty or whitespace.")
+                    .SetCode("BAD_USER_INPUT")
+                    .Build());
+        }
+        return trimmed;
     }
 }

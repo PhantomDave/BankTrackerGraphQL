@@ -8,11 +8,10 @@ export class NetGraphWidget extends BaseWidget {
 
   constructor(init?: Partial<BaseWidget>) {
     super(init, 2, 2);
-    this.type = WidgetType.NET_GRAPH;
     if (!init?.config) {
       const defaultConfig: NetGraphWidgetConfig = {
-        from: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-        to: new Date(),
+        from: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString(),
+        to: new Date().toISOString(),
         title: 'Net Graph',
       };
       this.config = JSON.stringify(defaultConfig);
@@ -21,6 +20,6 @@ export class NetGraphWidget extends BaseWidget {
 }
 
 export interface NetGraphWidgetConfig extends BaseWidgetConfig {
-  from: Date;
-  to: Date;
+  from: string; // ISO date string
+  to: string; // ISO date string
 }

@@ -1,10 +1,10 @@
-import { Component, input, output, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { FlexComponent } from '../../ui-library/flex-component/flex-component';
-import { SnackbarService } from '../../../shared/services/snackbar.service';
 import { WidgetType } from '../../../../generated/graphql';
+import { WIDGET_DISPLAY_NAMES } from '../../../constants/widget-names';
 
 @Component({
   selector: 'app-dashboard-drawer-component',
@@ -14,24 +14,17 @@ import { WidgetType } from '../../../../generated/graphql';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardDrawerComponent {
-  private readonly snackBarService = inject(SnackbarService);
   opened = input<boolean>(true);
   closed = output<void>();
   widgetSelected = output<WidgetType>();
 
-  private static readonly WIDGET_DISPLAY_NAMES: Record<WidgetType, string> = {
-    [WidgetType.NET_GRAPH]: 'Net Graph',
-    [WidgetType.CURRENT_BALANCE]: 'Remaining Budget',
-  };
-
   readonly availableWidgets = Object.values(WidgetType).map((type) => ({
     type,
-    name: DashboardDrawerComponent.WIDGET_DISPLAY_NAMES[type] ?? String(type),
+    name: WIDGET_DISPLAY_NAMES[type] ?? String(type),
   }));
 
   addWidgetToDashboard(widget: { type: WidgetType; name: string }) {
     this.widgetSelected.emit(widget.type);
-    this.snackBarService.success(`Added ${widget.name} widget to dashboard.`);
   }
 
   onDrawerClosed() {
