@@ -36,6 +36,7 @@ export class TrackingComponent implements OnInit {
   readonly records = computed(() =>
     this.financeRecordService.financeRecords().filter((record) => !record.recurring),
   );
+  // NOTE: recurringFinanceRecords() is already filtered by the backend to include only recurring records.
   readonly recurringRecords = computed(() => this.financeRecordService.recurringFinanceRecords());
 
   readonly startDate = model(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
@@ -53,6 +54,6 @@ export class TrackingComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.financeRecordService.getAllRecurringFinanceRecords();
+    this.financeRecordService.getRecurringFinanceRecords();
   }
 }

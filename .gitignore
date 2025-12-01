@@ -9,6 +9,9 @@ riderModule.iml
 # Generated GraphQL schema (generated during build)
 frontend/schema.graphql
 
+# Build output
+frontend/dist/
+
 # Test Results
 TestResults/
 CoverageReport/

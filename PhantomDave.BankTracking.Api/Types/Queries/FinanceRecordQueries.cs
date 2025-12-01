@@ -58,13 +58,17 @@ public class FinanceRecordQueries
         return FinanceRecordType.FromFinanceRecord(financeRecord);
     }
 
+    /// <summary>
+    /// Get all active recurring finance records for an account.
+    /// Returns only recurring records that haven't expired or have no end date.
+    /// </summary>
     [Authorize]
-    public async Task<IEnumerable<FinanceRecordType>> GetAllRecurringFinanceRecords(
+    public async Task<IEnumerable<FinanceRecordType>> GetRecurringFinanceRecords(
         [Service] FinanceRecordService financeRecordService,
         [Service] IHttpContextAccessor httpContextAccessor)
     {
         var accountId = httpContextAccessor.GetAccountIdFromContext();
-        var records = await financeRecordService.GetAllRecurringFinanceRecordsAsync(accountId);
+        var records = await financeRecordService.GetRecurringFinanceRecordsAsync(accountId);
 
         return records.Select(FinanceRecordType.FromFinanceRecord);
     }

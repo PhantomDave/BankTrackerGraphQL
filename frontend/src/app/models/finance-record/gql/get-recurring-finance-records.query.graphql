@@ -1,5 +1,5 @@
 query getRecurringFinanceRecords {
-  allRecurringFinanceRecords {
+  recurringFinanceRecords {
     id
     name
     description
