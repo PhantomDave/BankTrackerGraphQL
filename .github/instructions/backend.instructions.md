@@ -8,7 +8,7 @@ applyTo:
 # Backend Development Instructions (ASP.NET + HotChocolate + EF Core)
 
 ## Code Style
-- Use C# 12+ features when appropriate (primary constructors, collection expressions)
+- Use C# 13+ features (or latest C# features) when appropriate (primary constructors, collection expressions)
 - Prefer async/await for all I/O-bound operations
 - Use meaningful variable and method names that express intent
 - Keep methods small and focused on a single responsibility
