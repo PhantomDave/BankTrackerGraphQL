@@ -2,7 +2,7 @@
   <mat-drawer
     #drawer
     [opened]="opened()"
-    mode="side"
+    mode="over"
     position="end"
     (closedStart)="onDrawerClosed()"
   >
@@ -14,9 +14,13 @@
     </app-flex>
     <div class="drawer-content">
       @for (widget of availableWidgets; track widget) {
-        <p>{{ widget.name }}</p>
+        <div class="widget-item" (click)="addWidgetToDashboard(widget)">
+          Add <strong>{{ widget.name }}</strong> widget
+        </div>
       }
     </div>
   </mat-drawer>
-  <mat-drawer-content><ng-content></ng-content></mat-drawer-content>
+  <mat-drawer-content>
+    <ng-content></ng-content>
+  </mat-drawer-content>
 </mat-drawer-container>

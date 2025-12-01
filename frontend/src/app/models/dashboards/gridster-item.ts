@@ -1,4 +1,5 @@
 import { GridsterItem } from 'angular-gridster2';
+import { WidgetType } from '../../../generated/graphql';
 
 export interface Widget extends GridsterItem {
   x: number;
@@ -9,9 +10,4 @@ export interface Widget extends GridsterItem {
   id?: number;
   type?: WidgetType;
   config?: string;
-}
-
-export enum WidgetType {
-  CurrentBalance,
-  NetGraph,
 }

@@ -10,4 +10,7 @@ public sealed class AddWidgetInput
     public int Y { get; init; }
     public int Rows { get; init; }
     public int Cols { get; init; }
+    public string? Title { get; init; }
+    public string? Subtitle { get; init; }
+    public string? Config { get; init; }
 }

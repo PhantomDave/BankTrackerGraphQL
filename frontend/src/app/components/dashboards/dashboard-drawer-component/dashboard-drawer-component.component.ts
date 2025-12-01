@@ -3,7 +3,8 @@ import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/materi
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { FlexComponent } from '../../ui-library/flex-component/flex-component';
-import { WidgetType } from '../../../models/dashboards/gridster-item';
+import { WidgetType } from '../../../../generated/graphql';
+import { WIDGET_DISPLAY_NAMES } from '../../../constants/widget-names';
 
 @Component({
   selector: 'app-dashboard-drawer-component',
@@ -15,19 +16,16 @@ import { WidgetType } from '../../../models/dashboards/gridster-item';
 export class DashboardDrawerComponent {
   opened = input<boolean>(true);
   closed = output<void>();
+  widgetSelected = output<WidgetType>();
 
-  // Map WidgetType enum values to display names
-  private static readonly WIDGET_DISPLAY_NAMES: Record<WidgetType, string> = {
-    [WidgetType.NetGraph]: 'Net Graph',
-    [WidgetType.CurrentBalance]: 'Remaining Budget',
-  };
+  readonly availableWidgets = Object.values(WidgetType).map((type) => ({
+    type,
+    name: WIDGET_DISPLAY_NAMES[type] ?? String(type),
+  }));
 
-  readonly availableWidgets = Object.values(WidgetType)
-    .filter((value): value is WidgetType => typeof value === 'number')
-    .map((type) => ({
-      type,
-      name: DashboardDrawerComponent.WIDGET_DISPLAY_NAMES[type] ?? String(type),
-    }));
+  addWidgetToDashboard(widget: { type: WidgetType; name: string }) {
+    this.widgetSelected.emit(widget.type);
+  }
 
   onDrawerClosed() {
     this.closed.emit();

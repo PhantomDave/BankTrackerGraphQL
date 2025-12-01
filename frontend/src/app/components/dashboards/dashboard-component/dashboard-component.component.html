@@ -1,12 +1,16 @@
-<app-dashboard-drawer-component [opened]="isEditMode()" (closed)="onDrawerClosed()">
+<app-dashboard-drawer-component
+  [opened]="isEditMode()"
+  (closed)="onDrawerClosed()"
+  (widgetSelected)="onWidgetSelected($event)"
+>
   <gridster [options]="options" [class.edit-mode]="isEditMode()" class="gridster-container">
     @for (widget of widgets(); track widget) {
       <gridster-item [item]="widget">
         @switch (widget.type) {
-          @case (WidgetType.CurrentBalance) {
+          @case (WidgetType.CURRENT_BALANCE) {
             <app-widget-remaining [isEditMode]="isEditMode()"></app-widget-remaining>
           }
-          @case (WidgetType.NetGraph) {
+          @case (WidgetType.NET_GRAPH) {
             <app-widget-net-graph [isEditMode]="isEditMode()"></app-widget-net-graph>
           }
           @default {
