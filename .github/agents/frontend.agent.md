@@ -51,7 +51,7 @@ frontend/src/
 │   ├── models/           # Services and GraphQL operations
 │   ├── pages/            # Route components
 │   ├── shared/           # Shared components and utilities
-│   └── generated/        # Auto-generated GraphQL types
+├── generated/        # Auto-generated GraphQL types
 ├── assets/
 └── styles/
 ```
