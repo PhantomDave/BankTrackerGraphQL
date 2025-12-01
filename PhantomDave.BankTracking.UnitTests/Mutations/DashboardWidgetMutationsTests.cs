@@ -196,6 +196,64 @@ public class DashboardWidgetMutationsTests
     }
 
     [Fact]
+    public async Task AddWidget_WithEmptyTitle_ThrowsException()
+    {
+        // Arrange
+        var dashboard = new Dashboard { Id = 1, Name = "Test", AccountId = 1 };
+        var account = new Account { Id = 1 };
+
+        _mockAccountRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(account);
+        _mockDashboardRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(dashboard);
+
+        var input = new AddWidgetInput
+        {
+            DashboardId = 1,
+            Type = WidgetType.NetGraph,
+            X = 0,
+            Y = 0,
+            Rows = 2,
+            Cols = 2,
+            Title = "   "
+        };
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<GraphQLException>(
+            async () => await _mutations.AddWidget(_mockUnitOfWork.Object, _mockHttpContextAccessor.Object, input)
+        );
+
+        Assert.Contains("title cannot be empty", exception.Message.ToLower());
+    }
+
+    [Fact]
+    public async Task AddWidget_WithWhitespaceOnlySubtitle_ThrowsException()
+    {
+        // Arrange
+        var dashboard = new Dashboard { Id = 1, Name = "Test", AccountId = 1 };
+        var account = new Account { Id = 1 };
+
+        _mockAccountRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(account);
+        _mockDashboardRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(dashboard);
+
+        var input = new AddWidgetInput
+        {
+            DashboardId = 1,
+            Type = WidgetType.NetGraph,
+            X = 0,
+            Y = 0,
+            Rows = 2,
+            Cols = 2,
+            Subtitle = "\t\n  "
+        };
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<GraphQLException>(
+            async () => await _mutations.AddWidget(_mockUnitOfWork.Object, _mockHttpContextAccessor.Object, input)
+        );
+
+        Assert.Contains("subtitle cannot be empty", exception.Message.ToLower());
+    }
+
+    [Fact]
     public async Task UpdateWidget_WithTitle_TrimsAndUpdatesTitle()
     {
         // Arrange

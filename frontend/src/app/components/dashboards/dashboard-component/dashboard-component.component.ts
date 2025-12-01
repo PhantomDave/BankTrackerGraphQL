@@ -18,7 +18,7 @@ import { DashboardDrawerComponent } from '../dashboard-drawer-component/dashboar
 import { WidgetType } from '../../../../generated/graphql';
 import { Widget } from '../../../models/dashboards/gridster-item';
 import { WidgetFactory } from '../widgets/widget-factory';
-import { SnackbarService } from '../../../services/snackbar-service';
+import { SnackbarService } from '../../../shared/services/snackbar.service';
 
 @Component({
   standalone: true,

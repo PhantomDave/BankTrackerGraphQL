@@ -38,6 +38,36 @@ public class DashboardWidgetMutations
                     .Build());
         }
 
+        string? title = null;
+        if (input.Title is not null)
+        {
+            var trimmedTitle = input.Title.Trim();
+            if (string.IsNullOrEmpty(trimmedTitle))
+            {
+                throw new GraphQLException(
+                    ErrorBuilder.New()
+                        .SetMessage("Widget title cannot be empty or whitespace.")
+                        .SetCode("BAD_USER_INPUT")
+                        .Build());
+            }
+            title = trimmedTitle;
+        }
+
+        string? subtitle = null;
+        if (input.Subtitle is not null)
+        {
+            var trimmedSubtitle = input.Subtitle.Trim();
+            if (string.IsNullOrEmpty(trimmedSubtitle))
+            {
+                throw new GraphQLException(
+                    ErrorBuilder.New()
+                        .SetMessage("Widget subtitle cannot be empty or whitespace.")
+                        .SetCode("BAD_USER_INPUT")
+                        .Build());
+            }
+            subtitle = trimmedSubtitle;
+        }
+
         var widget = new DashboardWidget
         {
             DashboardId = input.DashboardId,
@@ -46,8 +76,8 @@ public class DashboardWidgetMutations
             Y = Math.Max(0, input.Y),
             Rows = input.Rows,
             Cols = input.Cols,
-            Title = input.Title?.Trim(),
-            Subtitle = input.Subtitle?.Trim(),
+            Title = title,
+            Subtitle = subtitle,
             Config = input.Config
         };
 

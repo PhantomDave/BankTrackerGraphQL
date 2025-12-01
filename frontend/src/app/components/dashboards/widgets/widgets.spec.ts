@@ -188,4 +188,94 @@ describe('NetGraphWidget', () => {
     expect(widget.minCols).toBe(2);
     expect(widget.minRows).toBe(2);
   });
+
+  it('should serialize dates as ISO strings in config', () => {
+    const widget = new NetGraphWidget();
+    const config = widget.getTypedConfig<NetGraphWidgetConfig>();
+
+    // Dates should be serialized as strings, not Date objects
+    expect(typeof config?.from).toBe('string');
+    expect(typeof config?.to).toBe('string');
+
+    // Should be valid ISO date strings
+    expect(new Date(config!.from).toString()).not.toBe('Invalid Date');
+    expect(new Date(config!.to).toString()).not.toBe('Invalid Date');
+  });
+
+  it('should handle config updates', () => {
+    const widget = new NetGraphWidget();
+    const newConfig: NetGraphWidgetConfig = {
+      title: 'Updated Title',
+      subtitle: 'Updated Subtitle',
+      from: new Date(2024, 5, 1).toISOString(),
+      to: new Date(2024, 5, 30).toISOString(),
+    };
+
+    widget.setTypedConfig(newConfig);
+    const updatedConfig = widget.getTypedConfig<NetGraphWidgetConfig>();
+
+    expect(updatedConfig?.title).toBe('Updated Title');
+    expect(updatedConfig?.subtitle).toBe('Updated Subtitle');
+  });
+
+  it('should allow clearing optional config fields', () => {
+    const widget = new NetGraphWidget();
+    const minimalConfig: NetGraphWidgetConfig = {
+      title: 'Minimal',
+      from: new Date().toISOString(),
+      to: new Date().toISOString(),
+    };
+
+    widget.setTypedConfig(minimalConfig);
+    const config = widget.getTypedConfig<NetGraphWidgetConfig>();
+
+    expect(config?.title).toBe('Minimal');
+    expect(config?.subtitle).toBeUndefined();
+  });
+});
+
+describe('Widget Configuration Management', () => {
+  it('should handle complex JSON in config', () => {
+    const complexConfig = {
+      title: 'Complex Widget',
+      subtitle: 'With nested data',
+      nested: {
+        level1: {
+          level2: 'deep value',
+        },
+      },
+      array: [1, 2, 3],
+    };
+
+    const widget = new CurrentBalanceWidget({ config: JSON.stringify(complexConfig) });
+    const retrievedConfig = widget.getTypedConfig();
+
+    expect(retrievedConfig).toEqual(complexConfig);
+  });
+
+  it('should handle special characters in config', () => {
+    const config = {
+      title: 'Title with "quotes" and \'apostrophes\'',
+      subtitle: 'Subtitle with special chars: @#$%^&*()',
+    };
+
+    const widget = new CurrentBalanceWidget({ config: JSON.stringify(config) });
+    const retrievedConfig = widget.getTypedConfig();
+
+    expect(retrievedConfig).toEqual(config);
+  });
+
+  it('should return undefined for invalid JSON config', () => {
+    const widget = new CurrentBalanceWidget({ config: 'invalid json {' });
+
+    expect(() => widget.getTypedConfig()).not.toThrow();
+    expect(widget.getTypedConfig()).toBeUndefined();
+  });
+
+  it('should allow empty config object', () => {
+    const widget = new CurrentBalanceWidget({ config: '{}' });
+    const config = widget.getTypedConfig();
+
+    expect(config).toEqual({});
+  });
 });
