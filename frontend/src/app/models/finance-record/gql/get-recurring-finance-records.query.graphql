@@ -1,0 +1,17 @@
+query getRecurringFinanceRecords {
+  recurringFinanceRecords {
+    id
+    name
+    description
+    amount
+    currency
+    date
+    isRecurring
+    recurrenceFrequency
+    recurrenceEndDate
+    lastProcessedDate
+    parentRecurringRecordId
+    isRecurringInstance
+    imported
+  }
+}

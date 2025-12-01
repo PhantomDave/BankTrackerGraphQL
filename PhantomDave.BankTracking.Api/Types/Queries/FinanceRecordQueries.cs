@@ -59,6 +59,21 @@ public class FinanceRecordQueries
     }
 
     /// <summary>
+    /// Get all active recurring finance records for an account.
+    /// Returns only recurring records that haven't expired or have no end date.
+    /// </summary>
+    [Authorize]
+    public async Task<IEnumerable<FinanceRecordType>> GetRecurringFinanceRecords(
+        [Service] FinanceRecordService financeRecordService,
+        [Service] IHttpContextAccessor httpContextAccessor)
+    {
+        var accountId = httpContextAccessor.GetAccountIdFromContext();
+        var records = await financeRecordService.GetRecurringFinanceRecordsAsync(accountId);
+
+        return records.Select(FinanceRecordType.FromFinanceRecord);
+    }
+
+    /// <summary>
     /// Get monthly comparison statistics for an account
     /// </summary>
     [Authorize]

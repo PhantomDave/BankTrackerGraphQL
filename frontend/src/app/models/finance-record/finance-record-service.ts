@@ -7,6 +7,7 @@ import {
   GetFinanceRecordsGQL,
   GetMonthlyComparisonGQL,
   GetMonthlyComparisonQuery,
+  GetRecurringFinanceRecordsGQL,
   RecurrenceFrequency,
   UpdateFinanceRecordGQL,
 } from '../../../generated/graphql';
@@ -21,6 +22,7 @@ export class FinanceRecordService {
   private readonly updateFinanceRecordGQL = inject(UpdateFinanceRecordGQL);
   private readonly deleteFinanceRecordGQL = inject(DeleteFinanceRecordGQL);
   private readonly getMonthlyComparisonGQL = inject(GetMonthlyComparisonGQL);
+  private readonly getRecurringFinanceRecordsGQL = inject(GetRecurringFinanceRecordsGQL);
   private readonly deleteImportedFinanceRecordGQL = inject(DeleteImportedFinanceRecordGQL);
 
   private readonly _monthlyComparison = signal<
@@ -36,11 +38,21 @@ export class FinanceRecordService {
   private readonly _financeRecords = signal<readonly FinanceRecord[]>([]);
   readonly financeRecords: Signal<readonly FinanceRecord[]> = this._financeRecords.asReadonly();
 
+  private readonly _recurringFinanceRecords = signal<readonly FinanceRecord[]>([]);
+  readonly recurringFinanceRecords: Signal<readonly FinanceRecord[]> =
+    this._recurringFinanceRecords.asReadonly();
+
   private readonly _loading = signal<boolean>(false);
   readonly loading: Signal<boolean> = this._loading.asReadonly();
 
   private readonly _error = signal<string | null>(null);
   readonly error: Signal<string | null> = this._error.asReadonly();
+
+  private readonly _recurringLoading = signal<boolean>(false);
+  readonly recurringLoading: Signal<boolean> = this._recurringLoading.asReadonly();
+
+  private readonly _recurringError = signal<string | null>(null);
+  readonly recurringError: Signal<string | null> = this._recurringError.asReadonly();
 
   async updateFinanceRecord(record: FinanceRecord): Promise<void> {
     this._loading.set(true);
@@ -76,6 +88,26 @@ export class FinanceRecordService {
       this._error.set('Failed to update finance record');
     } finally {
       this._loading.set(false);
+    }
+  }
+
+  async getRecurringFinanceRecords(): Promise<void> {
+    this._recurringLoading.set(true);
+    this._recurringError.set(null);
+
+    try {
+      const result = await firstValueFrom(this.getRecurringFinanceRecordsGQL.fetch());
+      if (result?.data?.recurringFinanceRecords) {
+        this._recurringFinanceRecords.set(
+          result.data.recurringFinanceRecords.map((record) => this.mapToFinanceRecord(record)),
+        );
+      } else {
+        this._recurringError.set('Failed to fetch recurring finance records');
+      }
+    } catch (error) {
+      this._recurringError.set(`Failed to fetch recurring finance records: ${error}`);
+    } finally {
+      this._recurringLoading.set(false);
     }
   }
 
