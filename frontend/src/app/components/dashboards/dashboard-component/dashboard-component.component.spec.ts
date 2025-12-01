@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DashboardComponent } from './dashboard-component.component';
 import { WidgetType } from '../../../../generated/graphql';
-import { SnackbarService } from '../../../services/snackbar-service';
+import { SnackbarService } from '../../../shared/services/snackbar.service';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
