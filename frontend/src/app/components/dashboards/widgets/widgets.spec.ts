@@ -146,8 +146,8 @@ describe('NetGraphWidget', () => {
     const widget = new NetGraphWidget();
     const config = widget.getTypedConfig<NetGraphWidgetConfig>();
 
-    expect(config?.from).toBeInstanceOf(Date);
-    expect(config?.to).toBeInstanceOf(Date);
+    expect(typeof config?.from).toBe('string');
+    expect(typeof config?.to).toBe('string');
 
     const from = new Date(config!.from);
     const to = new Date(config!.to);

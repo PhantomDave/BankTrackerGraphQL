@@ -130,12 +130,30 @@ public class DashboardWidgetMutations
 
         if (input.Title is not null)
         {
-            widget.Title = input.Title.Trim();
+            var trimmedTitle = input.Title.Trim();
+            if (string.IsNullOrEmpty(trimmedTitle))
+            {
+                throw new GraphQLException(
+                    ErrorBuilder.New()
+                        .SetMessage("Widget title cannot be empty or whitespace.")
+                        .SetCode("BAD_USER_INPUT")
+                        .Build());
+            }
+            widget.Title = trimmedTitle;
         }
 
         if (input.Subtitle is not null)
         {
-            widget.Subtitle = input.Subtitle.Trim();
+            var trimmedSubtitle = input.Subtitle.Trim();
+            if (string.IsNullOrEmpty(trimmedSubtitle))
+            {
+                throw new GraphQLException(
+                    ErrorBuilder.New()
+                        .SetMessage("Widget subtitle cannot be empty or whitespace.")
+                        .SetCode("BAD_USER_INPUT")
+                        .Build());
+            }
+            widget.Subtitle = trimmedSubtitle;
         }
 
         if (input.Config is not null)

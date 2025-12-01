@@ -20,7 +20,7 @@ mat-drawer {
   background-color: var(--mat-sys-surface);
   border-left: 1px solid var(--mat-sys-outline-variant);
   box-sizing: border-box;
-  height: 99%;
+  height: 100%;
   overflow: hidden;
 }
 

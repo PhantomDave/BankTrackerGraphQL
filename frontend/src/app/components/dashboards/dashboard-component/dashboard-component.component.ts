@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import {
   CompactType,
   DisplayGrid,
@@ -18,6 +18,7 @@ import { DashboardDrawerComponent } from '../dashboard-drawer-component/dashboar
 import { WidgetType } from '../../../../generated/graphql';
 import { Widget } from '../../../models/dashboards/gridster-item';
 import { WidgetFactory } from '../widgets/widget-factory';
+import { SnackbarService } from '../../../services/snackbar-service';
 
 @Component({
   standalone: true,
@@ -38,6 +39,7 @@ import { WidgetFactory } from '../widgets/widget-factory';
 })
 export class DashboardComponent implements OnInit {
   readonly WidgetType = WidgetType;
+  private readonly snackbarService = inject(SnackbarService);
 
   options!: GridsterConfig;
   readonly widgets = signal<Widget[]>([]);
@@ -148,12 +150,18 @@ export class DashboardComponent implements OnInit {
   }
 
   onWidgetSelected(widgetType: WidgetType) {
-    const widget = WidgetFactory.createWidget(widgetType);
-
-    this.widgets.set([...this.widgets(), widget]);
-  }
-
-  private getDefaultWidgetFromType(widgetType: WidgetType): Widget {
-    return WidgetFactory.createWidget(widgetType);
+    try {
+      const widget = WidgetFactory.createWidget(widgetType);
+      this.widgets.set([...this.widgets(), widget]);
+      
+      const widgetNames: Record<WidgetType, string> = {
+        [WidgetType.NET_GRAPH]: 'Net Graph',
+        [WidgetType.CURRENT_BALANCE]: 'Remaining Budget',
+      };
+      const widgetName = widgetNames[widgetType] ?? String(widgetType);
+      this.snackbarService.success(`Added ${widgetName} widget to dashboard.`);
+    } catch (error) {
+      this.snackbarService.error('Failed to add widget to dashboard.');
+    }
   }
 }

@@ -8,7 +8,6 @@ export class CurrentBalanceWidget extends BaseWidget {
 
   constructor(init?: Partial<BaseWidget>) {
     super(init, 1, 1);
-    this.type = WidgetType.CURRENT_BALANCE;
     if (!init?.config) {
       const defaultConfig: CurrentBalanceWidgetConfig = {
         title: 'Current Balance',

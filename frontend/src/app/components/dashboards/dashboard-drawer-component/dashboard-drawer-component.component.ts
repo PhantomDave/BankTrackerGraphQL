@@ -1,9 +1,8 @@
-import { Component, input, output, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { FlexComponent } from '../../ui-library/flex-component/flex-component';
-import { SnackbarService } from '../../../shared/services/snackbar.service';
 import { WidgetType } from '../../../../generated/graphql';
 
 @Component({
@@ -14,7 +13,6 @@ import { WidgetType } from '../../../../generated/graphql';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardDrawerComponent {
-  private readonly snackBarService = inject(SnackbarService);
   opened = input<boolean>(true);
   closed = output<void>();
   widgetSelected = output<WidgetType>();
@@ -31,7 +29,6 @@ export class DashboardDrawerComponent {
 
   addWidgetToDashboard(widget: { type: WidgetType; name: string }) {
     this.widgetSelected.emit(widget.type);
-    this.snackBarService.success(`Added ${widget.name} widget to dashboard.`);
   }
 
   onDrawerClosed() {
