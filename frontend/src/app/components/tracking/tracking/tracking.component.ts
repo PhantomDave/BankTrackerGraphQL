@@ -1,5 +1,13 @@
 import { FinanceRecordService } from '../../../models/finance-record/finance-record-service';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, model } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  model,
+  OnInit,
+} from '@angular/core';
 import MovementsTableComponent from '../monthly-recap-component/movements-component';
 import RecurringMovementsComponent from '../recurring-movements/recurring-movements.component';
 import { FlexComponent } from '../../ui-library/flex-component/flex-component';
@@ -21,17 +29,19 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TrackingComponent {
+export class TrackingComponent implements OnInit {
   readonly financeRecordService = inject(FinanceRecordService);
 
   readonly loading = computed(() => this.financeRecordService.loading());
-  readonly records = computed(() => this.financeRecordService.financeRecords());
+  readonly records = computed(() =>
+    this.financeRecordService.financeRecords().filter((record) => !record.recurring),
+  );
+  readonly recurringRecords = computed(() => this.financeRecordService.recurringFinanceRecords());
 
   readonly startDate = model(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
   readonly endDate = model(new Date());
 
   constructor() {
-    // Automatically refetch data when dates change
     effect(() => {
       const start = this.startDate();
       const end = this.endDate();
@@ -40,5 +50,9 @@ export class TrackingComponent {
         this.financeRecordService.getFinanceRecords(start, end);
       }
     });
+  }
+
+  ngOnInit(): void {
+    this.financeRecordService.getAllRecurringFinanceRecords();
   }
 }

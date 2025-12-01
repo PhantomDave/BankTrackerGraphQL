@@ -58,6 +58,17 @@ public class FinanceRecordQueries
         return FinanceRecordType.FromFinanceRecord(financeRecord);
     }
 
+    [Authorize]
+    public async Task<IEnumerable<FinanceRecordType>> GetAllRecurringFinanceRecords(
+        [Service] FinanceRecordService financeRecordService,
+        [Service] IHttpContextAccessor httpContextAccessor)
+    {
+        var accountId = httpContextAccessor.GetAccountIdFromContext();
+        var records = await financeRecordService.GetAllRecurringFinanceRecordsAsync(accountId);
+
+        return records.Select(FinanceRecordType.FromFinanceRecord);
+    }
+
     /// <summary>
     /// Get monthly comparison statistics for an account
     /// </summary>

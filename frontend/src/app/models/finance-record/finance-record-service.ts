@@ -7,6 +7,7 @@ import {
   GetFinanceRecordsGQL,
   GetMonthlyComparisonGQL,
   GetMonthlyComparisonQuery,
+  GetRecurringFinanceRecordsGQL,
   RecurrenceFrequency,
   UpdateFinanceRecordGQL,
 } from '../../../generated/graphql';
@@ -21,6 +22,7 @@ export class FinanceRecordService {
   private readonly updateFinanceRecordGQL = inject(UpdateFinanceRecordGQL);
   private readonly deleteFinanceRecordGQL = inject(DeleteFinanceRecordGQL);
   private readonly getMonthlyComparisonGQL = inject(GetMonthlyComparisonGQL);
+  private readonly getAllRecurringFinanceRecordsGQL = inject(GetRecurringFinanceRecordsGQL);
   private readonly deleteImportedFinanceRecordGQL = inject(DeleteImportedFinanceRecordGQL);
 
   private readonly _monthlyComparison = signal<
@@ -35,6 +37,10 @@ export class FinanceRecordService {
 
   private readonly _financeRecords = signal<readonly FinanceRecord[]>([]);
   readonly financeRecords: Signal<readonly FinanceRecord[]> = this._financeRecords.asReadonly();
+
+  private readonly _recurringFinanceRecords = signal<readonly FinanceRecord[]>([]);
+  readonly recurringFinanceRecords: Signal<readonly FinanceRecord[]> =
+    this._recurringFinanceRecords.asReadonly();
 
   private readonly _loading = signal<boolean>(false);
   readonly loading: Signal<boolean> = this._loading.asReadonly();
@@ -74,6 +80,26 @@ export class FinanceRecordService {
       }
     } catch {
       this._error.set('Failed to update finance record');
+    } finally {
+      this._loading.set(false);
+    }
+  }
+
+  async getAllRecurringFinanceRecords(): Promise<void> {
+    this._loading.set(true);
+    this._error.set(null);
+
+    try {
+      const result = await firstValueFrom(this.getAllRecurringFinanceRecordsGQL.fetch());
+      if (result?.data?.allRecurringFinanceRecords) {
+        this._recurringFinanceRecords.set(
+          result.data.allRecurringFinanceRecords.map((record) => this.mapToFinanceRecord(record)),
+        );
+      } else {
+        this._error.set('Failed to fetch recurring finance records');
+      }
+    } catch (error) {
+      this._error.set(`Failed to fetch recurring finance records: ${error}`);
     } finally {
       this._loading.set(false);
     }
