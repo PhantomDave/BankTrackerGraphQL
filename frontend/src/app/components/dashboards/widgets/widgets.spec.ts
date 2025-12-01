@@ -265,11 +265,10 @@ describe('Widget Configuration Management', () => {
     expect(retrievedConfig).toEqual(config);
   });
 
-  it('should return undefined for invalid JSON config', () => {
+  it('should throw error for invalid JSON config', () => {
     const widget = new CurrentBalanceWidget({ config: 'invalid json {' });
 
-    expect(() => widget.getTypedConfig()).not.toThrow();
-    expect(widget.getTypedConfig()).toBeUndefined();
+    expect(() => widget.getTypedConfig()).toThrow();
   });
 
   it('should allow empty config object', () => {
