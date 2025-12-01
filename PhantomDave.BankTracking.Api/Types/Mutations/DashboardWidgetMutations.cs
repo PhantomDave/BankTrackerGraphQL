@@ -45,7 +45,10 @@ public class DashboardWidgetMutations
             X = Math.Max(0, input.X),
             Y = Math.Max(0, input.Y),
             Rows = input.Rows,
-            Cols = input.Cols
+            Cols = input.Cols,
+            Title = input.Title?.Trim(),
+            Subtitle = input.Subtitle?.Trim(),
+            Config = input.Config
         };
 
         await unitOfWork.DashboardWidgets.AddAsync(widget);
@@ -123,6 +126,21 @@ public class DashboardWidgetMutations
             }
 
             widget.Cols = input.Cols.Value;
+        }
+
+        if (input.Title is not null)
+        {
+            widget.Title = input.Title.Trim();
+        }
+
+        if (input.Subtitle is not null)
+        {
+            widget.Subtitle = input.Subtitle.Trim();
+        }
+
+        if (input.Config is not null)
+        {
+            widget.Config = input.Config;
         }
 
         await unitOfWork.DashboardWidgets.UpdateAsync(widget);

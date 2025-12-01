@@ -11,11 +11,13 @@ import {
 } from 'angular-gridster2';
 import { MatIcon } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { Widget, WidgetType } from '../../../models/dashboards/gridster-item';
 import { WidgetNetGraphComponent } from '../../../widgets/widget-net-graph/widget-net-graph.component';
 import { WidgetRemainingComponent } from '../../../widgets/widget-remaining/widget-remaining.component';
 import { FlexComponent } from '../../ui-library/flex-component/flex-component';
 import { DashboardDrawerComponent } from '../dashboard-drawer-component/dashboard-drawer-component.component';
+import { WidgetType } from '../../../../generated/graphql';
+import { Widget } from '../../../models/dashboards/gridster-item';
+import { WidgetFactory } from '../widgets/widget-factory';
 
 @Component({
   standalone: true,
@@ -100,23 +102,6 @@ export class DashboardComponent implements OnInit {
       itemChangeCallback: this.itemChange.bind(this),
       itemResizeCallback: this.itemResize.bind(this),
     };
-
-    this.widgets.set([
-      {
-        cols: 4,
-        rows: 4,
-        y: 0,
-        x: 0,
-        type: WidgetType.CurrentBalance,
-      },
-      {
-        cols: 8,
-        rows: 6,
-        y: 0,
-        x: 4,
-        type: WidgetType.NetGraph,
-      },
-    ]);
   }
 
   itemChange(_item: GridsterItem, _itemComponent: GridsterItemComponentInterface) {
@@ -133,15 +118,6 @@ export class DashboardComponent implements OnInit {
 
   removeItem(item: GridsterItem) {
     this.widgets().splice(this.widgets().indexOf(item), 1);
-  }
-
-  addItem() {
-    this.widgets().push({
-      x: 0,
-      y: 0,
-      rows: 0,
-      cols: 0,
-    });
   }
 
   editDashboard() {
@@ -169,5 +145,15 @@ export class DashboardComponent implements OnInit {
     }
 
     this.options.api?.optionsChanged?.();
+  }
+
+  onWidgetSelected(widgetType: WidgetType) {
+    const widget = WidgetFactory.createWidget(widgetType);
+
+    this.widgets.set([...this.widgets(), widget]);
+  }
+
+  private getDefaultWidgetFromType(widgetType: WidgetType): Widget {
+    return WidgetFactory.createWidget(widgetType);
   }
 }

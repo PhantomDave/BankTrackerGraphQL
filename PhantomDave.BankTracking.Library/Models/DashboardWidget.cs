@@ -9,6 +9,9 @@ public class DashboardWidget
     public int Y { get; set; }
     public int Rows { get; set; }
     public int Cols { get; set; }
+    public string? Title { get; set; }
+    public string? Subtitle { get; set; }
+    public string? Config { get; set; }
 }
 
 public enum WidgetType
