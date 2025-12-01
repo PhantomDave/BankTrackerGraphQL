@@ -19,6 +19,7 @@ import { WidgetType } from '../../../../generated/graphql';
 import { Widget } from '../../../models/dashboards/gridster-item';
 import { WidgetFactory } from '../widgets/widget-factory';
 import { SnackbarService } from '../../../shared/services/snackbar.service';
+import { WIDGET_DISPLAY_NAMES } from '../../../constants/widget-names';
 
 @Component({
   standalone: true,
@@ -154,11 +155,7 @@ export class DashboardComponent implements OnInit {
       const widget = WidgetFactory.createWidget(widgetType);
       this.widgets.set([...this.widgets(), widget]);
       
-      const widgetNames: Record<WidgetType, string> = {
-        [WidgetType.NET_GRAPH]: 'Net Graph',
-        [WidgetType.CURRENT_BALANCE]: 'Remaining Budget',
-      };
-      const widgetName = widgetNames[widgetType] ?? String(widgetType);
+      const widgetName = WIDGET_DISPLAY_NAMES[widgetType] ?? String(widgetType);
       this.snackbarService.success(`Added ${widgetName} widget to dashboard.`);
     } catch (error) {
       this.snackbarService.error('Failed to add widget to dashboard.');

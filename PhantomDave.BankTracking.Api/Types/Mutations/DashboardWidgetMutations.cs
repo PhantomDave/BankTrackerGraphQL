@@ -38,35 +38,8 @@ public class DashboardWidgetMutations
                     .Build());
         }
 
-        string? title = null;
-        if (input.Title is not null)
-        {
-            var trimmedTitle = input.Title.Trim();
-            if (string.IsNullOrEmpty(trimmedTitle))
-            {
-                throw new GraphQLException(
-                    ErrorBuilder.New()
-                        .SetMessage("Widget title cannot be empty or whitespace.")
-                        .SetCode("BAD_USER_INPUT")
-                        .Build());
-            }
-            title = trimmedTitle;
-        }
-
-        string? subtitle = null;
-        if (input.Subtitle is not null)
-        {
-            var trimmedSubtitle = input.Subtitle.Trim();
-            if (string.IsNullOrEmpty(trimmedSubtitle))
-            {
-                throw new GraphQLException(
-                    ErrorBuilder.New()
-                        .SetMessage("Widget subtitle cannot be empty or whitespace.")
-                        .SetCode("BAD_USER_INPUT")
-                        .Build());
-            }
-            subtitle = trimmedSubtitle;
-        }
+        var title = ValidateAndTrimString(input.Title, "title");
+        var subtitle = ValidateAndTrimString(input.Subtitle, "subtitle");
 
         var widget = new DashboardWidget
         {
@@ -160,30 +133,12 @@ public class DashboardWidgetMutations
 
         if (input.Title is not null)
         {
-            var trimmedTitle = input.Title.Trim();
-            if (string.IsNullOrEmpty(trimmedTitle))
-            {
-                throw new GraphQLException(
-                    ErrorBuilder.New()
-                        .SetMessage("Widget title cannot be empty or whitespace.")
-                        .SetCode("BAD_USER_INPUT")
-                        .Build());
-            }
-            widget.Title = trimmedTitle;
+            widget.Title = ValidateAndTrimString(input.Title, "title");
         }
 
         if (input.Subtitle is not null)
         {
-            var trimmedSubtitle = input.Subtitle.Trim();
-            if (string.IsNullOrEmpty(trimmedSubtitle))
-            {
-                throw new GraphQLException(
-                    ErrorBuilder.New()
-                        .SetMessage("Widget subtitle cannot be empty or whitespace.")
-                        .SetCode("BAD_USER_INPUT")
-                        .Build());
-            }
-            widget.Subtitle = trimmedSubtitle;
+            widget.Subtitle = ValidateAndTrimString(input.Subtitle, "subtitle");
         }
 
         if (input.Config is not null)
@@ -229,5 +184,21 @@ public class DashboardWidgetMutations
         await unitOfWork.SaveChangesAsync();
 
         return true;
+    }
+
+    private static string? ValidateAndTrimString(string? value, string fieldName)
+    {
+        if (value is null) return null;
+
+        var trimmed = value.Trim();
+        if (string.IsNullOrEmpty(trimmed))
+        {
+            throw new GraphQLException(
+                ErrorBuilder.New()
+                    .SetMessage($"Widget {fieldName} cannot be empty or whitespace.")
+                    .SetCode("BAD_USER_INPUT")
+                    .Build());
+        }
+        return trimmed;
     }
 }

@@ -60,7 +60,6 @@ describe('DashboardComponent', () => {
     });
 
     it('should show error snackbar if widget creation fails', () => {
-      spyOn(console, 'error'); // Suppress console output in tests
       const invalidWidgetType = 'INVALID_TYPE' as WidgetType;
 
       component.onWidgetSelected(invalidWidgetType);
@@ -69,7 +68,6 @@ describe('DashboardComponent', () => {
     });
 
     it('should not add widget to list if creation fails', () => {
-      spyOn(console, 'error'); // Suppress console output in tests
       const invalidWidgetType = 'INVALID_TYPE' as WidgetType;
       const initialWidgetCount = component.widgets().length;
 
