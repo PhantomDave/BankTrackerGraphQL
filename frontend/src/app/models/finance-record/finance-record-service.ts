@@ -22,7 +22,7 @@ export class FinanceRecordService {
   private readonly updateFinanceRecordGQL = inject(UpdateFinanceRecordGQL);
   private readonly deleteFinanceRecordGQL = inject(DeleteFinanceRecordGQL);
   private readonly getMonthlyComparisonGQL = inject(GetMonthlyComparisonGQL);
-  private readonly getAllRecurringFinanceRecordsGQL = inject(GetRecurringFinanceRecordsGQL);
+  private readonly getRecurringFinanceRecordsGQL = inject(GetRecurringFinanceRecordsGQL);
   private readonly deleteImportedFinanceRecordGQL = inject(DeleteImportedFinanceRecordGQL);
 
   private readonly _monthlyComparison = signal<
@@ -47,6 +47,12 @@ export class FinanceRecordService {
 
   private readonly _error = signal<string | null>(null);
   readonly error: Signal<string | null> = this._error.asReadonly();
+
+  private readonly _recurringLoading = signal<boolean>(false);
+  readonly recurringLoading: Signal<boolean> = this._recurringLoading.asReadonly();
+
+  private readonly _recurringError = signal<string | null>(null);
+  readonly recurringError: Signal<string | null> = this._recurringError.asReadonly();
 
   async updateFinanceRecord(record: FinanceRecord): Promise<void> {
     this._loading.set(true);
@@ -85,23 +91,23 @@ export class FinanceRecordService {
     }
   }
 
-  async getAllRecurringFinanceRecords(): Promise<void> {
-    this._loading.set(true);
-    this._error.set(null);
+  async getRecurringFinanceRecords(): Promise<void> {
+    this._recurringLoading.set(true);
+    this._recurringError.set(null);
 
     try {
-      const result = await firstValueFrom(this.getAllRecurringFinanceRecordsGQL.fetch());
-      if (result?.data?.allRecurringFinanceRecords) {
+      const result = await firstValueFrom(this.getRecurringFinanceRecordsGQL.fetch());
+      if (result?.data?.recurringFinanceRecords) {
         this._recurringFinanceRecords.set(
-          result.data.allRecurringFinanceRecords.map((record) => this.mapToFinanceRecord(record)),
+          result.data.recurringFinanceRecords.map((record) => this.mapToFinanceRecord(record)),
         );
       } else {
-        this._error.set('Failed to fetch recurring finance records');
+        this._recurringError.set('Failed to fetch recurring finance records');
       }
     } catch (error) {
-      this._error.set(`Failed to fetch recurring finance records: ${error}`);
+      this._recurringError.set(`Failed to fetch recurring finance records: ${error}`);
     } finally {
-      this._loading.set(false);
+      this._recurringLoading.set(false);
     }
   }
 

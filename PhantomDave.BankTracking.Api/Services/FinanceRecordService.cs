@@ -19,13 +19,15 @@ public class FinanceRecordService
     public Task<FinanceRecord?> GetFinanceRecordAsync(int id) =>
         _unitOfWork.FinanceRecords.GetByIdAsync(id);
 
-    public async Task<IEnumerable<FinanceRecord>> GetAllRecurringFinanceRecordsAsync(int accountId) =>
+    public async Task<IEnumerable<FinanceRecord>> GetRecurringFinanceRecordsAsync(int accountId) =>
         await _unitOfWork.FinanceRecords.Query()
             .AsNoTracking()
             .Where(record => record.IsRecurring &&
                     record.AccountId == accountId &&
                     (!record.RecurrenceEndDate.HasValue ||
                     record.RecurrenceEndDate.Value >= DateTime.UtcNow))
+            .OrderByDescending(record => record.Date)
+            .ThenByDescending(record => record.Id)
             .ToListAsync();
 
     public async Task<IEnumerable<FinanceRecord>> GetFinanceRecordsForAccountAsync(
