@@ -1,7 +1,7 @@
-import { GridsterItem } from 'angular-gridster2';
+import { GridsterItemConfig } from 'angular-gridster2';
 import { WidgetType } from '../../../generated/graphql';
 
-export interface Widget extends GridsterItem {
+export interface Widget extends GridsterItemConfig {
   x: number;
   y: number;
   cols: number;
