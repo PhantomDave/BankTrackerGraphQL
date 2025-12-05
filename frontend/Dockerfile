@@ -5,6 +5,9 @@ WORKDIR /app
 
 COPY package.json bun.lock ./
 
+# Install Python and build essentials for native module compilation (required by lmdb)
+RUN apt-get update && apt-get install -y python3 python3-pip make g++ && rm -rf /var/lib/apt/lists/*
+
 RUN bun install --frozen-lockfile
 
 COPY . .
