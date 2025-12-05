@@ -43,6 +43,7 @@ updates:
           - "@angular/*"
           - "@angular-devkit/*"
           - "@angular-eslint/*"
+          - "angular-*"
 
   # Docker base images
   - package-ecosystem: "docker"
