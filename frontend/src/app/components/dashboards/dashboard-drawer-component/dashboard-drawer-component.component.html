@@ -1,8 +1,8 @@
-<mat-drawer-container hasBackdrop>
+<mat-drawer-container [hasBackdrop]="false">
   <mat-drawer
     #drawer
     [opened]="opened()"
-    mode="over"
+    mode="side"
     position="end"
     (closedStart)="onDrawerClosed()"
   >

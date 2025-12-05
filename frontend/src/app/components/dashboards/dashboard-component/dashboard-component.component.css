@@ -1,3 +1,20 @@
+
+
+.dashboard-widget {
+  position: relative;
+  z-index: 2;
+  pointer-events: auto;
+}
+
+.gridster-container {
+  position: relative;
+}
+
+.dashboard-widget {
+  position: relative;
+  z-index: 3;
+  pointer-events: auto;
+}
 :host {
   display: flex;
   flex-direction: column;
@@ -33,6 +50,19 @@ gridster-item {
 .placeholder-widget p {
   margin: 4px 0;
   font: var(--mat-sys-body-medium);
+}
+
+.dashboard-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.edit-fab {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 100;
 }
 
 .floating-button {

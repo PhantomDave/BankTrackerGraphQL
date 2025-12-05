@@ -12,7 +12,6 @@ import { MatIcon } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { WidgetNetGraphComponent } from '../../../widgets/widget-net-graph/widget-net-graph.component';
 import { WidgetRemainingComponent } from '../../../widgets/widget-remaining/widget-remaining.component';
-import { FlexComponent } from '../../ui-library/flex-component/flex-component';
 import { DashboardDrawerComponent } from '../dashboard-drawer-component/dashboard-drawer-component.component';
 import { WidgetType } from '../../../../generated/graphql';
 import { Widget } from '../../../models/dashboards/gridster-item';
@@ -29,7 +28,6 @@ import { WIDGET_DISPLAY_NAMES } from '../../../constants/widget-names';
     WidgetNetGraphComponent,
     MatIcon,
     MatButtonModule,
-    FlexComponent,
     DashboardDrawerComponent,
   ],
   selector: 'app-dashboard',
@@ -122,7 +120,6 @@ export class DashboardComponent implements OnInit {
     const newEditMode = !this.isEditMode();
     this.isEditMode.set(newEditMode);
 
-    // Create new options object to trigger change detection
     this.options = {
       ...this.options,
       draggable: {
@@ -139,7 +136,6 @@ export class DashboardComponent implements OnInit {
   onDrawerClosed() {
     this.isEditMode.set(false);
 
-    // Create new options object to trigger change detection
     this.options = {
       ...this.options,
       draggable: {
