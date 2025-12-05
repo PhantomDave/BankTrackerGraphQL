@@ -2,11 +2,10 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@ang
 import {
   CompactType,
   DisplayGrid,
-  GridsterComponent,
+  Gridster,
   GridsterConfig,
+  GridsterItemConfig,
   GridsterItem,
-  GridsterItemComponent,
-  GridsterItemComponentInterface,
   GridType,
 } from 'angular-gridster2';
 import { MatIcon } from '@angular/material/icon';
@@ -24,8 +23,8 @@ import { WIDGET_DISPLAY_NAMES } from '../../../constants/widget-names';
 @Component({
   standalone: true,
   imports: [
-    GridsterComponent,
-    GridsterItemComponent,
+    Gridster,
+    GridsterItem,
     WidgetRemainingComponent,
     WidgetNetGraphComponent,
     MatIcon,
@@ -107,19 +106,15 @@ export class DashboardComponent implements OnInit {
     };
   }
 
-  itemChange(_item: GridsterItem, _itemComponent: GridsterItemComponentInterface) {
+  itemChange(_item: GridsterItemConfig) {
     // Item changed callback
   }
 
-  itemResize(_item: GridsterItem, _itemComponent: GridsterItemComponentInterface) {
+  itemResize(_item: GridsterItemConfig) {
     // Item resized callback
   }
 
-  changedOptions() {
-    // this.options.api?.optionsChanged();
-  }
-
-  removeItem(item: GridsterItem) {
+  removeItem(item: GridsterItemConfig) {
     this.widgets().splice(this.widgets().indexOf(item), 1);
   }
 
@@ -127,37 +122,45 @@ export class DashboardComponent implements OnInit {
     const newEditMode = !this.isEditMode();
     this.isEditMode.set(newEditMode);
 
-    if (this.options.draggable) {
-      this.options.draggable.enabled = newEditMode;
-    }
-    if (this.options.resizable) {
-      this.options.resizable.enabled = newEditMode;
-    }
-
-    this.options.api?.optionsChanged?.();
+    // Create new options object to trigger change detection
+    this.options = {
+      ...this.options,
+      draggable: {
+        ...this.options.draggable,
+        enabled: newEditMode,
+      },
+      resizable: {
+        ...this.options.resizable,
+        enabled: newEditMode,
+      },
+    };
   }
 
   onDrawerClosed() {
     this.isEditMode.set(false);
 
-    if (this.options.draggable) {
-      this.options.draggable.enabled = false;
-    }
-    if (this.options.resizable) {
-      this.options.resizable.enabled = false;
-    }
-
-    this.options.api?.optionsChanged?.();
+    // Create new options object to trigger change detection
+    this.options = {
+      ...this.options,
+      draggable: {
+        ...this.options.draggable,
+        enabled: false,
+      },
+      resizable: {
+        ...this.options.resizable,
+        enabled: false,
+      },
+    };
   }
 
   onWidgetSelected(widgetType: WidgetType) {
     try {
       const widget = WidgetFactory.createWidget(widgetType);
       this.widgets.set([...this.widgets(), widget]);
-      
+
       const widgetName = WIDGET_DISPLAY_NAMES[widgetType] ?? String(widgetType);
       this.snackbarService.success(`Added ${widgetName} widget to dashboard.`);
-    } catch (error) {
+    } catch {
       this.snackbarService.error('Failed to add widget to dashboard.');
     }
   }
