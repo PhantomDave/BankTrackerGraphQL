@@ -5,6 +5,17 @@ WORKDIR /app
 
 COPY package.json bun.lock ./
 
+# Upgrade libstdc++6 to fix GLIBCXX_3.4.29 requirement for lmdb native bindings
+# Adding Debian Bookworm repository for a single library upgrade.
+# Note: Mixing Debian versions is not ideal but is minimal here (only libstdc++6).
+# The base image already has Debian GPG keys configured for signature verification.
+# This is required because oven/bun:1.1.13 is based on Bullseye which lacks the needed GLIBCXX version.
+RUN apt-get update && \
+    echo "deb http://deb.debian.org/debian bookworm main" >> /etc/apt/sources.list && \
+    apt-get update && \
+    apt-get install -y -t bookworm --no-install-recommends libstdc++6 && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
 RUN bun install --frozen-lockfile
 
 COPY . .

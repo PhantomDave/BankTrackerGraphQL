@@ -71,20 +71,6 @@ jobs:
         working-directory: ./frontend
         run: bun run codegen
 
-      - name: Format code with Prettier
-        working-directory: ./frontend
-        run: bun run prettier --write "src/**/*.{ts,html,css,scss}"
-      - name: Commit formatted code
-        uses: stefanzweifel/git-auto-commit-action@v7
-        if: github.event_name == 'push'
-        with:
-          commit_message: "chore: auto-format Frontend code"
-          file_pattern: "frontend/src/**"
-
-      - name: Check TypeScript compilation
-        working-directory: ./frontend
-        run: bun run tsc --noEmit
-
       - name: Build
         working-directory: ./frontend
         run: bun run build -- --configuration=development
