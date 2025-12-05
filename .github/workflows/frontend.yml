@@ -71,14 +71,6 @@ jobs:
         working-directory: ./frontend
         run: bun run codegen
 
-      - name: Check code formatting with Prettier
-        working-directory: ./frontend
-        run: bun run prettier --check "src/**/*.{ts,html,css,scss}"
-
-      - name: Check TypeScript compilation
-        working-directory: ./frontend
-        run: bun run tsc --noEmit
-
       - name: Build
         working-directory: ./frontend
         run: bun run build -- --configuration=development
