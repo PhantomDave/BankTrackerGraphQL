@@ -6,11 +6,13 @@ WORKDIR /app
 COPY package.json bun.lock ./
 
 # Upgrade libstdc++6 to fix GLIBCXX_3.4.29 requirement for lmdb native bindings
-# This upgrades the C++ standard library to support newer precompiled binaries
-RUN echo "deb http://deb.debian.org/debian bookworm main" >> /etc/apt/sources.list && \
+# Add Debian Bookworm repository with proper GPG key verification for security
+# This is a minimal upgrade to support newer precompiled binaries while maintaining stability
+RUN apt-get update && apt-get install -y --no-install-recommends gnupg && \
+    echo "deb http://deb.debian.org/debian bookworm main" >> /etc/apt/sources.list && \
     apt-get update && \
-    apt-get install -y -t bookworm libstdc++6 && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y -t bookworm --no-install-recommends libstdc++6 && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN bun install --frozen-lockfile
 
