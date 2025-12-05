@@ -2,7 +2,6 @@
   "name": "BankTracking Dev",
   "image": "mcr.microsoft.com/devcontainers/dotnet:10.0",
   "features": {
-    "ghcr.io/devcontainers/features/node:1": { "version": "20" },
     "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   },
   "forwardPorts": [4200, 5000],
@@ -10,8 +9,12 @@
     "4200": { "label": "Angular Frontend" },
     "5000": { "label": "API / GraphQL" }
   },
-  "postCreateCommand": "dotnet nuget locals all --clear || true && (dotnet tool install --global dotnet-ef --version 9.* --disable-parallel || dotnet tool install --global dotnet-ef --version 8.* --disable-parallel || echo 'dotnet-ef install failed, continuing') && dotnet restore && cd frontend && (npm ci || npm install)",
+  "postCreateCommand": "curl -fsSL https://bun.sh/install | bash && export BUN_INSTALL=\"$HOME/.bun\" && export PATH=\"$BUN_INSTALL/bin:$PATH\" && dotnet nuget locals all --clear || true && (dotnet tool install --global dotnet-ef --version 10.* --disable-parallel || dotnet tool install --global dotnet-ef --version 8.* --disable-parallel || echo 'dotnet-ef install failed, continuing') && dotnet restore && cd frontend && bun install",
   "remoteUser": "vscode",
+  "remoteEnv": {
+    "BUN_INSTALL": "/home/vscode/.bun",
+    "PATH": "/home/vscode/.bun/bin:${containerEnv:PATH}"
+  },
   "customizations": {
     "vscode": {
       "extensions": [
@@ -38,5 +41,5 @@
     }
   },
   "updateContentCommand": "dotnet build ./PhantomDave.BankTracking.Api/PhantomDave.BankTracking.Api.csproj || true",
-  "postStartCommand": "docker compose up database -d && echo 'Devcontainer ready. You can run: dotnet run --project PhantomDave.BankTracking.Api & and npm start --prefix frontend'"
+  "postStartCommand": "docker compose up database -d && echo 'Devcontainer ready. You can run: dotnet run --project PhantomDave.BankTracking.Api & and cd frontend && bun run start'"
 }

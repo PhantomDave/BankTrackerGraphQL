@@ -38,7 +38,7 @@
   },
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
-  "chat.mcp.enabled": true,
   "github.copilot.chat.agent.thinkingProcess": true,
-  "github.copilot.chat.codeGeneration.useInstructionFiles": true
+  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+  "chat.mcp.access": "all"
 }
