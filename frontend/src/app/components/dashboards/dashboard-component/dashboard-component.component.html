@@ -3,29 +3,35 @@
   (closed)="onDrawerClosed()"
   (widgetSelected)="onWidgetSelected($event)"
 >
-  <gridster [options]="options" [class.edit-mode]="isEditMode()" class="gridster-container">
-    @for (widget of widgets(); track widget) {
-      <gridster-item [item]="widget">
-        @switch (widget.type) {
-          @case (WidgetType.CURRENT_BALANCE) {
-            <app-widget-remaining [isEditMode]="isEditMode()"></app-widget-remaining>
+  <div class="dashboard-wrapper">
+    <gridster [options]="options" [class.edit-mode]="isEditMode()" class="gridster-container">
+      @for (widget of widgets(); track widget) {
+        <gridster-item [item]="widget" class="dashboard-widget">
+          @switch (widget.type) {
+            @case (WidgetType.CURRENT_BALANCE) {
+              <app-widget-remaining [isEditMode]="isEditMode()"></app-widget-remaining>
+            }
+            @case (WidgetType.NET_GRAPH) {
+              <app-widget-net-graph [isEditMode]="isEditMode()"></app-widget-net-graph>
+            }
+            @default {
+              <div class="placeholder-widget">
+                <p>Widget: {{ widget['component'] || 'Empty' }}</p>
+                <p>{{ widget.cols }}x{{ widget.rows }}</p>
+              </div>
+            }
           }
-          @case (WidgetType.NET_GRAPH) {
-            <app-widget-net-graph [isEditMode]="isEditMode()"></app-widget-net-graph>
-          }
-          @default {
-            <div class="placeholder-widget">
-              <p>Widget: {{ widget['component'] || 'Empty' }}</p>
-              <p>{{ widget.cols }}x{{ widget.rows }}</p>
-            </div>
-          }
-        }
-      </gridster-item>
-    }
-    <app-flex justify="flex-end" align="flex-end" class="floating-button">
-      <button matMiniFab type="button" aria-label="Edit Dashboard" (click)="editDashboard()">
-        <mat-icon>edit</mat-icon>
-      </button>
-    </app-flex>
-  </gridster>
+        </gridster-item>
+      }
+    </gridster>
+    <button
+      mat-fab
+      class="edit-fab"
+      type="button"
+      aria-label="Edit Dashboard"
+      (click)="editDashboard()"
+    >
+      <mat-icon>edit</mat-icon>
+    </button>
+  </div>
 </app-dashboard-drawer-component>

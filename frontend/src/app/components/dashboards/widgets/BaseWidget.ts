@@ -10,6 +10,9 @@ export abstract class BaseWidget implements Widget {
   config: string;
   type!: WidgetType;
 
+  minItemCols: number;
+  minItemRows: number;
+
   // Abstract properties that each widget must define
   abstract readonly minCols: number;
   abstract readonly minRows: number;
@@ -21,6 +24,8 @@ export abstract class BaseWidget implements Widget {
     this.rows = init?.rows ?? minRows;
     this.id = init?.id;
     this.config = init?.config ?? '';
+    this.minItemCols = minCols;
+    this.minItemRows = minRows;
     if (init?.type) {
       this.type = init.type;
     }
