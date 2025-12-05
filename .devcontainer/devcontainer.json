@@ -41,5 +41,5 @@
     }
   },
   "updateContentCommand": "dotnet build ./PhantomDave.BankTracking.Api/PhantomDave.BankTracking.Api.csproj || true",
-  "postStartCommand": "docker compose up database -d && echo 'Devcontainer ready. You can run: dotnet run --project PhantomDave.BankTracking.Api & and bun run start --prefix frontend'"
+  "postStartCommand": "docker compose up database -d && echo 'Devcontainer ready. You can run: dotnet run --project PhantomDave.BankTracking.Api & and cd frontend && bun run start'"
 }
