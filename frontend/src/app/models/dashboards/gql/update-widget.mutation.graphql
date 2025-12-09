@@ -1,0 +1,13 @@
+mutation UpdateWidget($input: UpdateWidgetInput!) {
+  updateWidget(input: $input) {
+    id
+    widgetType
+    title
+    subtitle
+    config
+    cols
+    rows
+    x
+    y
+  }
+}

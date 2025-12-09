@@ -1,0 +1,17 @@
+query GetDashboards {
+  dashboards {
+    id
+    name
+    widgets {
+      id
+      widgetType
+      title
+      subtitle
+      config
+      cols
+      rows
+      x
+      y
+    }
+  }
+}

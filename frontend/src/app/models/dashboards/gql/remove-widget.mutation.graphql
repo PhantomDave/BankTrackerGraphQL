@@ -1,0 +1,3 @@
+mutation RemoveWidget($id: Int!) {
+  removeWidget(id: $id)
+}

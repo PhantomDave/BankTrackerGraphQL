@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { DashboardService } from './../../../models/dashboards/dashboard.service';
+import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal } from '@angular/core';
 import {
   CompactType,
   DisplayGrid,
@@ -38,10 +39,30 @@ import { WIDGET_DISPLAY_NAMES } from '../../../constants/widget-names';
 export class DashboardComponent implements OnInit {
   readonly WidgetType = WidgetType;
   private readonly snackbarService = inject(SnackbarService);
+  private readonly dashboardService = inject(DashboardService);
 
   options!: GridsterConfig;
   readonly widgets = signal<Widget[]>([]);
   readonly isEditMode = signal<boolean>(false);
+  readonly selectedDashboard = this.dashboardService.selectedDashboard;
+
+  constructor() {
+    effect(() => {
+      const dashboard = this.selectedDashboard();
+      if (dashboard) {
+        const widgets = dashboard.widgets.map((w) =>
+          WidgetFactory.createWidgetFromData({
+            ...w,
+            config: w.config ?? undefined,
+            type: w.widgetType,
+          }),
+        );
+        this.widgets.set(widgets);
+      } else {
+        this.widgets.set([]);
+      }
+    });
+  }
 
   ngOnInit() {
     this.options = {
@@ -102,15 +123,12 @@ export class DashboardComponent implements OnInit {
       itemChangeCallback: this.itemChange.bind(this),
       itemResizeCallback: this.itemResize.bind(this),
     };
+    this.dashboardService.getDashboards();
   }
 
-  itemChange(_item: GridsterItemConfig) {
-    // Item changed callback
-  }
+  itemChange(_item: GridsterItemConfig) {}
 
-  itemResize(_item: GridsterItemConfig) {
-    // Item resized callback
-  }
+  itemResize(_item: GridsterItemConfig) {}
 
   removeItem(item: GridsterItemConfig) {
     this.widgets().splice(this.widgets().indexOf(item), 1);
@@ -151,9 +169,20 @@ export class DashboardComponent implements OnInit {
 
   onWidgetSelected(widgetType: WidgetType) {
     try {
+      if (this.selectedDashboard() == null) {
+        this.dashboardService.createDashboard({ name: 'New Dashboard' });
+        this.snackbarService.info('Created a new dashboard. Please try adding the widget again.');
+      }
       const widget = WidgetFactory.createWidget(widgetType);
       this.widgets.set([...this.widgets(), widget]);
-
+      this.dashboardService.addWidget({
+        dashboardId: this.selectedDashboard()!.id,
+        cols: widget.cols,
+        rows: widget.rows,
+        x: widget.x,
+        y: widget.y,
+        type: widget.getType(),
+      });
       const widgetName = WIDGET_DISPLAY_NAMES[widgetType] ?? String(widgetType);
       this.snackbarService.success(`Added ${widgetName} widget to dashboard.`);
     } catch {
