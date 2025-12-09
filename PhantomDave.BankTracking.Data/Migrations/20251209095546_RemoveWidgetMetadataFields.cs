@@ -5,6 +5,12 @@
 namespace PhantomDave.BankTracking.Data.Migrations
 {
     /// <inheritdoc />
+    /// <remarks>
+    /// This migration permanently removes the Title, Subtitle, and Config columns from the DashboardWidgets table.
+    /// Widget customization is now handled client-side, with only position and size persisted server-side.
+    /// WARNING: Any existing data in these columns will be permanently lost. 
+    /// Ensure data is backed up or migrated before applying this migration in production.
+    /// </remarks>
     public partial class RemoveWidgetMetadataFields : Migration
     {
         /// <inheritdoc />
