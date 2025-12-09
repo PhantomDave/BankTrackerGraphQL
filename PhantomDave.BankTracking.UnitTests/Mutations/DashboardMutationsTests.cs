@@ -51,7 +51,7 @@ public class DashboardMutationsTests
         var input = new CreateDashboardInput { Name = "My Dashboard" };
 
         // Act
-        var result = await _mutations.CreateDashboard(_mockUnitOfWork.Object, _mockHttpContextAccessor.Object, input);
+        await _mutations.CreateDashboard(_mockUnitOfWork.Object, _mockHttpContextAccessor.Object, input);
 
         // Assert
         Assert.NotNull(capturedDashboard);
@@ -91,7 +91,7 @@ public class DashboardMutationsTests
         var input = new CreateDashboardInput { Name = longName };
 
         // Act
-        var result = await _mutations.CreateDashboard(_mockUnitOfWork.Object, _mockHttpContextAccessor.Object, input);
+        await _mutations.CreateDashboard(_mockUnitOfWork.Object, _mockHttpContextAccessor.Object, input);
 
         // Assert
         Assert.NotNull(capturedDashboard);
@@ -111,7 +111,7 @@ public class DashboardMutationsTests
         var input = new UpdateDashboardInput { Id = 1, Name = "New Name" };
 
         // Act
-        var result = await _mutations.UpdateDashboard(_mockUnitOfWork.Object, _mockHttpContextAccessor.Object, input);
+        await _mutations.UpdateDashboard(_mockUnitOfWork.Object, _mockHttpContextAccessor.Object, input);
 
         // Assert
         Assert.Equal("New Name", dashboard.Name);

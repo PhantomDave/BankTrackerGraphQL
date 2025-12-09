@@ -125,12 +125,33 @@ export class DashboardComponent implements OnInit {
     this.dashboardService.getDashboards();
   }
 
-  itemChange(_item: GridsterItemConfig) {}
+  itemChange(item: GridsterItemConfig) {
+    this.persistWidgetChanges(item);
+  }
 
-  itemResize(_item: GridsterItemConfig) {}
+  itemResize(item: GridsterItemConfig) {
+    this.persistWidgetChanges(item);
+  }
+
+  private async persistWidgetChanges(item: GridsterItemConfig) {
+    const widget = item as Widget;
+    if (widget.id && this.selectedDashboard()) {
+      try {
+        await this.dashboardService.updateWidget({
+          id: widget.id,
+          x: widget.x,
+          y: widget.y,
+          cols: widget.cols,
+          rows: widget.rows,
+        });
+      } catch (error) {
+        this.snackbarService.error('Failed to save widget changes.');
+      }
+    }
+  }
 
   removeItem(item: GridsterItemConfig) {
-    this.widgets().splice(this.widgets().indexOf(item), 1);
+    this.widgets.update(widgets => widgets.filter(w => w !== item));
   }
 
   editDashboard() {
@@ -166,15 +187,18 @@ export class DashboardComponent implements OnInit {
     };
   }
 
-  onWidgetSelected(widgetType: WidgetType) {
+  async onWidgetSelected(widgetType: WidgetType) {
     try {
       if (this.selectedDashboard() == null) {
-        this.dashboardService.createDashboard({ name: 'New Dashboard' });
-        this.snackbarService.info('Created a new dashboard. Please try adding the widget again.');
+        const created = await this.dashboardService.createDashboard({ name: 'New Dashboard' });
+        if (!created) {
+          this.snackbarService.error('Failed to create dashboard. Please try again.');
+          return;
+        }
       }
+
       const widget = WidgetFactory.createWidget(widgetType);
-      this.widgets.set([...this.widgets(), widget]);
-      this.dashboardService.addWidget({
+      const addedWidget = await this.dashboardService.addWidget({
         dashboardId: this.selectedDashboard()!.id,
         cols: widget.cols,
         rows: widget.rows,
@@ -182,8 +206,17 @@ export class DashboardComponent implements OnInit {
         y: widget.y,
         type: widget.getType(),
       });
-      const widgetName = WIDGET_DISPLAY_NAMES[widgetType] ?? String(widgetType);
-      this.snackbarService.success(`Added ${widgetName} widget to dashboard.`);
+
+      if (addedWidget) {
+        // Create widget from backend data to ensure consistency
+        const backendWidget = WidgetFactory.createWidgetFromData({
+          ...addedWidget,
+          type: addedWidget.widgetType,
+        });
+        this.widgets.set([...this.widgets(), backendWidget]);
+        const widgetName = WIDGET_DISPLAY_NAMES[widgetType] ?? String(widgetType);
+        this.snackbarService.success(`Added ${widgetName} widget to dashboard.`);
+      }
     } catch {
       this.snackbarService.error('Failed to add widget to dashboard.');
     }
