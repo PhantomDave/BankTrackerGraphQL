@@ -42,7 +42,7 @@ public class DashboardWidgetMutationsTests
     }
 
     [Fact]
-    public async Task AddWidget_WithTitle_TrimsAndStoresTitle()
+    public async Task AddWidget_WithValidInput_CreatesWidget()
     {
         // Arrange
         var dashboard = new Dashboard { Id = 1, Name = "Test", AccountId = 1 };
@@ -63,10 +63,7 @@ public class DashboardWidgetMutationsTests
             X = 0,
             Y = 0,
             Rows = 2,
-            Cols = 2,
-            Title = "  Test Title  ",
-            Subtitle = null,
-            Config = null
+            Cols = 2
         };
 
         // Act
@@ -74,12 +71,16 @@ public class DashboardWidgetMutationsTests
 
         // Assert
         Assert.NotNull(capturedWidget);
-        Assert.Equal("Test Title", capturedWidget.Title);
-        Assert.Equal("Test Title", result.Title);
+        Assert.Equal(1, capturedWidget.DashboardId);
+        Assert.Equal(WidgetType.NetGraph, capturedWidget.Type);
+        Assert.Equal(0, capturedWidget.X);
+        Assert.Equal(0, capturedWidget.Y);
+        Assert.Equal(2, capturedWidget.Rows);
+        Assert.Equal(2, capturedWidget.Cols);
     }
 
     [Fact]
-    public async Task AddWidget_WithSubtitle_TrimsAndStoresSubtitle()
+    public async Task AddWidget_WithNegativePosition_NormalizesToZero()
     {
         // Arrange
         var dashboard = new Dashboard { Id = 1, Name = "Test", AccountId = 1 };
@@ -97,13 +98,10 @@ public class DashboardWidgetMutationsTests
         {
             DashboardId = 1,
             Type = WidgetType.NetGraph,
-            X = 0,
-            Y = 0,
+            X = -5,
+            Y = -10,
             Rows = 2,
-            Cols = 2,
-            Title = null,
-            Subtitle = "  Test Subtitle  ",
-            Config = null
+            Cols = 2
         };
 
         // Act
@@ -111,25 +109,45 @@ public class DashboardWidgetMutationsTests
 
         // Assert
         Assert.NotNull(capturedWidget);
-        Assert.Equal("Test Subtitle", capturedWidget.Subtitle);
-        Assert.Equal("Test Subtitle", result.Subtitle);
+        Assert.Equal(0, capturedWidget.X);
+        Assert.Equal(0, capturedWidget.Y);
     }
 
     [Fact]
-    public async Task AddWidget_WithConfig_StoresConfig()
+    public async Task AddWidget_WithInvalidDashboard_ThrowsException()
+    {
+        // Arrange
+        var account = new Account { Id = 1 };
+        _mockAccountRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(account);
+        _mockDashboardRepository.Setup(r => r.GetByIdAsync(999)).ReturnsAsync((Dashboard?)null);
+
+        var input = new AddWidgetInput
+        {
+            DashboardId = 999,
+            Type = WidgetType.NetGraph,
+            X = 0,
+            Y = 0,
+            Rows = 2,
+            Cols = 2
+        };
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<GraphQLException>(
+            async () => await _mutations.AddWidget(_mockUnitOfWork.Object, _mockHttpContextAccessor.Object, input)
+        );
+
+        Assert.Contains("not found", exception.Message.ToLower());
+    }
+
+    [Fact]
+    public async Task AddWidget_WithInvalidRowsOrCols_ThrowsException()
     {
         // Arrange
         var dashboard = new Dashboard { Id = 1, Name = "Test", AccountId = 1 };
         var account = new Account { Id = 1 };
-        DashboardWidget? capturedWidget = null;
-        var configJson = "{\"from\":\"2024-01-01\",\"to\":\"2024-12-31\"}";
 
         _mockAccountRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(account);
         _mockDashboardRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(dashboard);
-        _mockWidgetRepository
-            .Setup(r => r.AddAsync(It.IsAny<DashboardWidget>()))
-            .Callback<DashboardWidget>(w => capturedWidget = w)
-            .ReturnsAsync((DashboardWidget w) => w);
 
         var input = new AddWidgetInput
         {
@@ -137,184 +155,74 @@ public class DashboardWidgetMutationsTests
             Type = WidgetType.NetGraph,
             X = 0,
             Y = 0,
-            Rows = 2,
-            Cols = 2,
-            Title = null,
-            Subtitle = null,
-            Config = configJson
+            Rows = 0,
+            Cols = 2
         };
 
-        // Act
-        var result = await _mutations.AddWidget(_mockUnitOfWork.Object, _mockHttpContextAccessor.Object, input);
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<GraphQLException>(
+            async () => await _mutations.AddWidget(_mockUnitOfWork.Object, _mockHttpContextAccessor.Object, input)
+        );
 
-        // Assert
-        Assert.NotNull(capturedWidget);
-        Assert.Equal(configJson, capturedWidget.Config);
-        Assert.Equal(configJson, result.Config);
+        Assert.Contains("rows and cols must be greater than 0", exception.Message.ToLower());
     }
 
     [Fact]
-    public async Task AddWidget_WithAllMetadata_StoresAllFields()
+    public async Task UpdateWidget_WithValidData_UpdatesWidget()
     {
         // Arrange
-        var dashboard = new Dashboard { Id = 1, Name = "Test", AccountId = 1 };
         var account = new Account { Id = 1 };
-        DashboardWidget? capturedWidget = null;
-        var configJson = "{\"showCurrency\":true}";
+        var dashboard = new Dashboard { Id = 1, Name = "Test", AccountId = 1 };
+        var widget = new DashboardWidget
+        {
+            Id = 1,
+            DashboardId = 1,
+            Type = WidgetType.NetGraph,
+            X = 0,
+            Y = 0,
+            Rows = 2,
+            Cols = 2
+        };
 
         _mockAccountRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(account);
         _mockDashboardRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(dashboard);
-        _mockWidgetRepository
-            .Setup(r => r.AddAsync(It.IsAny<DashboardWidget>()))
-            .Callback<DashboardWidget>(w => capturedWidget = w)
+        _mockWidgetRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(widget);
+        _mockWidgetRepository.Setup(r => r.UpdateAsync(It.IsAny<DashboardWidget>()))
             .ReturnsAsync((DashboardWidget w) => w);
 
-        var input = new AddWidgetInput
+        var input = new UpdateWidgetInput
         {
-            DashboardId = 1,
+            Id = 1,
             Type = WidgetType.CurrentBalance,
-            X = 0,
-            Y = 0,
-            Rows = 1,
-            Cols = 1,
-            Title = "  My Balance  ",
-            Subtitle = "  Current Account  ",
-            Config = configJson
-        };
-
-        // Act
-        var result = await _mutations.AddWidget(_mockUnitOfWork.Object, _mockHttpContextAccessor.Object, input);
-
-        // Assert
-        Assert.NotNull(capturedWidget);
-        Assert.Equal("My Balance", capturedWidget.Title);
-        Assert.Equal("Current Account", capturedWidget.Subtitle);
-        Assert.Equal(configJson, capturedWidget.Config);
-        Assert.Equal("My Balance", result.Title);
-        Assert.Equal("Current Account", result.Subtitle);
-        Assert.Equal(configJson, result.Config);
-    }
-
-    [Fact]
-    public async Task AddWidget_WithEmptyTitle_ThrowsException()
-    {
-        // Arrange
-        var dashboard = new Dashboard { Id = 1, Name = "Test", AccountId = 1 };
-        var account = new Account { Id = 1 };
-
-        _mockAccountRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(account);
-        _mockDashboardRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(dashboard);
-
-        var input = new AddWidgetInput
-        {
-            DashboardId = 1,
-            Type = WidgetType.NetGraph,
-            X = 0,
-            Y = 0,
-            Rows = 2,
-            Cols = 2,
-            Title = "   "
-        };
-
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<GraphQLException>(
-            async () => await _mutations.AddWidget(_mockUnitOfWork.Object, _mockHttpContextAccessor.Object, input)
-        );
-
-        Assert.Contains("title cannot be empty", exception.Message.ToLower());
-    }
-
-    [Fact]
-    public async Task AddWidget_WithWhitespaceOnlySubtitle_ThrowsException()
-    {
-        // Arrange
-        var dashboard = new Dashboard { Id = 1, Name = "Test", AccountId = 1 };
-        var account = new Account { Id = 1 };
-
-        _mockAccountRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(account);
-        _mockDashboardRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(dashboard);
-
-        var input = new AddWidgetInput
-        {
-            DashboardId = 1,
-            Type = WidgetType.NetGraph,
-            X = 0,
-            Y = 0,
-            Rows = 2,
-            Cols = 2,
-            Subtitle = "\t\n  "
-        };
-
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<GraphQLException>(
-            async () => await _mutations.AddWidget(_mockUnitOfWork.Object, _mockHttpContextAccessor.Object, input)
-        );
-
-        Assert.Contains("subtitle cannot be empty", exception.Message.ToLower());
-    }
-
-    [Fact]
-    public async Task UpdateWidget_WithTitle_TrimsAndUpdatesTitle()
-    {
-        // Arrange
-        var account = new Account { Id = 1 };
-        var dashboard = new Dashboard { Id = 1, Name = "Test", AccountId = 1 };
-        var widget = new DashboardWidget
-        {
-            Id = 1,
-            DashboardId = 1,
-            Type = WidgetType.NetGraph,
-            X = 0,
-            Y = 0,
-            Rows = 2,
-            Cols = 2
-        };
-
-        _mockAccountRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(account);
-        _mockDashboardRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(dashboard);
-        _mockWidgetRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(widget);
-        _mockWidgetRepository.Setup(r => r.UpdateAsync(It.IsAny<DashboardWidget>()))
-            .ReturnsAsync((DashboardWidget w) => w);
-
-        var input = new UpdateWidgetInput
-        {
-            Id = 1,
-            Title = "  Updated Title  "
+            X = 2,
+            Y = 3,
+            Rows = 4,
+            Cols = 5
         };
 
         // Act
         var result = await _mutations.UpdateWidget(_mockUnitOfWork.Object, _mockHttpContextAccessor.Object, input);
 
         // Assert
-        Assert.Equal("Updated Title", widget.Title);
-        Assert.Equal("Updated Title", result.Title);
+        Assert.Equal(WidgetType.CurrentBalance, widget.Type);
+        Assert.Equal(2, widget.X);
+        Assert.Equal(3, widget.Y);
+        Assert.Equal(4, widget.Rows);
+        Assert.Equal(5, widget.Cols);
     }
 
     [Fact]
-    public async Task UpdateWidget_WithEmptyTitle_ThrowsException()
+    public async Task UpdateWidget_WithInvalidWidget_ThrowsException()
     {
         // Arrange
         var account = new Account { Id = 1 };
-        var dashboard = new Dashboard { Id = 1, Name = "Test", AccountId = 1 };
-        var widget = new DashboardWidget
-        {
-            Id = 1,
-            DashboardId = 1,
-            Type = WidgetType.NetGraph,
-            X = 0,
-            Y = 0,
-            Rows = 2,
-            Cols = 2
-        };
-
         _mockAccountRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(account);
-        _mockDashboardRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(dashboard);
-        _mockWidgetRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(widget);
+        _mockWidgetRepository.Setup(r => r.GetByIdAsync(999)).ReturnsAsync((DashboardWidget?)null);
 
         var input = new UpdateWidgetInput
         {
-            Id = 1,
-            Title = "   "
+            Id = 999,
+            Rows = 3
         };
 
         // Act & Assert
@@ -322,11 +230,11 @@ public class DashboardWidgetMutationsTests
             async () => await _mutations.UpdateWidget(_mockUnitOfWork.Object, _mockHttpContextAccessor.Object, input)
         );
 
-        Assert.Contains("title cannot be empty", exception.Message.ToLower());
+        Assert.Contains("not found", exception.Message.ToLower());
     }
 
     [Fact]
-    public async Task UpdateWidget_WithWhitespaceOnlySubtitle_ThrowsException()
+    public async Task UpdateWidget_WithInvalidRowsOrCols_ThrowsException()
     {
         // Arrange
         var account = new Account { Id = 1 };
@@ -349,7 +257,7 @@ public class DashboardWidgetMutationsTests
         var input = new UpdateWidgetInput
         {
             Id = 1,
-            Subtitle = "\t\n  "
+            Rows = -1
         };
 
         // Act & Assert
@@ -357,86 +265,6 @@ public class DashboardWidgetMutationsTests
             async () => await _mutations.UpdateWidget(_mockUnitOfWork.Object, _mockHttpContextAccessor.Object, input)
         );
 
-        Assert.Contains("subtitle cannot be empty", exception.Message.ToLower());
-    }
-
-    [Fact]
-    public async Task UpdateWidget_WithConfig_UpdatesConfig()
-    {
-        // Arrange
-        var account = new Account { Id = 1 };
-        var dashboard = new Dashboard { Id = 1, Name = "Test", AccountId = 1 };
-        var widget = new DashboardWidget
-        {
-            Id = 1,
-            DashboardId = 1,
-            Type = WidgetType.NetGraph,
-            X = 0,
-            Y = 0,
-            Rows = 2,
-            Cols = 2
-        };
-
-        _mockAccountRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(account);
-        _mockDashboardRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(dashboard);
-        _mockWidgetRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(widget);
-        _mockWidgetRepository.Setup(r => r.UpdateAsync(It.IsAny<DashboardWidget>()))
-            .ReturnsAsync((DashboardWidget w) => w);
-
-        var configJson = "{\"from\":\"2024-06-01\",\"to\":\"2024-12-31\"}";
-        var input = new UpdateWidgetInput
-        {
-            Id = 1,
-            Config = configJson
-        };
-
-        // Act
-        var result = await _mutations.UpdateWidget(_mockUnitOfWork.Object, _mockHttpContextAccessor.Object, input);
-
-        // Assert
-        Assert.Equal(configJson, widget.Config);
-        Assert.Equal(configJson, result.Config);
-    }
-
-    [Fact]
-    public async Task UpdateWidget_WithPartialUpdate_OnlyUpdatesProvidedFields()
-    {
-        // Arrange
-        var account = new Account { Id = 1 };
-        var dashboard = new Dashboard { Id = 1, Name = "Test", AccountId = 1 };
-        var widget = new DashboardWidget
-        {
-            Id = 1,
-            DashboardId = 1,
-            Type = WidgetType.NetGraph,
-            X = 0,
-            Y = 0,
-            Rows = 2,
-            Cols = 2,
-            Title = "Original Title",
-            Subtitle = "Original Subtitle",
-            Config = "{\"original\":true}"
-        };
-
-        _mockAccountRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(account);
-        _mockDashboardRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(dashboard);
-        _mockWidgetRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(widget);
-        _mockWidgetRepository.Setup(r => r.UpdateAsync(It.IsAny<DashboardWidget>()))
-            .ReturnsAsync((DashboardWidget w) => w);
-
-        var input = new UpdateWidgetInput
-        {
-            Id = 1,
-            Subtitle = "  Updated Subtitle  "
-        };
-
-        // Act
-        var result = await _mutations.UpdateWidget(_mockUnitOfWork.Object, _mockHttpContextAccessor.Object, input);
-
-        // Assert
-        Assert.Equal("Original Title", widget.Title); // Unchanged
-        Assert.Equal("Updated Subtitle", widget.Subtitle); // Updated
-        Assert.Equal("{\"original\":true}", widget.Config); // Unchanged
-        Assert.Equal("Updated Subtitle", result.Subtitle);
+        Assert.Contains("rows must be greater than 0", exception.Message.ToLower());
     }
 }

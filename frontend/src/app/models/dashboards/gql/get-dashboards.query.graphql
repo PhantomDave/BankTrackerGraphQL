@@ -5,9 +5,6 @@ query GetDashboards {
     widgets {
       id
       widgetType
-      title
-      subtitle
-      config
       cols
       rows
       x

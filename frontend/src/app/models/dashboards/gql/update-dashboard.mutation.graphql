@@ -5,9 +5,6 @@ mutation UpdateDashboard($input: UpdateDashboardInput!) {
     widgets {
       id
       widgetType
-      title
-      subtitle
-      config
       cols
       rows
       x
