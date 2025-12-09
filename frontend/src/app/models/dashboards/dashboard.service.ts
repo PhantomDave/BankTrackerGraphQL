@@ -93,6 +93,9 @@ export class DashboardService {
       const result = await firstValueFrom(this.getDashboardGQL.fetch({ variables: { id } }));
       if (result?.data?.dashboard) {
         const dashboard = this.mapToDashboard(result.data.dashboard);
+        this._dashboards.update((dashboards) =>
+          dashboards.map((d) => (d.id === dashboard.id ? dashboard : d)),
+        );
         this._selectedDashboard.set(dashboard);
         return dashboard;
       }
@@ -183,9 +186,17 @@ export class DashboardService {
       const result = await firstValueFrom(this.deleteDashboardGQL.mutate({ variables: { id } }));
 
       if (result?.data?.deleteDashboard) {
-        this._dashboards.update((dashboards) => dashboards.filter((d) => d.id !== id));
+        let updatedDashboards: readonly Dashboard[] = [];
+        this._dashboards.update((dashboards) => {
+          updatedDashboards = dashboards.filter((d) => d.id !== id);
+          return updatedDashboards;
+        });
         if (this._selectedDashboard()?.id === id) {
-          this._selectedDashboard.set(null);
+          if (updatedDashboards.length > 0) {
+            this._selectedDashboard.set(updatedDashboards[updatedDashboards.length - 1]);
+          } else {
+            this._selectedDashboard.set(null);
+          }
         }
         this.snackbar.success('Dashboard deleted successfully');
         return true;
