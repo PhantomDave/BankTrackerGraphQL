@@ -1,0 +1,14 @@
+query GetDashboard($id: Int!) {
+  dashboard(id: $id) {
+    id
+    name
+    widgets {
+      id
+      widgetType
+      cols
+      rows
+      x
+      y
+    }
+  }
+}

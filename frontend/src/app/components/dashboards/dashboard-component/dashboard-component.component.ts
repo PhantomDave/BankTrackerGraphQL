@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { DashboardService } from './../../../models/dashboards/dashboard.service';
+import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal } from '@angular/core';
 import {
   CompactType,
   DisplayGrid,
@@ -38,10 +39,29 @@ import { WIDGET_DISPLAY_NAMES } from '../../../constants/widget-names';
 export class DashboardComponent implements OnInit {
   readonly WidgetType = WidgetType;
   private readonly snackbarService = inject(SnackbarService);
+  private readonly dashboardService = inject(DashboardService);
 
   options!: GridsterConfig;
   readonly widgets = signal<Widget[]>([]);
   readonly isEditMode = signal<boolean>(false);
+  readonly selectedDashboard = this.dashboardService.selectedDashboard;
+
+  constructor() {
+    effect(() => {
+      const dashboard = this.selectedDashboard();
+      if (dashboard) {
+        const widgets = dashboard.widgets.map((w) =>
+          WidgetFactory.createWidgetFromData({
+            ...w,
+            type: w.widgetType,
+          }),
+        );
+        this.widgets.set(widgets);
+      } else {
+        this.widgets.set([]);
+      }
+    });
+  }
 
   ngOnInit() {
     this.options = {
@@ -60,11 +80,11 @@ export class DashboardComponent implements OnInit {
       minRows: 12,
       maxRows: 100,
       maxItemCols: 12,
-      minItemCols: 2,
+      minItemCols: 1,
       maxItemRows: 8,
-      minItemRows: 2,
+      minItemRows: 1,
       maxItemArea: 2500,
-      minItemArea: 4,
+      minItemArea: 1,
       defaultItemCols: 4,
       defaultItemRows: 3,
       fixedColWidth: undefined,
@@ -90,10 +110,10 @@ export class DashboardComponent implements OnInit {
         enabled: false,
       },
       swap: false,
-      pushItems: true,
-      disablePushOnDrag: false,
-      disablePushOnResize: false,
-      pushDirections: { north: true, east: true, south: true, west: true },
+      pushItems: false,
+      disablePushOnDrag: true,
+      disablePushOnResize: true,
+      pushDirections: { north: false, east: false, south: false, west: false },
       pushResizeItems: false,
       displayGrid: DisplayGrid.OnDragAndResize,
       disableWindowResize: false,
@@ -102,18 +122,36 @@ export class DashboardComponent implements OnInit {
       itemChangeCallback: this.itemChange.bind(this),
       itemResizeCallback: this.itemResize.bind(this),
     };
+    this.dashboardService.getDashboards();
   }
 
-  itemChange(_item: GridsterItemConfig) {
-    // Item changed callback
+  itemChange(item: GridsterItemConfig) {
+    this.persistWidgetChanges(item);
   }
 
-  itemResize(_item: GridsterItemConfig) {
-    // Item resized callback
+  itemResize(item: GridsterItemConfig) {
+    this.persistWidgetChanges(item);
+  }
+
+  private async persistWidgetChanges(item: GridsterItemConfig) {
+    const widget = item as Widget;
+    if (widget.id && this.selectedDashboard()) {
+      try {
+        await this.dashboardService.updateWidget({
+          id: widget.id,
+          x: widget.x,
+          y: widget.y,
+          cols: widget.cols,
+          rows: widget.rows,
+        });
+      } catch (error) {
+        this.snackbarService.error('Failed to save widget changes.');
+      }
+    }
   }
 
   removeItem(item: GridsterItemConfig) {
-    this.widgets().splice(this.widgets().indexOf(item), 1);
+    this.widgets.update(widgets => widgets.filter(w => w !== item));
   }
 
   editDashboard() {
@@ -149,13 +187,36 @@ export class DashboardComponent implements OnInit {
     };
   }
 
-  onWidgetSelected(widgetType: WidgetType) {
+  async onWidgetSelected(widgetType: WidgetType) {
     try {
-      const widget = WidgetFactory.createWidget(widgetType);
-      this.widgets.set([...this.widgets(), widget]);
+      if (this.selectedDashboard() == null) {
+        const created = await this.dashboardService.createDashboard({ name: 'New Dashboard' });
+        if (!created) {
+          this.snackbarService.error('Failed to create dashboard. Please try again.');
+          return;
+        }
+      }
 
-      const widgetName = WIDGET_DISPLAY_NAMES[widgetType] ?? String(widgetType);
-      this.snackbarService.success(`Added ${widgetName} widget to dashboard.`);
+      const widget = WidgetFactory.createWidget(widgetType);
+      const addedWidget = await this.dashboardService.addWidget({
+        dashboardId: this.selectedDashboard()!.id,
+        cols: widget.cols,
+        rows: widget.rows,
+        x: widget.x,
+        y: widget.y,
+        type: widget.getType(),
+      });
+
+      if (addedWidget) {
+        // Create widget from backend data to ensure consistency
+        const backendWidget = WidgetFactory.createWidgetFromData({
+          ...addedWidget,
+          type: addedWidget.widgetType,
+        });
+        this.widgets.set([...this.widgets(), backendWidget]);
+        const widgetName = WIDGET_DISPLAY_NAMES[widgetType] ?? String(widgetType);
+        this.snackbarService.success(`Added ${widgetName} widget to dashboard.`);
+      }
     } catch {
       this.snackbarService.error('Failed to add widget to dashboard.');
     }

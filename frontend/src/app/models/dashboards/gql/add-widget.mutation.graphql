@@ -1,0 +1,10 @@
+mutation AddWidget($input: AddWidgetInput!) {
+  addWidget(input: $input) {
+    id
+    widgetType
+    cols
+    rows
+    x
+    y
+  }
+}
