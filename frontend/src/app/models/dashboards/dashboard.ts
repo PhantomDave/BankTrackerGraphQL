@@ -3,9 +3,6 @@ import { WidgetType } from '../../../generated/graphql';
 export interface DashboardWidget {
   id: number;
   widgetType: WidgetType;
-  title?: string | null;
-  subtitle?: string | null;
-  config?: string | null;
   cols: number;
   rows: number;
   x: number;

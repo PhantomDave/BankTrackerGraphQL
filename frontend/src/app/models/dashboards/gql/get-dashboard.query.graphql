@@ -5,9 +5,6 @@ query GetDashboard($id: Int!) {
     widgets {
       id
       widgetType
-      title
-      subtitle
-      config
       cols
       rows
       x

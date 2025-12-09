@@ -9,5 +9,4 @@ export interface Widget extends GridsterItemConfig {
   // Custom properties
   id?: number;
   type?: WidgetType;
-  config?: string;
 }

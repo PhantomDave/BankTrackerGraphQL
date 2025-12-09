@@ -49,9 +49,6 @@ export class DashboardService {
     return {
       id: widget.id,
       widgetType: widget.widgetType,
-      title: widget.title,
-      subtitle: widget.subtitle,
-      config: widget.config,
       cols: widget.cols,
       rows: widget.rows,
       x: widget.x,
