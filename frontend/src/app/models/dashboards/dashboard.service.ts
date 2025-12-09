@@ -186,12 +186,11 @@ export class DashboardService {
       const result = await firstValueFrom(this.deleteDashboardGQL.mutate({ variables: { id } }));
 
       if (result?.data?.deleteDashboard) {
-        let updatedDashboards: readonly Dashboard[] = [];
-        this._dashboards.update((dashboards) => {
-          updatedDashboards = dashboards.filter((d) => d.id !== id);
-          return updatedDashboards;
-        });
-        if (this._selectedDashboard()?.id === id) {
+        const wasSelected = this._selectedDashboard()?.id === id;
+        const updatedDashboards = this._dashboards().filter((d) => d.id !== id);
+        this._dashboards.set(updatedDashboards);
+        
+        if (wasSelected) {
           if (updatedDashboards.length > 0) {
             this._selectedDashboard.set(updatedDashboards[updatedDashboards.length - 1]);
           } else {

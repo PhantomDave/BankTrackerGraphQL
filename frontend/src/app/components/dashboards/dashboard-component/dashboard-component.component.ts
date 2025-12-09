@@ -126,28 +126,27 @@ export class DashboardComponent implements OnInit {
   }
 
   itemChange(item: GridsterItemConfig) {
-    const widget = item as Widget;
-    if (widget.id && this.selectedDashboard()) {
-      this.dashboardService.updateWidget({
-        id: widget.id,
-        x: widget.x,
-        y: widget.y,
-        cols: widget.cols,
-        rows: widget.rows,
-      });
-    }
+    this.persistWidgetChanges(item);
   }
 
   itemResize(item: GridsterItemConfig) {
+    this.persistWidgetChanges(item);
+  }
+
+  private async persistWidgetChanges(item: GridsterItemConfig) {
     const widget = item as Widget;
     if (widget.id && this.selectedDashboard()) {
-      this.dashboardService.updateWidget({
-        id: widget.id,
-        x: widget.x,
-        y: widget.y,
-        cols: widget.cols,
-        rows: widget.rows,
-      });
+      try {
+        await this.dashboardService.updateWidget({
+          id: widget.id,
+          x: widget.x,
+          y: widget.y,
+          cols: widget.cols,
+          rows: widget.rows,
+        });
+      } catch (error) {
+        this.snackbarService.error('Failed to save widget changes.');
+      }
     }
   }
 
@@ -209,7 +208,12 @@ export class DashboardComponent implements OnInit {
       });
 
       if (addedWidget) {
-        this.widgets.set([...this.widgets(), widget]);
+        // Create widget from backend data to ensure consistency
+        const backendWidget = WidgetFactory.createWidgetFromData({
+          ...addedWidget,
+          type: addedWidget.widgetType,
+        });
+        this.widgets.set([...this.widgets(), backendWidget]);
         const widgetName = WIDGET_DISPLAY_NAMES[widgetType] ?? String(widgetType);
         this.snackbarService.success(`Added ${widgetName} widget to dashboard.`);
       }
