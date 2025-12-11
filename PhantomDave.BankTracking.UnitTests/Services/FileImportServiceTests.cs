@@ -8,6 +8,9 @@ namespace PhantomDave.BankTracking.UnitTests.Services;
 
 public class FileImportServiceTests
 {
+    private const int MaxNameLength = 200;
+    private const int MaxCurrencyLength = 3;
+    
     private readonly Mock<ILogger<FileImportService>> _mockLogger;
     private readonly FileImportService _service;
 
@@ -576,7 +579,7 @@ public class FileImportServiceTests
     {
         // Arrange
         var accountId = 1;
-        var longName = new string('A', 250); // 250 characters
+        var longName = new string('A', MaxNameLength + 50); // 250 characters
         var parsedData = new ParsedFileData
         {
             Rows =
@@ -605,8 +608,8 @@ public class FileImportServiceTests
 
         // Assert
         Assert.Single(results);
-        Assert.Equal(200, results[0].Name.Length);
-        Assert.Equal(longName.Substring(0, 200), results[0].Name);
+        Assert.Equal(MaxNameLength, results[0].Name.Length);
+        Assert.Equal(longName.Substring(0, MaxNameLength), results[0].Name);
     }
 
     [Fact]
@@ -794,7 +797,7 @@ public class FileImportServiceTests
     {
         // Arrange
         var accountId = 1;
-        var exactName = new string('B', 200); // Exactly 200 characters
+        var exactName = new string('B', MaxNameLength); // Exactly 200 characters
         var parsedData = new ParsedFileData
         {
             Rows =
@@ -823,7 +826,7 @@ public class FileImportServiceTests
 
         // Assert
         Assert.Single(results);
-        Assert.Equal(200, results[0].Name.Length);
+        Assert.Equal(MaxNameLength, results[0].Name.Length);
         Assert.Equal(exactName, results[0].Name);
     }
 }
