@@ -86,7 +86,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.options = {
-      gridType: GridType.Fit,
+      gridType: GridType.VerticalFixed,
       compactType: CompactType.None,
       margin: 10,
       outerMargin: true,
@@ -99,10 +99,10 @@ export class DashboardComponent implements OnInit {
       minCols: 12,
       maxCols: 12,
       minRows: 12,
-      maxRows: 100,
+      maxRows: 12,
       maxItemCols: 12,
       minItemCols: 1,
-      maxItemRows: 8,
+      maxItemRows: 12,
       minItemRows: 1,
       maxItemArea: 2500,
       minItemArea: 1,
@@ -136,10 +136,13 @@ export class DashboardComponent implements OnInit {
       disablePushOnResize: true,
       pushDirections: { north: false, east: false, south: false, west: false },
       pushResizeItems: false,
+      allowMultiLayer: false,
+      defaultLayerIndex: 0,
       displayGrid: DisplayGrid.OnDragAndResize,
       disableWindowResize: false,
       disableWarnings: false,
       scrollToNewItems: false,
+      setGridSize: true,
       itemChangeCallback: this.itemChange.bind(this),
       itemResizeCallback: this.itemResize.bind(this),
     };
@@ -171,8 +174,17 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  removeItem(item: GridsterItemConfig) {
-    this.widgets.update((widgets) => widgets.filter((w) => w !== item));
+  async removeItem(itemId: number) {
+    try {
+      const success = await this.dashboardService.removeWidget(itemId);
+      if (success) {
+        this.snackbarService.success('Widget removed from dashboard.');
+      } else {
+        this.snackbarService.error('Failed to remove widget from dashboard.');
+      }
+    } catch {
+      this.snackbarService.error('Failed to remove widget from dashboard.');
+    }
   }
 
   editDashboard() {
@@ -235,10 +247,5 @@ export class DashboardComponent implements OnInit {
     } catch {
       this.snackbarService.error('Failed to add widget to dashboard.');
     }
-  }
-
-  async onWidgetDelete(widgetId: number) {
-    await this.dashboardService.removeWidget(widgetId);
-    // Widget removal is handled by dashboardService and signal synchronization effect.
   }
 }
