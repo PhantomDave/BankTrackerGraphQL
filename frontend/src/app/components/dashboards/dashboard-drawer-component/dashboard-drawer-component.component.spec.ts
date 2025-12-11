@@ -37,14 +37,16 @@ describe('DashboardDrawerComponent', () => {
     });
 
     it('should have correct display name for Net Graph', () => {
-      const netGraphWidget = component.availableWidgets.find((w) => w.type === WidgetType.NET_GRAPH);
+      const netGraphWidget = component.availableWidgets.find(
+        (w) => w.type === WidgetType.NET_GRAPH,
+      );
 
       expect(netGraphWidget?.name).toBe('Net Graph');
     });
 
     it('should have correct display name for Current Balance', () => {
       const currentBalanceWidget = component.availableWidgets.find(
-        (w) => w.type === WidgetType.CURRENT_BALANCE
+        (w) => w.type === WidgetType.CURRENT_BALANCE,
       );
 
       expect(currentBalanceWidget?.name).toBe('Remaining Budget');
