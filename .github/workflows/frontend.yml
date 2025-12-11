@@ -71,6 +71,18 @@ jobs:
         working-directory: ./frontend
         run: bun run codegen
 
+      - name: Lint and fix
+        if: ${{ github.event.pull_request.base.ref == 'main' }}
+        working-directory: ./frontend
+        run: bun run lint:fix
+
+      - name: Commit lint fixes
+        if: ${{ github.event.pull_request.base.ref == 'main' }}
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: "chore: auto-fix frontend lint"
+          file_pattern: "frontend/**"
+
       - name: Build
         working-directory: ./frontend
         run: bun run build -- --configuration=development

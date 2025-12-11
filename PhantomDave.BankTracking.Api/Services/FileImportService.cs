@@ -277,6 +277,30 @@ public class FileImportService(ILogger<FileImportService> logger)
                     record.Description = descriptionColumnValue;
                 }
 
+                if (input.ColumnMappings.TryGetValue("Name", out var nameColumn) && row.TryGetValue(nameColumn, out var nameColumnValue))
+                {
+                    var trimmedName = nameColumnValue?.Trim() ?? string.Empty;
+                    if (string.IsNullOrWhiteSpace(trimmedName))
+                    {
+                        record.Name = "Untitled";
+                    }
+                    else if (trimmedName.Length > 200)
+                    {
+                        _logger.LogWarning("Name value for row {RowIndex} exceeds 200 characters and will be truncated during import", records.Count + failedCount + 1);
+                        record.Name = trimmedName.Substring(0, 200);
+                    }
+                    else
+                    {
+                        record.Name = trimmedName;
+                    }
+                }
+
+                record.Currency = input.ColumnMappings.TryGetValue("Currency", out var currencyColumn)
+                    && row.TryGetValue(currencyColumn, out var currencyColumnValue)
+                    && !string.IsNullOrWhiteSpace(currencyColumnValue)
+                        ? NormalizeCurrency(currencyColumnValue)
+                        : "USD";
+
                 record.AccountId = accountId;
                 record.Imported = true;
 
@@ -302,5 +326,17 @@ public class FileImportService(ILogger<FileImportService> logger)
         }
 
         return records;
+    }
+
+    private static string NormalizeCurrency(string currency)
+    {
+        var normalized = currency.Trim().ToUpperInvariant();
+
+        if (normalized.Length < 1 || normalized.Length > 3)
+        {
+            return "USD";
+        }
+
+        return normalized;
     }
 }

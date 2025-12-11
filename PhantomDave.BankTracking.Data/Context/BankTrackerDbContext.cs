@@ -45,9 +45,14 @@ public class BankTrackerDbContext : DbContext
             entity.Property(fr => fr.Id).ValueGeneratedOnAdd();
             entity.Property(fr => fr.Amount)
                 .HasColumnType("numeric(18,2)");
+            entity.Property(fr => fr.Name)
+                .IsRequired()
+                .HasMaxLength(200)
+                .HasDefaultValue("Untitled");
             entity.Property(fr => fr.Currency)
                 .IsRequired()
-                .HasMaxLength(3);
+                .HasMaxLength(3)
+                .HasDefaultValue("USD");
             entity.Property(fr => fr.Description)
                 .HasMaxLength(500);
             entity.HasOne<Account>()
