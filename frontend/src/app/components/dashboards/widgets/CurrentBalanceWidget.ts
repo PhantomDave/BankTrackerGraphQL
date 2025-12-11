@@ -23,7 +23,7 @@ export class CurrentBalanceWidget extends BaseWidget {
           showCurrency: existingConfig.showCurrency ?? true,
         };
         this.config = JSON.stringify(mergedConfig);
-      } catch (e) {
+      } catch {
         // If config is invalid, use defaults
         this.config = JSON.stringify({
           title: 'Current Balance',
