@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, input, output} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import {
   MatCard,
   MatCardContent,
@@ -30,7 +30,7 @@ import { FlexComponent } from '../../components/ui-library/flex-component/flex-c
 })
 export class WidgetWrapperComponent {
   readonly title = input<string>('');
-  readonly widgetId = input.required<number>()
+  readonly widgetId = input.required<number>();
   readonly subtitle = input<string>('');
   readonly icon = input<string>('');
   readonly loading = input<boolean>(false);
@@ -38,6 +38,6 @@ export class WidgetWrapperComponent {
   delete = output<number>();
 
   protected deleteWidget() {
-    this.delete.emit(this.widgetId())
+    this.delete.emit(this.widgetId());
   }
 }

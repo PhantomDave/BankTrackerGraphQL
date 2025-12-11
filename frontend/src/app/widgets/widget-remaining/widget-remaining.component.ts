@@ -6,7 +6,7 @@ import { WidgetWrapperComponent } from '../widget-wrapper/widget-wrapper.compone
 @Component({
   selector: 'app-widget-remaining',
   templateUrl: './widget-remaining.component.html',
-  styleUrls: ['./widget-remaining.component.css',],
+  styleUrls: ['./widget-remaining.component.css'],
   imports: [CurrencyPipe, WidgetWrapperComponent],
 })
 export class WidgetRemainingComponent implements OnInit {
