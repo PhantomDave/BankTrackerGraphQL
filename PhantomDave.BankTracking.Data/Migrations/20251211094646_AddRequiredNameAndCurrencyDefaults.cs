@@ -10,6 +10,10 @@ namespace PhantomDave.BankTracking.Data.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            // Backfill existing NULL values before applying NOT NULL constraints
+            migrationBuilder.Sql("UPDATE \"FinanceRecords\" SET \"Name\" = 'Untitled' WHERE \"Name\" IS NULL OR \"Name\" = ''");
+            migrationBuilder.Sql("UPDATE \"FinanceRecords\" SET \"Currency\" = 'USD' WHERE \"Currency\" IS NULL OR \"Currency\" = ''");
+
             migrationBuilder.AlterColumn<string>(
                 name: "Name",
                 table: "FinanceRecords",

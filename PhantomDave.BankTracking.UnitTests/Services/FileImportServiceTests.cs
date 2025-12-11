@@ -570,4 +570,260 @@ public class FileImportServiceTests
         // Assert
         Assert.Empty(results);
     }
+
+    [Fact]
+    public void FromParsedData_WithNameLongerThan200Chars_TruncatesName()
+    {
+        // Arrange
+        var accountId = 1;
+        var longName = new string('A', 250); // 250 characters
+        var parsedData = new ParsedFileData
+        {
+            Rows =
+            [
+                new Dictionary<string, string>
+                {
+                    ["Date"] = "2024-01-15",
+                    ["Amount"] = "100.50",
+                    ["Name"] = longName
+                }
+            ]
+        };
+
+        var input = new ConfirmImportInput
+        {
+            ColumnMappings = new Dictionary<string, string>
+            {
+                ["Date"] = "Date",
+                ["Amount"] = "Amount",
+                ["Name"] = "Name"
+            }
+        };
+
+        // Act
+        var results = _service.FromParsedData(accountId, parsedData, input).ToList();
+
+        // Assert
+        Assert.Single(results);
+        Assert.Equal(200, results[0].Name.Length);
+        Assert.Equal(longName.Substring(0, 200), results[0].Name);
+    }
+
+    [Fact]
+    public void FromParsedData_WithCurrencyLongerThan3Chars_UsesDefault()
+    {
+        // Arrange
+        var accountId = 1;
+        var parsedData = new ParsedFileData
+        {
+            Rows =
+            [
+                new Dictionary<string, string>
+                {
+                    ["Date"] = "2024-01-15",
+                    ["Amount"] = "100.50",
+                    ["Currency"] = "EURO" // 4 characters
+                }
+            ]
+        };
+
+        var input = new ConfirmImportInput
+        {
+            ColumnMappings = new Dictionary<string, string>
+            {
+                ["Date"] = "Date",
+                ["Amount"] = "Amount",
+                ["Currency"] = "Currency"
+            }
+        };
+
+        // Act
+        var results = _service.FromParsedData(accountId, parsedData, input).ToList();
+
+        // Assert
+        Assert.Single(results);
+        Assert.Equal("USD", results[0].Currency); // Should default to USD
+    }
+
+    [Fact]
+    public void FromParsedData_WithEmptyName_UsesDefault()
+    {
+        // Arrange
+        var accountId = 1;
+        var parsedData = new ParsedFileData
+        {
+            Rows =
+            [
+                new Dictionary<string, string>
+                {
+                    ["Date"] = "2024-01-15",
+                    ["Amount"] = "100.50",
+                    ["Name"] = ""
+                }
+            ]
+        };
+
+        var input = new ConfirmImportInput
+        {
+            ColumnMappings = new Dictionary<string, string>
+            {
+                ["Date"] = "Date",
+                ["Amount"] = "Amount",
+                ["Name"] = "Name"
+            }
+        };
+
+        // Act
+        var results = _service.FromParsedData(accountId, parsedData, input).ToList();
+
+        // Assert
+        Assert.Single(results);
+        Assert.Equal("Untitled", results[0].Name);
+    }
+
+    [Fact]
+    public void FromParsedData_WithWhitespaceName_UsesDefault()
+    {
+        // Arrange
+        var accountId = 1;
+        var parsedData = new ParsedFileData
+        {
+            Rows =
+            [
+                new Dictionary<string, string>
+                {
+                    ["Date"] = "2024-01-15",
+                    ["Amount"] = "100.50",
+                    ["Name"] = "   "
+                }
+            ]
+        };
+
+        var input = new ConfirmImportInput
+        {
+            ColumnMappings = new Dictionary<string, string>
+            {
+                ["Date"] = "Date",
+                ["Amount"] = "Amount",
+                ["Name"] = "Name"
+            }
+        };
+
+        // Act
+        var results = _service.FromParsedData(accountId, parsedData, input).ToList();
+
+        // Assert
+        Assert.Single(results);
+        Assert.Equal("Untitled", results[0].Name);
+    }
+
+    [Fact]
+    public void FromParsedData_WithCurrencyContainingWhitespace_TrimsAndNormalizes()
+    {
+        // Arrange
+        var accountId = 1;
+        var parsedData = new ParsedFileData
+        {
+            Rows =
+            [
+                new Dictionary<string, string>
+                {
+                    ["Date"] = "2024-01-15",
+                    ["Amount"] = "100.50",
+                    ["Currency"] = "  eur  "
+                }
+            ]
+        };
+
+        var input = new ConfirmImportInput
+        {
+            ColumnMappings = new Dictionary<string, string>
+            {
+                ["Date"] = "Date",
+                ["Amount"] = "Amount",
+                ["Currency"] = "Currency"
+            }
+        };
+
+        // Act
+        var results = _service.FromParsedData(accountId, parsedData, input).ToList();
+
+        // Assert
+        Assert.Single(results);
+        Assert.Equal("EUR", results[0].Currency);
+    }
+
+    [Fact]
+    public void FromParsedData_WithNameContainingLeadingTrailingWhitespace_TrimsValue()
+    {
+        // Arrange
+        var accountId = 1;
+        var parsedData = new ParsedFileData
+        {
+            Rows =
+            [
+                new Dictionary<string, string>
+                {
+                    ["Date"] = "2024-01-15",
+                    ["Amount"] = "100.50",
+                    ["Name"] = "  Test Name  "
+                }
+            ]
+        };
+
+        var input = new ConfirmImportInput
+        {
+            ColumnMappings = new Dictionary<string, string>
+            {
+                ["Date"] = "Date",
+                ["Amount"] = "Amount",
+                ["Name"] = "Name"
+            }
+        };
+
+        // Act
+        var results = _service.FromParsedData(accountId, parsedData, input).ToList();
+
+        // Assert
+        Assert.Single(results);
+        Assert.Equal("Test Name", results[0].Name);
+    }
+
+    [Fact]
+    public void FromParsedData_WithExactly200CharName_AcceptsValue()
+    {
+        // Arrange
+        var accountId = 1;
+        var exactName = new string('B', 200); // Exactly 200 characters
+        var parsedData = new ParsedFileData
+        {
+            Rows =
+            [
+                new Dictionary<string, string>
+                {
+                    ["Date"] = "2024-01-15",
+                    ["Amount"] = "100.50",
+                    ["Name"] = exactName
+                }
+            ]
+        };
+
+        var input = new ConfirmImportInput
+        {
+            ColumnMappings = new Dictionary<string, string>
+            {
+                ["Date"] = "Date",
+                ["Amount"] = "Amount",
+                ["Name"] = "Name"
+            }
+        };
+
+        // Act
+        var results = _service.FromParsedData(accountId, parsedData, input).ToList();
+
+        // Assert
+        Assert.Single(results);
+        Assert.Equal(200, results[0].Name.Length);
+        Assert.Equal(exactName, results[0].Name);
+    }
 }
