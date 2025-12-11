@@ -331,12 +331,12 @@ public class FileImportService(ILogger<FileImportService> logger)
     private static string NormalizeCurrency(string currency)
     {
         var normalized = currency.Trim().ToUpperInvariant();
-        
+
         if (normalized.Length < 1 || normalized.Length > 3)
         {
             return "USD";
         }
-        
+
         return normalized;
     }
 }
