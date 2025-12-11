@@ -168,7 +168,7 @@ export class DashboardComponent implements OnInit {
           cols: widget.cols,
           rows: widget.rows,
         });
-      } catch (error) {
+      } catch {
         this.snackbarService.error('Failed to save widget changes.');
       }
     }

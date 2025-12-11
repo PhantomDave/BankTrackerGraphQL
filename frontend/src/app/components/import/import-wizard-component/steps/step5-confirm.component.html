@@ -29,20 +29,24 @@
           <mat-icon color="primary">numbers</mat-icon>
           <span>Separators:</span>
           <strong
-            >decimal {{ decimalSeparator() }} • thousands
+          >decimal {{ decimalSeparator() }} • thousands
             {{ thousandsSeparator() || 'none' }}</strong
           >
         </div>
-        <div class="summary-item" *ngIf="rowsToSkip() > 0">
-          <mat-icon color="primary">skip_next</mat-icon>
-          <span>Rows to skip:</span>
-          <strong>{{ rowsToSkip() }}</strong>
-        </div>
-        <div class="summary-item" *ngIf="saveAsTemplate()">
-          <mat-icon color="primary">save</mat-icon>
-          <span>Save as template:</span>
-          <strong>{{ templateName() || 'Untitled template' }}</strong>
-        </div>
+        @if (rowsToSkip() > 0) {
+          <div class="summary-item">
+            <mat-icon color="primary">skip_next</mat-icon>
+            <span>Rows to skip:</span>
+            <strong>{{ rowsToSkip() }}</strong>
+          </div>
+        }
+        @if (saveAsTemplate()) {
+          <div class="summary-item">
+            <mat-icon color="primary">save</mat-icon>
+            <span>Save as template:</span>
+            <strong>{{ templateName() || 'Untitled template' }}</strong>
+          </div>
+        }
       </div>
 
       <div class="actions">
@@ -69,15 +73,18 @@
           <h3>Result</h3>
           <div class="result-metrics">
             <div>
-              <mat-icon color="primary">check_circle</mat-icon> Created:
+              <mat-icon color="primary">check_circle</mat-icon>
+              Created:
               <strong>{{ res.successCount }}</strong>
             </div>
             <div>
-              <mat-icon color="warn">warning</mat-icon> Duplicates:
+              <mat-icon color="warn">warning</mat-icon>
+              Duplicates:
               <strong>{{ res.duplicateCount }}</strong>
             </div>
             <div>
-              <mat-icon color="warn">error</mat-icon> Failed:
+              <mat-icon color="warn">error</mat-icon>
+              Failed:
               <strong>{{ res.failureCount }}</strong>
             </div>
           </div>
