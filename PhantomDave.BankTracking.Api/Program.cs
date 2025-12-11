@@ -81,12 +81,25 @@ public class Program
         builder.Services.AddCors(options =>
         {
             options.AddDefaultPolicy(policy =>
-                policy
-                    .WithOrigins("http://localhost:4200", "http://localhost:5095")
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials());
+            {
+                if (builder.Environment.IsDevelopment())
+                {
+                    policy
+                        .AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                }
+                else
+                {
+                    policy
+                        .WithOrigins("http://localhost:4200", "http://localhost:5095")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                }
+            });
         });
+
 
         var graphqlBuilder = builder.Services
             .AddGraphQLServer()

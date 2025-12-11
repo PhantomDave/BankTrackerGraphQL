@@ -9,10 +9,10 @@
         <gridster-item [item]="widget" class="dashboard-widget">
           @switch (widget.type) {
             @case (WidgetType.CURRENT_BALANCE) {
-              <app-widget-remaining [isEditMode]="isEditMode()"></app-widget-remaining>
+              <app-widget-remaining [isEditMode]="isEditMode()" [widgetId]="widget.id!" (delete)="onWidgetDelete($event)"></app-widget-remaining>
             }
             @case (WidgetType.NET_GRAPH) {
-              <app-widget-net-graph [isEditMode]="isEditMode()"></app-widget-net-graph>
+              <app-widget-net-graph [isEditMode]="isEditMode()" [widgetId]="widget.id!" (delete)="onWidgetDelete($event)"></app-widget-net-graph>
             }
             @default {
               <div class="placeholder-widget">
