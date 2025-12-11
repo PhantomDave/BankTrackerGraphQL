@@ -2,18 +2,12 @@
 
 .dashboard-widget {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   pointer-events: auto;
 }
 
 .gridster-container {
   position: relative;
-}
-
-.dashboard-widget {
-  position: relative;
-  z-index: 3;
-  pointer-events: auto;
 }
 :host {
   display: flex;
@@ -26,10 +20,18 @@
 }
 
 gridster {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
   background-color: var(--mat-sys-surface);
 }
 
 gridster-item {
+  position: absolute;
+  display: block;
+  box-sizing: border-box;
   background-color: transparent;
 }
 

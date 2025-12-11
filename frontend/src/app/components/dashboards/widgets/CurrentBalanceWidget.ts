@@ -14,6 +14,22 @@ export class CurrentBalanceWidget extends BaseWidget {
         showCurrency: true,
       };
       this.config = JSON.stringify(defaultConfig);
+    } else {
+      // Parse existing config and merge with defaults to preserve customizations
+      try {
+        const existingConfig = JSON.parse(this.config) as CurrentBalanceWidgetConfig;
+        const mergedConfig: CurrentBalanceWidgetConfig = {
+          title: existingConfig.title ?? 'Current Balance',
+          showCurrency: existingConfig.showCurrency ?? true,
+        };
+        this.config = JSON.stringify(mergedConfig);
+      } catch (e) {
+        // If config is invalid, use defaults
+        this.config = JSON.stringify({
+          title: 'Current Balance',
+          showCurrency: true,
+        });
+      }
     }
   }
 }

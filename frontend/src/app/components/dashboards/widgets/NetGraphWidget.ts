@@ -15,6 +15,28 @@ export class NetGraphWidget extends BaseWidget {
         title: 'Net Graph',
       };
       this.config = JSON.stringify(defaultConfig);
+    } else {
+      // Parse existing config and merge with defaults to preserve customizations
+      try {
+        const existingConfig = JSON.parse(this.config) as NetGraphWidgetConfig;
+        const today = new Date();
+        const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+        const mergedConfig: NetGraphWidgetConfig = {
+          from: existingConfig.from ?? monthStart.toISOString(),
+          to: existingConfig.to ?? today.toISOString(),
+          title: existingConfig.title ?? 'Net Graph',
+        };
+        this.config = JSON.stringify(mergedConfig);
+      } catch (e) {
+        // If config is invalid, use defaults
+        const today = new Date();
+        const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+        this.config = JSON.stringify({
+          from: monthStart.toISOString(),
+          to: today.toISOString(),
+          title: 'Net Graph',
+        });
+      }
     }
   }
 }

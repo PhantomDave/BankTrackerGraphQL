@@ -19,6 +19,7 @@ import { Widget } from '../../../models/dashboards/gridster-item';
 import { WidgetFactory } from '../widgets/widget-factory';
 import { SnackbarService } from '../../../shared/services/snackbar.service';
 import { WIDGET_DISPLAY_NAMES } from '../../../constants/widget-names';
+import { BaseWidget } from '../widgets/BaseWidget';
 
 @Component({
   standalone: true,
@@ -89,7 +90,7 @@ export class DashboardComponent implements OnInit {
       gridType: GridType.VerticalFixed,
       compactType: CompactType.None,
       margin: 10,
-      outerMargin: true,
+      outerMargin: false,
       outerMarginTop: null,
       outerMarginRight: null,
       outerMarginBottom: null,
@@ -98,18 +99,18 @@ export class DashboardComponent implements OnInit {
       mobileBreakpoint: 768,
       minCols: 12,
       maxCols: 12,
-      minRows: 12,
-      maxRows: 12,
+      minRows: 8,
+      maxRows: 20,
       maxItemCols: 12,
       minItemCols: 1,
       maxItemRows: 12,
       minItemRows: 1,
       maxItemArea: 2500,
       minItemArea: 1,
-      defaultItemCols: 4,
-      defaultItemRows: 3,
+      defaultItemCols: 6,
+      defaultItemRows: 4,
       fixedColWidth: undefined,
-      fixedRowHeight: 80,
+      fixedRowHeight: 100,
       keepFixedHeightInMobile: false,
       keepFixedWidthInMobile: false,
       scrollSensitivity: 10,
@@ -143,35 +144,8 @@ export class DashboardComponent implements OnInit {
       disableWarnings: false,
       scrollToNewItems: false,
       setGridSize: true,
-      itemChangeCallback: this.itemChange.bind(this),
-      itemResizeCallback: this.itemResize.bind(this),
     };
     this.dashboardService.getDashboards();
-  }
-
-  itemChange(item: GridsterItemConfig) {
-    this.persistWidgetChanges(item);
-  }
-
-  itemResize(item: GridsterItemConfig) {
-    this.persistWidgetChanges(item);
-  }
-
-  private async persistWidgetChanges(item: GridsterItemConfig) {
-    const widget = item as Widget;
-    if (widget.id && this.selectedDashboard()) {
-      try {
-        await this.dashboardService.updateWidget({
-          id: widget.id,
-          x: widget.x,
-          y: widget.y,
-          cols: widget.cols,
-          rows: widget.rows,
-        });
-      } catch {
-        this.snackbarService.error('Failed to save widget changes.');
-      }
-    }
   }
 
   async removeItem(itemId: number) {
@@ -218,6 +192,18 @@ export class DashboardComponent implements OnInit {
         enabled: false,
       },
     };
+
+    this.widgets().forEach((widget) => {
+      const financeWidget = widget as BaseWidget;
+      this.dashboardService.updateWidget({
+        id: financeWidget.id!,
+        cols: financeWidget.cols,
+        rows: financeWidget.rows,
+        x: financeWidget.x,
+        y: financeWidget.y,
+        type: financeWidget.getType(),
+      });
+    });
   }
 
   async onWidgetSelected(widgetType: WidgetType) {
