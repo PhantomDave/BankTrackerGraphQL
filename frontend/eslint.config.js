@@ -29,7 +29,7 @@ export default [
         ],
         parser: '@typescript-eslint/parser',
         parserOptions: {
-          project: ['./tsconfig.app.json'],
+          project: ['./tsconfig.app.json', './tsconfig.spec.json'],
           createDefaultProgram: true,
         },
         rules: {
