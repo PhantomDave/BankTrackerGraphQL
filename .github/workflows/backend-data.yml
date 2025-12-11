@@ -32,11 +32,12 @@ jobs:
         run: dotnet restore PhantomDave.BankTracking.Data/PhantomDave.BankTracking.Data.csproj
 
       - name: Format code
+        if: ${{ github.event.pull_request.base.ref == 'main' }}
         run: dotnet format PhantomDave.BankTracking.Data/PhantomDave.BankTracking.Data.csproj --verbosity diagnostic
 
       - name: Commit formatted code
         uses: stefanzweifel/git-auto-commit-action@v7
-        if: github.event_name == 'push'
+        if: ${{ github.event.pull_request.base.ref == 'main' }}
         with:
           commit_message: "chore: auto-format Backend Data code"
           file_pattern: "PhantomDave.BankTracking.Data/**"
