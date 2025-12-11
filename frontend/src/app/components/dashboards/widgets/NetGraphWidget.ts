@@ -27,7 +27,7 @@ export class NetGraphWidget extends BaseWidget {
           title: existingConfig.title ?? 'Net Graph',
         };
         this.config = JSON.stringify(mergedConfig);
-      } catch (e) {
+      } catch {
         // If config is invalid, use defaults
         const today = new Date();
         const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
