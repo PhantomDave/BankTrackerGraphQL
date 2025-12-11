@@ -277,6 +277,20 @@ public class FileImportService(ILogger<FileImportService> logger)
                     record.Description = descriptionColumnValue;
                 }
 
+                if (input.ColumnMappings.TryGetValue("Name", out var nameColumn) && row.TryGetValue(nameColumn, out var nameColumnValue))
+                {
+                    record.Name = nameColumnValue;
+                }
+
+                if (input.ColumnMappings.TryGetValue("Currency", out var currencyColumn) && row.TryGetValue(currencyColumn, out var currencyColumnValue) && !string.IsNullOrWhiteSpace(currencyColumnValue))
+                {
+                    record.Currency = currencyColumnValue.ToUpperInvariant();
+                }
+                else
+                {
+                    record.Currency = "USD";
+                }
+
                 record.AccountId = accountId;
                 record.Imported = true;
 
