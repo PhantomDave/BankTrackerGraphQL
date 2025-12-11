@@ -56,7 +56,9 @@ describe('DashboardComponent', () => {
     it('should show success snackbar with correct widget name for CurrentBalance', () => {
       component.onWidgetSelected(WidgetType.CURRENT_BALANCE);
 
-      expect(snackbarService.success).toHaveBeenCalledWith('Added Remaining Budget widget to dashboard.');
+      expect(snackbarService.success).toHaveBeenCalledWith(
+        'Added Remaining Budget widget to dashboard.',
+      );
     });
 
     it('should show error snackbar if widget creation fails', () => {

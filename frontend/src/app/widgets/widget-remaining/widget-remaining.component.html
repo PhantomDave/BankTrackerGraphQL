@@ -1,9 +1,11 @@
 <app-widget-wrapper
+  [widgetId]="widgetId()"
   [title]="'Budget Overview'"
   [subtitle]="'Remaining balance'"
   [icon]="'account_balance_wallet'"
   [loading]="loading()"
   [isEditMode]="isEditMode()"
+  (delete)="onDeleteWidget($event)"
 >
   <div class="widget-content">
     <div class="amount">{{ remainingBudget() | currency: currency() }}</div>

@@ -47,25 +47,46 @@ export class DashboardComponent implements OnInit {
   readonly selectedDashboard = this.dashboardService.selectedDashboard;
 
   constructor() {
-    effect(() => {
-      const dashboard = this.selectedDashboard();
-      if (dashboard) {
-        const widgets = dashboard.widgets.map((w) =>
-          WidgetFactory.createWidgetFromData({
-            ...w,
-            type: w.widgetType,
-          }),
-        );
-        this.widgets.set(widgets);
-      } else {
-        this.widgets.set([]);
-      }
-    });
+    effect(
+      () => {
+        const dashboard = this.selectedDashboard();
+        const currentWidgets = this.widgets();
+        if (dashboard) {
+          const newWidgetsData = dashboard.widgets;
+          const areWidgetsSame =
+            currentWidgets.length === newWidgetsData.length &&
+            currentWidgets.every((cw) =>
+              newWidgetsData.some(
+                (nw) =>
+                  nw.id === cw.id &&
+                  nw.cols === cw.cols &&
+                  nw.rows === cw.rows &&
+                  nw.x === cw.x &&
+                  nw.y === cw.y &&
+                  nw.widgetType === cw.type,
+              ),
+            );
+
+          if (!areWidgetsSame) {
+            const widgets = newWidgetsData.map((w) =>
+              WidgetFactory.createWidgetFromData({
+                ...w,
+                type: w.widgetType,
+              }),
+            );
+            this.widgets.set(widgets);
+          }
+        } else if (currentWidgets.length > 0) {
+          this.widgets.set([]);
+        }
+      },
+      { allowSignalWrites: true },
+    );
   }
 
   ngOnInit() {
     this.options = {
-      gridType: GridType.Fit,
+      gridType: GridType.VerticalFixed,
       compactType: CompactType.None,
       margin: 10,
       outerMargin: true,
@@ -78,10 +99,10 @@ export class DashboardComponent implements OnInit {
       minCols: 12,
       maxCols: 12,
       minRows: 12,
-      maxRows: 100,
+      maxRows: 12,
       maxItemCols: 12,
       minItemCols: 1,
-      maxItemRows: 8,
+      maxItemRows: 12,
       minItemRows: 1,
       maxItemArea: 2500,
       minItemArea: 1,
@@ -115,10 +136,13 @@ export class DashboardComponent implements OnInit {
       disablePushOnResize: true,
       pushDirections: { north: false, east: false, south: false, west: false },
       pushResizeItems: false,
+      allowMultiLayer: false,
+      defaultLayerIndex: 0,
       displayGrid: DisplayGrid.OnDragAndResize,
       disableWindowResize: false,
       disableWarnings: false,
       scrollToNewItems: false,
+      setGridSize: true,
       itemChangeCallback: this.itemChange.bind(this),
       itemResizeCallback: this.itemResize.bind(this),
     };
@@ -144,14 +168,23 @@ export class DashboardComponent implements OnInit {
           cols: widget.cols,
           rows: widget.rows,
         });
-      } catch (error) {
+      } catch {
         this.snackbarService.error('Failed to save widget changes.');
       }
     }
   }
 
-  removeItem(item: GridsterItemConfig) {
-    this.widgets.update(widgets => widgets.filter(w => w !== item));
+  async removeItem(itemId: number) {
+    try {
+      const success = await this.dashboardService.removeWidget(itemId);
+      if (success) {
+        this.snackbarService.success('Widget removed from dashboard.');
+      } else {
+        this.snackbarService.error('Failed to remove widget from dashboard.');
+      }
+    } catch {
+      this.snackbarService.error('Failed to remove widget from dashboard.');
+    }
   }
 
   editDashboard() {
@@ -208,12 +241,6 @@ export class DashboardComponent implements OnInit {
       });
 
       if (addedWidget) {
-        // Create widget from backend data to ensure consistency
-        const backendWidget = WidgetFactory.createWidgetFromData({
-          ...addedWidget,
-          type: addedWidget.widgetType,
-        });
-        this.widgets.set([...this.widgets(), backendWidget]);
         const widgetName = WIDGET_DISPLAY_NAMES[widgetType] ?? String(widgetType);
         this.snackbarService.success(`Added ${widgetName} widget to dashboard.`);
       }

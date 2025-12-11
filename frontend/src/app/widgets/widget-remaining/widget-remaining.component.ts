@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, computed, inject, input, OnInit } from '@angular/core';
+import { Component, computed, inject, input, output, OnInit } from '@angular/core';
 import { FinanceRecordService } from '../../models/finance-record/finance-record-service';
 import { WidgetWrapperComponent } from '../widget-wrapper/widget-wrapper.component';
 
@@ -12,9 +12,11 @@ import { WidgetWrapperComponent } from '../widget-wrapper/widget-wrapper.compone
 export class WidgetRemainingComponent implements OnInit {
   private readonly financeRecords = inject(FinanceRecordService);
 
+  widgetId = input.required<number>();
   startDate = input(this.getDefaultStartDate());
   endDate = input(new Date());
   isEditMode = input<boolean>(false);
+  delete = output<number>();
 
   readonly loading = computed(() => this.financeRecords.loading());
   readonly error = computed(() => this.financeRecords.error());
@@ -33,5 +35,9 @@ export class WidgetRemainingComponent implements OnInit {
     date.setMonth(date.getMonth() - 1);
     date.setDate(1);
     return date;
+  }
+
+  protected onDeleteWidget(widgetId: number) {
+    this.delete.emit(widgetId);
   }
 }

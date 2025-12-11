@@ -13,6 +13,9 @@
   @if ((title() || subtitle() || icon()) && !loading()) {
     <mat-card-header>
       @if (isEditMode()) {
+        <button mat-icon-button aria-label="Delete widget" (click)="deleteWidget()">
+        <mat-icon>delete</mat-icon>
+        </button>
         <button mat-icon-button class="drag-handle" aria-label="Drag to reposition widget">
           <mat-icon>drag_indicator</mat-icon>
         </button>

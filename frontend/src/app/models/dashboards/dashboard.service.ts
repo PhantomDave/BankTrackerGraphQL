@@ -189,7 +189,7 @@ export class DashboardService {
         const wasSelected = this._selectedDashboard()?.id === id;
         const updatedDashboards = this._dashboards().filter((d) => d.id !== id);
         this._dashboards.set(updatedDashboards);
-        
+
         if (wasSelected) {
           if (updatedDashboards.length > 0) {
             this._selectedDashboard.set(updatedDashboards[updatedDashboards.length - 1]);
