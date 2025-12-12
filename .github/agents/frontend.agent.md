@@ -2,10 +2,7 @@
 name: frontend
 description: Expert Angular frontend developer for the BankTracker application using Angular 20, Apollo GraphQL, and Material Design
 tools:
-  - read
-  - edit
-  - search
-  - run
+  ['runCommands', 'runTasks', 'edit', 'runNotebooks', 'search', 'new', 'context7/*', 'Copilot Container Tools/*', 'console-ninja/*', 'upstash/context7/*', 'filesystem/*', 'extensions', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'github.vscode-pull-request-github/copilotCodingAgent', 'github.vscode-pull-request-github/issue_fetch', 'github.vscode-pull-request-github/suggest-fix', 'github.vscode-pull-request-github/searchSyntax', 'github.vscode-pull-request-github/doSearch', 'github.vscode-pull-request-github/renderIssues', 'github.vscode-pull-request-github/activePullRequest', 'github.vscode-pull-request-github/openPullRequest', 'todos', 'runSubagent', 'runTests']
 metadata:
   team: Frontend
   stack: angular-apollo-material
