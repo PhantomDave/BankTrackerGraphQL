@@ -74,7 +74,7 @@
     "@playwright/test": "^1.56.1",
     "@types/jasmine": "~5.1.13",
     "@typescript-eslint/eslint-plugin": "^8.50.1",
-    "@typescript-eslint/parser": "^8.50.0",
+    "@typescript-eslint/parser": "^8.51.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "jasmine-core": "~5.13.0",
