@@ -44,6 +44,7 @@ jobs:
               if: steps.diff.outputs.changed == 'true'
               uses: peter-evans/create-pull-request@v6
               with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
                   commit-message: "chore: update bun lockfile"
                   title: "chore: update bun lockfile"
                   body: "Automated update of bun.lock after package.json change."
