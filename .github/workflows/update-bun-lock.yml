@@ -5,12 +5,14 @@ on:
         branches: [main]
         paths:
             - "frontend/package.json"
+    workflow_dispatch:
 
 jobs:
     update-bun-lock:
         runs-on: ubuntu-latest
         permissions:
             contents: write
+            pull-requests: write
 
         steps:
             - name: Checkout repository
@@ -27,9 +29,32 @@ jobs:
               working-directory: ./frontend
               run: bun i
 
-            - name: Commit updated bun lockfile
-              uses: stefanzweifel/git-auto-commit-action@v7
+            - name: Detect bun lockfile changes
+              id: diff
+              run: |
+                  if git diff --quiet -- frontend/bun.lock; then
+                      echo "changed=false" >> "$GITHUB_OUTPUT"
+                  else
+                      echo "changed=true" >> "$GITHUB_OUTPUT"
+                  fi
+
+            - name: Open PR with updated bun lockfile
+              id: create_pr
+              if: steps.diff.outputs.changed == 'true'
+              uses: peter-evans/create-pull-request@v6
               with:
-                  commit_message: "chore: update bun lockfile"
-                  file_pattern: "frontend/bun.lock"
-                  branch: ${{ github.ref_name }}
+                  commit-message: "chore: update bun lockfile"
+                  title: "chore: update bun lockfile"
+                  body: "Automated update of bun.lock after package.json change."
+                  branch: "chore/update-bun-lock-${{ github.run_number }}"
+                  delete-branch: true
+                  base: main
+                  add-paths: frontend/bun.lock
+
+            - name: Enable automerge on PR
+              if: steps.diff.outputs.changed == 'true'
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  PR_NUMBER: ${{ steps.create_pr.outputs.pull-request-number }}
+              run: |
+                  gh pr merge --auto --squash "$PR_NUMBER"
