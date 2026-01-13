@@ -70,7 +70,7 @@
     "@graphql-codegen/typescript": "^5.0.7",
     "@graphql-codegen/typescript-apollo-angular": "^4.0.1",
     "@graphql-codegen/typescript-operations": "^5.0.7",
-    "@parcel/watcher": "^2.5.1",
+    "@parcel/watcher": "^2.5.4",
     "@playwright/test": "^1.56.1",
     "@types/jasmine": "~5.1.13",
     "@typescript-eslint/eslint-plugin": "^8.52.0",
