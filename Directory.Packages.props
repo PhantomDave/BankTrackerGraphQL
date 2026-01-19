@@ -7,7 +7,7 @@
     <!-- HotChocolate GraphQL -->
     <PackageVersion Include="HotChocolate.AspNetCore" Version="15.1.11" />
     <PackageVersion Include="HotChocolate.AspNetCore.Authorization" Version="15.1.11" />
-    <PackageVersion Include="HotChocolate.AspNetCore.CommandLine" Version="15.1.11" />
+    <PackageVersion Include="HotChocolate.AspNetCore.CommandLine" Version="15.1.12" />
     <PackageVersion Include="HotChocolate.Types.Analyzers" Version="15.1.11" />
     <PackageVersion Include="HotChocolate.Authorization" Version="15.1.12" />
     <PackageVersion Include="BananaCakePop.Middleware" Version="17.0.0" />
