@@ -20,7 +20,7 @@
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
     
     <!-- Authentication & Authorization -->
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.2" />
     
     <!-- File Processing -->
     <PackageVersion Include="CsvHelper" Version="33.1.0" />
