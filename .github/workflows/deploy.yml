@@ -31,7 +31,7 @@ jobs:
                   sparse-checkout: |
                       .github/pr-filter.yml
 
-            - uses: dorny/paths-filter@v3
+            - uses: dorny/paths-filter@v4
               id: filter
               with:
                   filters: .github/pr-filter.yml
