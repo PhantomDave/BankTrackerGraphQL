@@ -54,7 +54,7 @@ jobs:
           ASPNETCORE_ENVIRONMENT: Development
 
       - name: Wait for API to be ready
-        uses: jtalk/url-health-check-action@v4
+        uses: jtalk/url-health-check-action@v5
         with:
           url: http://localhost:5095/graphql
           max-attempts: 15
