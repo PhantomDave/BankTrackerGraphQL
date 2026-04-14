@@ -25,6 +25,7 @@
     <!-- File Processing -->
     <PackageVersion Include="CsvHelper" Version="33.1.0" />
     <PackageVersion Include="EPPlus" Version="8.5.1" />
+    <PackageVersion Include="System.Security.Cryptography.Xml" Version="9.0.15" />
     
     <!-- Testing -->
     <PackageVersion Include="xunit" Version="2.9.3" />

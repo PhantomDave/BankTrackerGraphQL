@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" VersionOverride="10.0.1" />
+    <PackageReference Include="System.Security.Cryptography.Xml" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 
