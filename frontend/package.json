@@ -65,7 +65,7 @@
     "@eslint/eslintrc": "^3.3.5",
     "@eslint/js": "^10.0.1",
     "@graphql-codegen/cli": "^6.2.1",
-    "@graphql-codegen/introspection": "^5.0.1",
+    "@graphql-codegen/introspection": "^5.0.2",
     "@graphql-codegen/schema-ast": "^5.0.0",
     "@graphql-codegen/typescript": "^5.0.7",
     "@graphql-codegen/typescript-apollo-angular": "^5.0.0",
